@@ -1,5 +1,34 @@
 /* Company Page Specific Styles */
 
+/* --- Hero Title Redesign --- */
+.company-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem !important;
+    /* Override default h1 margin */
+}
+
+.title-light {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-weight: 400;
+    color: var(--text-gray, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    line-height: 1.2;
+}
+
+.title-bold {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(180deg, #FFFFFF 0%, #CCCCCC 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* --- Company Hierarchy Visual --- */
 .company-structure {
     padding: 6rem 5%;
