@@ -1,0 +1,33 @@
+
+name: Upload Assets to Firebase
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'assets/**'
+      - 'scripts/optimize_and_upload.js'
+  workflow_dispatch:
+
+jobs:
+  upload-assets:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Create Service Account Key
+      run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > serviceAccountKey.json
+
+    - name: Run Optimization and Upload Script
+      run: node scripts/optimize_and_upload.js
+      env:
+        # If the script relied on other env vars, add them here
+        FIREBASE_PROJECT_ID: 'crm-obras-prod' 
