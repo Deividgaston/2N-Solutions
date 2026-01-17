@@ -135,6 +135,9 @@
     position: relative;
     width: 100%;
     max-width: 800px;
+    /* Strict size constraint */
+    aspect-ratio: 16 / 9;
+    /* Enforce 16:9 format */
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
@@ -145,19 +148,25 @@
         linear-gradient(rgba(0, 153, 255, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 153, 255, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #000;
+    /* Pure black to blend with letterboxing */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .map-bg-svg {
     width: 100%;
-    height: 100%;
+    height: auto;
+    /* Let image natural height determine size within container */
+    max-height: 100%;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 0 5px rgba(0, 153, 255, 0.3));
     opacity: 0.9;
 }
 
-/* Hotspots */
+/* Hotspots - Adjusted for vertically centered map in 16:9 container */
 .map-pin {
     position: absolute;
     width: 12px;
@@ -168,21 +177,21 @@
 }
 
 .pin-prague {
-    top: 25%;
+    top: 48%;
     left: 51%;
     background: #0099ff;
     box-shadow: 0 0 20px #0099ff;
 }
 
 .pin-lund {
-    top: 20%;
+    top: 43%;
     left: 50.5%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
 
 .pin-boston {
-    top: 30%;
+    top: 50%;
     left: 27.5%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
