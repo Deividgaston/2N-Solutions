@@ -133,8 +133,8 @@
 
 .map-container {
     position: relative;
-    max-width: 800px;
-    /* Reduced further per user request */
+    max-width: 1000px;
+    /* Increased for better visibility */
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
