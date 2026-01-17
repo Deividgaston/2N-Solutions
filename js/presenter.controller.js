@@ -10,7 +10,7 @@ import {
     query,
     where,
     orderBy
-} from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import authController from './auth.controller.js';
 import i18n from './i18n.js';
 

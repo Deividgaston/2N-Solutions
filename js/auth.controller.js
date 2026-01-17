@@ -8,30 +8,45 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import i18n from './i18n.js';
 
 class AuthController {
     constructor() {
         this.currentUser = null;
         this.userRole = null;
-        this.init();
+        this.isRedirecting = false;
+        this.initialized = false;
     }
 
     /**
      * Initialize auth state listener and form bindings
      */
     init() {
+        if (this.initialized) return;
+        this.initialized = true;
+
         // Listen for auth state changes
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 this.currentUser = user;
                 await this.loadUserRole(user.uid);
-                this.redirectByRole();
+
+                // Only redirect from login page
+                const currentPage = window.location.pathname;
+                if (currentPage.endsWith('index.html') || currentPage === '/' || currentPage.endsWith('/')) {
+                    this.redirectByRole();
+                }
             } else {
                 this.currentUser = null;
                 this.userRole = null;
+
+                // Redirect to login if on protected page
+                const currentPage = window.location.pathname;
+                if (currentPage.includes('admin.html') || currentPage.includes('presenter.html')) {
+                    window.location.href = 'index.html';
+                }
             }
         });
 
@@ -51,7 +66,6 @@ class AuthController {
             if (userDoc.exists()) {
                 this.userRole = userDoc.data().role || 'prescriptor';
             } else {
-                // Create default user document if doesn't exist
                 this.userRole = 'prescriptor';
             }
         } catch (error) {
@@ -61,19 +75,16 @@ class AuthController {
     }
 
     /**
-     * Redirect user based on their role
+     * Redirect user based on their role (only called from login page)
      */
     redirectByRole() {
-        const currentPage = window.location.pathname;
+        if (this.isRedirecting) return;
+        this.isRedirecting = true;
 
         if (this.userRole === 'admin') {
-            if (!currentPage.includes('admin.html') && !currentPage.includes('presenter.html')) {
-                window.location.href = 'admin.html';
-            }
+            window.location.href = 'admin.html';
         } else {
-            if (!currentPage.includes('presenter.html')) {
-                window.location.href = 'presenter.html';
-            }
+            window.location.href = 'presenter.html';
         }
     }
 
@@ -161,6 +172,7 @@ class AuthController {
      */
     async requireAdmin() {
         await this.requireAuth();
+        await this.loadUserRole(auth.currentUser.uid);
         if (this.userRole !== 'admin') {
             window.location.href = 'presenter.html';
             throw new Error('Not authorized');
@@ -168,8 +180,16 @@ class AuthController {
     }
 }
 
-// Create and export singleton
+// Create singleton
 const authController = new AuthController();
+
+// Auto-init when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => authController.init());
+} else {
+    authController.init();
+}
+
 export default authController;
 
 // Expose logout function globally for easy access from HTML
