@@ -137,15 +137,22 @@
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 50px rgba(0, 153, 255, 0.1);
+    box-shadow: 0 0 80px rgba(0, 153, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Cyber Grid Background */
+    background-image:
+        linear-gradient(rgba(0, 153, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 153, 255, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-.map-bg {
+.map-bg-svg {
     width: 100%;
+    height: auto;
     display: block;
-    opacity: 0.8;
-    transition: transform 10s linear;
+    filter: drop-shadow(0 0 5px rgba(0, 153, 255, 0.3));
+    opacity: 0.9;
 }
 
 /* Hotspots */
