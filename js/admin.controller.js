@@ -569,10 +569,11 @@ class AdminController {
         grid.innerHTML = '<div class="loader"></div>';
 
         try {
-            const images = await contentService.listMultimediaImages();
+            // Pass current vertical to list images from the correct folder
+            const images = await contentService.listMultimediaImages(this.currentVertical);
 
             if (images.length === 0) {
-                grid.innerHTML = '<p>No hay imágenes en la galería.</p>';
+                grid.innerHTML = '<p>No hay imágenes en la galería de esta vertical.</p>';
                 return;
             }
 
@@ -608,14 +609,17 @@ class AdminController {
             const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
             let imageUrl = null;
+            let storagePath = null;
 
             if (activeTab === 'upload') {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    // Upload file to sections/ path
-                    const fileName = `sections/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    const storageRef = ref(storage, fileName);
+                    // Upload file to multimedia/{vertical}/ path
+                    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    storagePath = `multimedia/${this.currentVertical}/${fileName}`;
+
+                    const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, file);
                     imageUrl = await getDownloadURL(uploadTask.ref);
                 } else {
@@ -627,9 +631,11 @@ class AdminController {
                     throw new Error('Por favor selecciona una imagen de la galería');
                 }
                 imageUrl = this.selectedGalleryImage;
+                // Note: We don't verify strict path for gallery images here, 
+                // but that's okay as they are already in storage.
             }
 
-            await contentService.addSection(this.currentVertical, imageUrl, text);
+            await contentService.addSection(this.currentVertical, imageUrl, text, storagePath);
 
             document.getElementById('section-modal').classList.remove('active');
             this.loadSections();
