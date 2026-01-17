@@ -503,6 +503,78 @@
                 gap: 1rem;
                 text-align: center;
             }
+
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+    <style>
+        /* Language Selector Styles */
+        .lang-selector {
+            position: relative;
+            margin-left: 1.5rem;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .lang-selector:hover .lang-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-white);
+        }
+
+        .lang-flag {
+            font-size: 1.2rem;
+            line-height: 1;
         }
     </style>
 </head>
@@ -518,7 +590,32 @@
             <li><a href="company.html">Sobre 2N</a></li>
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
-        <a href="login.html" class="btn-cta">Área Prescriptores</a>
+
+        <div class="lang-selector">
+            <button class="lang-btn">
+                <span class="fi fi-es"></span> <span>ES</span> <i class="fa-solid fa-chevron-down"
+                    style="font-size: 0.7rem;"></i>
+            </button>
+            <div class="lang-dropdown">
+                <a href="#" class="lang-option">
+                    <span class="fi fi-es lang-flag"></span> Español
+                </a>
+                <a href="#" class="lang-option">
+                    <span class="fi fi-gb lang-flag"></span> English
+                </a>
+                <a href="#" class="lang-option">
+                    <span class="fi fi-pt lang-flag"></span> Português
+                </a>
+                <a href="#" class="lang-option">
+                    <span class="fi fi-fr lang-flag"></span> Français
+                </a>
+                <a href="#" class="lang-option">
+                    <span class="fi fi-it lang-flag"></span> Italiano
+                </a>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-cta" style="margin-left: 1.5rem;">Área Prescriptores</a>
     </nav>
 
     <section class="hero">
