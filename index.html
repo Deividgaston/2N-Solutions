@@ -586,8 +586,8 @@
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
         </a>
         <ul class="nav-links">
-            <li><a href="#solutions">Soluciones</a></li>
-            <li><a href="company.html">Sobre 2N</a></li>
+            <li><a href="#solutions" data-i18n="nav_solutions">Soluciones</a></li>
+            <li><a href="company.html" data-i18n="nav_about">Sobre 2N</a></li>
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
 
@@ -597,25 +597,26 @@
                     style="font-size: 0.7rem;"></i>
             </button>
             <div class="lang-dropdown">
-                <a href="#" class="lang-option">
+                <a href="#" class="lang-option" data-lang="es">
                     <span class="fi fi-es lang-flag"></span> Español
                 </a>
-                <a href="#" class="lang-option">
+                <a href="#" class="lang-option" data-lang="en">
                     <span class="fi fi-gb lang-flag"></span> English
                 </a>
-                <a href="#" class="lang-option">
+                <a href="#" class="lang-option" data-lang="pt">
                     <span class="fi fi-pt lang-flag"></span> Português
                 </a>
-                <a href="#" class="lang-option">
+                <a href="#" class="lang-option" data-lang="fr">
                     <span class="fi fi-fr lang-flag"></span> Français
                 </a>
-                <a href="#" class="lang-option">
+                <a href="#" class="lang-option" data-lang="it">
                     <span class="fi fi-it lang-flag"></span> Italiano
                 </a>
             </div>
         </div>
 
-        <a href="login.html" class="btn-cta" style="margin-left: 1.5rem;">Área Prescriptores</a>
+        <a href="login.html" class="btn-cta" style="margin-left: 1.5rem;" data-i18n="nav_prescribers">Área
+            Prescriptores</a>
     </nav>
 
     <section class="hero">
@@ -625,19 +626,20 @@
             <div class="hero-content">
                 <span class="hero-label">
                     <i class="fa-solid fa-bolt"></i>
-                    Líder mundial en interfonos IP
+                    <span data-i18n="hero_label">Líder mundial en interfonos IP</span>
                 </span>
                 <h1>
-                    Prescribe el futuro.<br>
-                    <span class="gradient-text">Diseña el acceso.</span>
+                    <span data-i18n="hero_title_1">Prescribe el futuro.</span><br>
+                    <span class="gradient-text" data-i18n="hero_title_2">Diseña el acceso.</span>
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-i18n="hero_subtitle">
                     Intercomunicadores IP, videoporteros Full HD y control de acceso móvil para edificios residenciales,
                     oficinas, hoteles y retail. Tecnología puntera con diseño premiado Red Dot Award.
                 </p>
                 <a href="company.html" class="btn-hero btn-hero-primary"
                     style="margin-top: 4rem; display: inline-flex; align-items: center; padding: 1rem 3rem; font-size: 1.2rem; box-shadow: 0 10px 30px rgba(0, 153, 255, 0.3);">
-                    Conoce 2N <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    <span data-i18n="hero_btn">Conoce 2N</span> <i class="fa-solid fa-arrow-right"
+                        style="margin-left: 0.5rem;"></i>
                 </a>
             </div>
             <div class="hero-image">
@@ -649,38 +651,38 @@
 
     <section class="solutions-section" id="solutions">
         <div class="section-header">
-            <p class="section-eyebrow">Soluciones por vertical</p>
-            <h2 class="section-title">Elige tu sector de aplicación</h2>
+            <p class="section-eyebrow" data-i18n="sol_eyebrow">Soluciones por vertical</p>
+            <h2 class="section-title" data-i18n="sol_title">Elige tu sector de aplicación</h2>
         </div>
         <div class="solutions-grid">
             <a href="solucion-bts.html" class="solution-card">
                 <span class="solution-icon">🏠</span>
-                <h3>Residencial BTS</h3>
-                <p>Build-to-Sell. Promociones de venta.</p>
+                <h3 data-i18n="sol_bts_title">Residencial BTS</h3>
+                <p data-i18n="sol_bts_desc">Build-to-Sell. Promociones de venta.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
             <a href="solucion-btr.html" class="solution-card">
                 <span class="solution-icon">🏢</span>
-                <h3>Residencial BTR</h3>
-                <p>Build-to-Rent. Alquiler institucional.</p>
+                <h3 data-i18n="sol_btr_title">Residencial BTR</h3>
+                <p data-i18n="sol_btr_desc">Build-to-Rent. Alquiler institucional.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
             <a href="solucion-oficinas.html" class="solution-card">
                 <span class="solution-icon">💼</span>
-                <h3>Oficinas</h3>
-                <p>Edificios corporativos y coworking.</p>
+                <h3 data-i18n="sol_office_title">Oficinas</h3>
+                <p data-i18n="sol_office_desc">Edificios corporativos y coworking.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
             <a href="solucion-hoteles.html" class="solution-card">
                 <span class="solution-icon">🏨</span>
-                <h3>Hoteles</h3>
-                <p>Hospitality y resorts.</p>
+                <h3 data-i18n="sol_hotel_title">Hoteles</h3>
+                <p data-i18n="sol_hotel_desc">Hospitality y resorts.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
             <a href="solucion-seguridad.html" class="solution-card">
                 <span class="solution-icon">🔒</span>
-                <h3>Seguridad</h3>
-                <p>Control de acceso avanzado.</p>
+                <h3 data-i18n="sol_security_title">Seguridad</h3>
+                <p data-i18n="sol_security_desc">Control de acceso avanzado.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
         </div>
@@ -688,40 +690,41 @@
 
     <section class="value-props" id="porque-2n">
         <div class="section-header">
-            <p class="section-eyebrow">Por qué 2N</p>
-            <h2 class="section-title">La diferencia que eleva tu proyecto</h2>
+            <p class="section-eyebrow" data-i18n="prop_eyebrow">Por qué 2N</p>
+            <h2 class="section-title" data-i18n="prop_title">La diferencia que eleva tu proyecto</h2>
         </div>
         <div class="props-grid">
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-gem"></i></div>
-                <h3>Diseño Red Dot Award</h3>
-                <p>Estética premium que eleva la percepción de valor de cualquier entrada. Materiales nobles, acabados
-                    impecables.</p>
+                <h3 data-i18n="prop_design_title">Diseño Red Dot Award</h3>
+                <p data-i18n="prop_design_desc">Estética premium que eleva la percepción de valor de cualquier entrada.
+                    Materiales nobles, acabados impecables.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3>Seguridad sin compromisos</h3>
-                <p>Encriptación end-to-end, autenticación multi-factor y cumplimiento GDPR.</p>
+                <h3 data-i18n="prop_security_title">Seguridad sin compromisos</h3>
+                <p data-i18n="prop_security_desc">Encriptación end-to-end, autenticación multi-factor y cumplimiento
+                    GDPR.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-mobile-screen"></i></div>
-                <h3>Acceso móvil nativo</h3>
-                <p>WaveKey permite abrir puertas con el smartphone via Bluetooth.</p>
+                <h3 data-i18n="prop_mobile_title">Acceso móvil nativo</h3>
+                <p data-i18n="prop_mobile_desc">WaveKey permite abrir puertas con el smartphone via Bluetooth.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
-                <h3>Integración total</h3>
-                <p>Compatible con Axis, Milestone, Genetec y los principales VMS.</p>
+                <h3 data-i18n="prop_integration_title">Integración total</h3>
+                <p data-i18n="prop_integration_desc">Compatible con Axis, Milestone, Genetec y los principales VMS.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-cloud"></i></div>
-                <h3>Gestión cloud con My2N</h3>
-                <p>Administra todos los dispositivos desde cualquier lugar.</p>
+                <h3 data-i18n="prop_cloud_title">Gestión cloud con My2N</h3>
+                <p data-i18n="prop_cloud_desc">Administra todos los dispositivos desde cualquier lugar.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-euro-sign"></i></div>
-                <h3>ROI demostrable</h3>
-                <p>Reduce costes de mantenimiento, aumenta el valor percibido.</p>
+                <h3 data-i18n="prop_roi_title">ROI demostrable</h3>
+                <p data-i18n="prop_roi_desc">Reduce costes de mantenimiento, aumenta el valor percibido.</p>
             </div>
         </div>
     </section>
@@ -730,19 +733,19 @@
         <div class="stats-grid">
             <div class="stat">
                 <div class="stat-number">30+</div>
-                <div class="stat-label">Años liderando IP</div>
+                <div class="stat-label" data-i18n="stat_years">Años liderando IP</div>
             </div>
             <div class="stat">
                 <div class="stat-number">100+</div>
-                <div class="stat-label">Países con presencia</div>
+                <div class="stat-label" data-i18n="stat_countries">Países con presencia</div>
             </div>
             <div class="stat">
                 <div class="stat-number">5M+</div>
-                <div class="stat-label">Dispositivos instalados</div>
+                <div class="stat-label" data-i18n="stat_users">Usuarios diarios</div>
             </div>
             <div class="stat">
                 <div class="stat-number">500+</div>
-                <div class="stat-label">Integraciones certificadas</div>
+                <div class="stat-label" data-i18n="stat_devices">Dispositivos instalados</div>
             </div>
         </div>
     </section>
@@ -750,14 +753,16 @@
     <footer class="footer">
         <div class="footer-left">
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+            <span data-i18n="footer_copyright">© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
         </div>
         <div class="footer-links">
             <a href="https://www.2n.com" target="_blank">2N.com</a>
-            <a href="login.html">Acceso prescriptores</a>
+            <a href="login.html" data-i18n="nav_prescribers">Acceso prescriptores</a>
         </div>
     </footer>
 
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);

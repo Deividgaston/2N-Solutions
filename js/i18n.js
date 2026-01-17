@@ -1,136 +1,79 @@
-/**
- * 2N Presenter - Internationalization (i18n) Module
- * Handles multi-language support for ES, EN, PT
- */
-
-class I18n {
+class I18nManager {
     constructor() {
-        this.translations = {};
-        this.currentLang = this.getStoredLanguage() || 'es';
-        this.supportedLangs = ['es', 'en', 'pt'];
+        this.currentLang = localStorage.getItem('2n_lang') || 'es';
+        this.flags = {
+            es: 'fi-es',
+            en: 'fi-gb',
+            pt: 'fi-pt',
+            fr: 'fi-fr',
+            it: 'fi-it'
+        };
+        this.init();
     }
 
-    /**
-     * Get stored language preference from localStorage
-     */
-    getStoredLanguage() {
-        return localStorage.getItem('2n-presenter-lang');
+    init() {
+        this.setupListeners();
+        this.updateContent();
+        this.updateSelector();
     }
 
-    /**
-     * Set and store language preference
-     */
-    setLanguage(lang) {
-        if (!this.supportedLangs.includes(lang)) {
-            console.warn(`Language ${lang} not supported. Falling back to 'es'.`);
-            lang = 'es';
-        }
-        this.currentLang = lang;
-        localStorage.setItem('2n-presenter-lang', lang);
-        document.documentElement.lang = lang;
-        this.updatePageTranslations();
-        this.updateLanguageButtons();
-    }
+    setupListeners() {
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Find the closest anchor if click was on span
+                const target = e.target.closest('.lang-option');
+                // Extract lang code from flag class (e.g. 'fi-es' -> 'es') but safer to store it in data attr
+                // Adding data-lang to options would be better, but I'll parse it for now or rely on text
 
-    /**
-     * Load translations for a specific language
-     */
-    async loadTranslations(lang) {
-        if (this.translations[lang]) {
-            return this.translations[lang];
-        }
-
-        try {
-            const response = await fetch(`locales/${lang}.json`);
-            if (!response.ok) throw new Error(`Failed to load ${lang} translations`);
-            this.translations[lang] = await response.json();
-            return this.translations[lang];
-        } catch (error) {
-            console.error(`Error loading translations for ${lang}:`, error);
-            return {};
-        }
-    }
-
-    /**
-     * Get translation by key path (e.g., 'login.title')
-     */
-    t(keyPath) {
-        const keys = keyPath.split('.');
-        let value = this.translations[this.currentLang];
-
-        for (const key of keys) {
-            if (value && typeof value === 'object' && key in value) {
-                value = value[key];
-            } else {
-                console.warn(`Translation key not found: ${keyPath}`);
-                return keyPath; // Return key as fallback
-            }
-        }
-
-        return value;
-    }
-
-    /**
-     * Update all elements with data-i18n attribute
-     */
-    updatePageTranslations() {
-        const elements = document.querySelectorAll('[data-i18n]');
-        elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            const translation = this.t(key);
-
-            // Handle different element types
-            if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
-                el.placeholder = translation;
-            } else {
-                el.textContent = translation;
-            }
-        });
-    }
-
-    /**
-     * Update language selector buttons
-     */
-    updateLanguageButtons() {
-        const buttons = document.querySelectorAll('.lang-btn');
-        buttons.forEach(btn => {
-            const lang = btn.getAttribute('data-lang');
-            btn.classList.toggle('active', lang === this.currentLang);
-        });
-    }
-
-    /**
-     * Initialize i18n system
-     */
-    async init() {
-        // Load current language translations
-        await this.loadTranslations(this.currentLang);
-
-        // Update page
-        this.updatePageTranslations();
-        this.updateLanguageButtons();
-
-        // Bind language selector buttons
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                const lang = e.target.getAttribute('data-lang');
-                await this.loadTranslations(lang);
-                this.setLanguage(lang);
+                // Let's assume I'll add data-lang to HTML in the next step. 
+                // For now, I'll infer from the second span's text content mapping or add data attributes.
+                // Actually, I'll rely on the index or text.
+                // BETTER: I will add data-lang="{lang}" to the HTML elements in the next step.
+                const lang = target.getAttribute('data-lang');
+                if (lang) {
+                    this.setLanguage(lang);
+                }
             });
         });
+    }
 
-        return this;
+    setLanguage(lang) {
+        this.currentLang = lang;
+        localStorage.setItem('2n_lang', lang);
+        this.updateContent();
+        this.updateSelector();
+    }
+
+    updateContent() {
+        const texts = translations[this.currentLang];
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (texts[key]) {
+                // Check if it's an input/placeholder or text
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.placeholder = texts[key];
+                } else {
+                    element.textContent = texts[key];
+                }
+            }
+        });
+    }
+
+    updateSelector() {
+        const btn = document.querySelector('.lang-btn');
+        const flagSpan = btn.querySelector('.fi');
+        const textSpan = btn.querySelector('span:nth-child(2)');
+
+        // Update flag
+        flagSpan.className = `fi ${this.flags[this.currentLang]}`;
+
+        // Update text
+        textSpan.textContent = this.currentLang.toUpperCase();
     }
 }
 
-// Create and export singleton instance
-const i18n = new I18n();
-
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => i18n.init());
-} else {
-    i18n.init();
-}
-
-export default i18n;
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.i18n = new I18nManager();
+});
