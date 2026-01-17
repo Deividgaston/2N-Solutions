@@ -151,6 +151,68 @@ class ContentService {
             throw error;
         }
     }
+
+    // ========================
+    // FOLDER MANAGEMENT
+    // ========================
+
+    /**
+     * Create a folder by uploading a dummy file
+     * @param {string} path - Parent path
+     * @param {string} folderName - New folder name
+     */
+    async createFolder(path, folderName) {
+        try {
+            const fullPath = `${path}/${folderName}/.keep`;
+            const storageRef = ref(storage, fullPath);
+            const blob = new Blob([''], { type: 'application/octet-stream' });
+            await uploadBytes(storageRef, blob);
+            return true;
+        } catch (error) {
+            console.error('Error creating folder:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Delete a folder and all its contents recursively
+     * @param {string} path - Full path to folder
+     */
+    async deleteFolder(path) {
+        try {
+            const folderRef = ref(storage, path);
+            const result = await listAll(folderRef);
+
+            // Delete files
+            const filePromises = result.items.map(fileRef => deleteObject(fileRef));
+
+            // Recurse for subfolders
+            const folderPromises = result.prefixes.map(subFolderRef =>
+                this.deleteFolder(subFolderRef.fullPath)
+            );
+
+            await Promise.all([...filePromises, ...folderPromises]);
+            return true;
+        } catch (error) {
+            console.error('Error deleting folder:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Delete a single file
+     * @param {string} path 
+     */
+    async deleteFile(path) {
+        try {
+            const storageRef = ref(storage, path);
+            await deleteObject(storageRef);
+            return true;
+        } catch (error) {
+            console.error('Error deleting file:', error);
+            throw error;
+        }
+    }
 }
 
 export const contentService = new ContentService();

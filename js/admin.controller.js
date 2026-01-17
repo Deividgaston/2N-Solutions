@@ -388,6 +388,16 @@ class AdminController {
 
             grid.innerHTML = '';
 
+            // New Folder Card
+            const newFolderItem = document.createElement('div');
+            newFolderItem.className = 'asset-card gallery-folder new-folder';
+            newFolderItem.innerHTML = `
+                <div class="folder-icon"><i class="fa-solid fa-folder-plus"></i></div>
+                <div class="folder-name">Nueva Carpeta</div>
+            `;
+            newFolderItem.addEventListener('click', () => this.handleCreateFolder());
+            grid.appendChild(newFolderItem);
+
             // "Up" button if not at root
             if (path !== 'multimedia') {
                 const upItem = document.createElement('div');
@@ -412,9 +422,18 @@ class AdminController {
                     item.innerHTML = `
                         <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
                         <div class="folder-name">${folder.name}</div>
+                        <div class="folder-actions">
+                            <i class="fa-solid fa-trash delete-icon" title="Eliminar Carpeta"></i>
+                        </div>
                     `;
-                    item.addEventListener('click', () => {
-                        this.navigateAssets(folder.fullPath);
+                    // Navigate on click
+                    item.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('delete-icon')) {
+                            e.stopPropagation();
+                            this.handleDeleteElement(folder.fullPath, 'folder');
+                        } else {
+                            this.navigateAssets(folder.fullPath);
+                        }
                     });
                     grid.appendChild(item);
                 });
@@ -425,25 +444,79 @@ class AdminController {
                 files.forEach(asset => {
                     const card = document.createElement('div');
                     card.className = 'asset-card';
+                    const isVideo = asset.name.match(/\.(mp4|webm|mov)$/i);
+                    const icon = isVideo ? '<i class="fa-solid fa-video"></i>' : '';
+
                     card.innerHTML = `
                         <div class="asset-thumbnail">
-                            <img src="${asset.url}" alt="${asset.name}" loading="lazy">
+                            ${icon ? `<div class="video-overlay"><i class="fa-solid fa-play"></i></div>` : ''}
+                            <img src="${asset.url}" alt="${asset.name}" loading="lazy" style="${isVideo ? 'opacity:0.7' : ''}">
                         </div>
                         <div class="asset-info">
-                            <div class="asset-name">${asset.name}</div>
+                            <div class="asset-name" title="${asset.name}">${asset.name}</div>
+                            <i class="fa-solid fa-trash delete-icon" title="Eliminar Archivo"></i>
                         </div>
                     `;
+
+                    // Handle delete
+                    card.querySelector('.delete-icon').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.handleDeleteElement(asset.fullPath, 'file');
+                    });
+
+                    // Add click to preview or select if we were implementing selection here
+                    // For assets tab, maybe just preview? Or nothing.
+
                     grid.appendChild(card);
                 });
             }
 
             if (folders.length === 0 && files.length === 0) {
-                grid.innerHTML += '<p style="width:100%; text-align:center;">Carpeta vacía</p>';
+                grid.innerHTML += '<p style="width:100%; text-align:center; padding: 20px;">Carpeta vacía</p>';
             }
 
         } catch (error) {
             console.error('Error loading assets:', error);
             grid.innerHTML = '<p class="text-center error">Error al cargar archivos</p>';
+        }
+    }
+
+    async handleCreateFolder() {
+        const name = prompt('Nombre de la nueva carpeta:');
+        if (!name) return;
+
+        // Basic validation
+        if (!name.match(/^[a-zA-Z0-9_\-\.]+$/)) {
+            alert('Nombre inválido. Usa solo letras, números, guiones y puntos.');
+            return;
+        }
+
+        try {
+            await contentService.createFolder(this.currentMediaPath, name);
+            // Refresh
+            this.navigateAssets(this.currentMediaPath);
+        } catch (error) {
+            alert('Error al crear carpeta: ' + error.message);
+        }
+    }
+
+    async handleDeleteElement(path, type) {
+        const msg = type === 'folder'
+            ? '¿Estás seguro de eliminar esta carpeta y TODO su contenido? No se puede deshacer.'
+            : '¿Eliminar este archivo?';
+
+        if (!confirm(msg)) return;
+
+        try {
+            if (type === 'folder') {
+                await contentService.deleteFolder(path);
+            } else {
+                await contentService.deleteFile(path);
+            }
+            // Refresh
+            this.navigateAssets(this.currentMediaPath);
+        } catch (error) {
+            alert('Error al eliminar: ' + error.message);
         }
     }
 
@@ -461,14 +534,26 @@ class AdminController {
         progressEl.classList.remove('hidden');
 
         try {
-            // Compress image before upload (client-side)
-            const compressedFile = await this.compressImage(file);
+            // Compress/Optimize Logic
+            let fileToUpload = file;
+            if (file.type.startsWith('image/')) {
+                fileToUpload = await this.compressImage(file);
+            } else if (file.type.startsWith('video/')) {
+                // Basic size check for videos (e.g., 50MB warning)
+                if (file.size > 50 * 1024 * 1024) {
+                    if (!confirm('Este video es mayor a 50MB. ¿Seguro que quieres subirlo? Recuerda la optimización.')) {
+                        progressEl.classList.add('hidden');
+                        return;
+                    }
+                }
+                // We don't compress videos client-side
+            }
 
             // Upload to Current Explorer Path
             const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
             const storagePath = `${this.currentMediaPath}/${fileName}`;
             const storageRef = ref(storage, storagePath);
-            const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+            const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
 
             uploadTask.on('state_changed',
                 (snapshot) => {
@@ -496,9 +581,11 @@ class AdminController {
     }
 
     /**
-     * Compress image to WebP format with max 1920px width
+     * Compress image to WebP format. Returns original file if not an image.
      */
     async compressImage(file, maxWidth = 1920, quality = 0.8) {
+        if (!file.type.startsWith('image/')) return file;
+
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = (e) => {
