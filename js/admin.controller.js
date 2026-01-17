@@ -4,6 +4,7 @@
  */
 
 import { auth, db, storage } from './firebase-init.js';
+import { contentService } from './services/content.service.js';
 import {
     collection,
     doc,
@@ -141,10 +142,36 @@ class AdminController {
             });
         }
 
+        // Section Modal
+        const addSectionBtn = document.getElementById('add-section-btn');
+        const sectionModal = document.getElementById('section-modal');
+
+        if (addSectionBtn) {
+            addSectionBtn.addEventListener('click', () => {
+                this.resetSectionModal();
+                sectionModal.classList.add('active');
+            });
+        }
+
         // Close modals
         document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
             el.addEventListener('click', () => {
                 document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            });
+        });
+
+        // Tab Switching in Section Modal
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+
+                if (btn.dataset.tab === 'gallery') {
+                    this.loadMultimediaGallery();
+                }
             });
         });
 
@@ -156,6 +183,14 @@ class AdminController {
                 if (file) {
                     document.getElementById('file-info').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
                 }
+            });
+        }
+
+        const sectionFile = document.getElementById('section-file');
+        if (sectionFile) {
+            sectionFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) document.getElementById('section-file-info').textContent = file.name;
             });
         }
     }
@@ -176,11 +211,33 @@ class AdminController {
             assetForm.addEventListener('submit', (e) => this.handleAssetUpload(e));
         }
 
+        // Section form
+        const sectionForm = document.getElementById('section-form');
+        if (sectionForm) {
+            sectionForm.addEventListener('submit', (e) => this.handleSaveSection(e));
+        }
+
         // Filter
         const filterVertical = document.getElementById('filter-vertical');
         if (filterVertical) {
             filterVertical.addEventListener('change', () => this.loadAssets());
         }
+    }
+
+    // ============================
+    // FORMS
+    // ============================
+    // ... (bindForms is handled above)
+
+    resetSectionModal() {
+        document.getElementById('section-form').reset();
+        this.selectedGalleryImage = null;
+        document.getElementById('section-file-info').textContent = '';
+        if (document.querySelector('.tab-btn[data-tab="upload"]')) {
+            document.querySelector('.tab-btn[data-tab="upload"]').click();
+        }
+        const grid = document.getElementById('multimedia-grid');
+        if (grid) grid.innerHTML = '<p>Cargando imágenes...</p>';
     }
 
     // ============================
@@ -470,27 +527,29 @@ class AdminController {
         list.innerHTML = '<p class="text-center">Cargando...</p>';
 
         try {
-            const sectionsRef = collection(db, 'sections');
-            const q = query(
-                sectionsRef,
-                where('verticalId', '==', this.currentVertical),
-                orderBy('order', 'asc')
-            );
-            const snapshot = await getDocs(q);
+            const sections = await contentService.getSections(this.currentVertical);
 
-            if (snapshot.empty) {
+            if (sections.length === 0) {
                 list.innerHTML = '<p class="text-center">No hay secciones para esta vertical</p>';
                 return;
             }
 
             list.innerHTML = '';
-            snapshot.forEach(doc => {
-                const section = doc.data();
+            sections.forEach(section => {
                 const card = document.createElement('div');
                 card.className = 'section-card';
                 card.innerHTML = `
-                    <h3>${section.title?.[i18n.currentLang] || section.title?.es || 'Sin título'}</h3>
-                    <p>${section.content?.[i18n.currentLang] || section.content?.es || ''}</p>
+                    <div class="section-image">
+                        <img src="${section.imageUrl}" alt="Section Image">
+                    </div>
+                    <div class="section-content">
+                        <p class="section-text">${section.text}</p>
+                        <div class="section-actions">
+                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
                 `;
                 list.appendChild(card);
             });
@@ -499,6 +558,288 @@ class AdminController {
             list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
         }
     }
+
+    async loadMultimediaGallery() {
+        const grid = document.getElementById('multimedia-grid');
+        grid.innerHTML = '<div class="loader"></div>';
+
+        try {
+            const images = await contentService.listMultimediaImages();
+
+            if (images.length === 0) {
+                grid.innerHTML = '<p>No hay imágenes en la galería.</p>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            images.forEach(img => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
+
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    this.selectedGalleryImage = img.url;
+                });
+
+                grid.appendChild(item);
+            });
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = '<p class="error">Error cargando galería</p>';
+        }
+    }
+
+    async handleSaveSection(e) {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
+
+        try {
+            const text = document.getElementById('section-text').value;
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+
+            if (activeTab === 'upload') {
+                const fileInput = document.getElementById('section-file');
+                if (fileInput.files.length > 0) {
+                    await contentService.addSection(this.currentVertical, fileInput.files[0], text);
+                } else {
+                    throw new Error('Por favor selecciona una imagen para subir');
+                }
+            } else {
+                if (!this.selectedGalleryImage) {
+                    throw new Error('Por favor selecciona una imagen de la galería');
+                }
+                await contentService.addSection(this.currentVertical, this.selectedGalleryImage, text);
+            }
+
+            document.getElementById('section-modal').classList.remove('active');
+            this.loadSections();
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    }
+
+    async deleteSection(sectionId) {
+        if (!confirm('¿Eliminar esta sección?')) return;
+
+        try {
+            await contentService.deleteSection(this.currentVertical, sectionId);
+            this.loadSections();
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message);
+        }
+    }
+}
+
+// Create singleton and expose globally
+const adminController = new AdminController();
+window.adminController = adminController;
+
+export default adminController; this.editingUserId = null;
+this.selectedGalleryImage = null; // Track selected image from gallery
+this.init();
+    }
+
+// ... (init, bindNavigation, bindModals kept largely same, but need to add new modal bindings)
+
+bindModals() {
+    // ... (existing user/asset modal bindings) ...
+
+    // Section Modal
+    const addSectionBtn = document.getElementById('add-section-btn');
+    const sectionModal = document.getElementById('section-modal');
+
+    if (addSectionBtn) {
+        addSectionBtn.addEventListener('click', () => {
+            this.resetSectionModal();
+            sectionModal.classList.add('active');
+        });
+    }
+
+    // Close modals
+    document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
+        el.addEventListener('click', () => {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+        });
+    });
+
+    // Tab Switching in Section Modal
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+
+            if (btn.dataset.tab === 'gallery') {
+                this.loadMultimediaGallery();
+            }
+        });
+    });
+
+    // Image interactions
+    const sectionFile = document.getElementById('section-file');
+    if (sectionFile) {
+        sectionFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) document.getElementById('section-file-info').textContent = file.name;
+        });
+    }
+}
+
+bindForms() {
+    // ... (existing forms) ...
+
+    const sectionForm = document.getElementById('section-form');
+    if (sectionForm) {
+        sectionForm.addEventListener('submit', (e) => this.handleSaveSection(e));
+    }
+}
+
+resetSectionModal() {
+    document.getElementById('section-form').reset();
+    this.selectedGalleryImage = null;
+    document.getElementById('section-file-info').textContent = '';
+    document.querySelector('.tab-btn[data-tab="upload"]').click(); // Reset to upload tab
+    document.getElementById('multimedia-grid').innerHTML = '<p>Cargando imágenes...</p>';
+}
+
+    // ... (User & Asset CRUD methods kept same) ...
+
+    // ============================
+    // CONTENT SECTIONS (Updated)
+    // ============================
+
+    async loadSections() {
+    const list = document.getElementById('sections-list');
+    if (!list) return;
+
+    list.innerHTML = '<p class="text-center">Cargando...</p>';
+
+    try {
+        const sections = await contentService.getSections(this.currentVertical);
+
+        if (sections.length === 0) {
+            list.innerHTML = '<p class="text-center">No hay secciones para esta vertical</p>';
+            return;
+        }
+
+        list.innerHTML = '';
+        sections.forEach(section => {
+            const card = document.createElement('div');
+            card.className = 'section-card';
+            // Simple layout for list item
+            card.innerHTML = `
+                    <div class="section-image">
+                        <img src="${section.imageUrl}" alt="Section Image">
+                    </div>
+                    <div class="section-content">
+                        <p class="section-text">${section.text}</p>
+                        <div class="section-actions">
+                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            list.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading sections:', error);
+        list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
+    }
+}
+
+    async loadMultimediaGallery() {
+    const grid = document.getElementById('multimedia-grid');
+    grid.innerHTML = '<div class="loader"></div>';
+
+    try {
+        const images = await contentService.listMultimediaImages(); // Load from root multimedia or specific vertical logic
+
+        if (images.length === 0) {
+            grid.innerHTML = '<p>No hay imágenes en la galería.</p>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        images.forEach(img => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
+
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                this.selectedGalleryImage = img.url;
+            });
+
+            grid.appendChild(item);
+        });
+    } catch (e) {
+        console.error(e);
+        grid.innerHTML = '<p class="error">Error cargando galería</p>';
+    }
+}
+
+    async handleSaveSection(e) {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+
+    try {
+        const text = document.getElementById('section-text').value;
+        const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+
+        let imageUrl = null;
+        let imagePath = null; // Only for new uploads if we want
+
+        if (activeTab === 'upload') {
+            const fileInput = document.getElementById('section-file');
+            if (fileInput.files.length > 0) {
+                const result = await contentService.addSection(this.currentVertical, fileInput.files[0], text);
+                // Used the overload for file
+            } else {
+                throw new Error('Por favor selecciona una imagen para subir');
+            }
+        } else {
+            // Gallery
+            if (!this.selectedGalleryImage) {
+                throw new Error('Por favor selecciona una imagen de la galería');
+            }
+            await contentService.addSection(this.currentVertical, this.selectedGalleryImage, text);
+        }
+
+        document.getElementById('section-modal').classList.remove('active');
+        this.loadSections();
+    } catch (error) {
+        alert(error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+}
+
+    async deleteSection(sectionId) {
+    if (!confirm('¿Eliminar esta sección?')) return;
+
+    try {
+        await contentService.deleteSection(this.currentVertical, sectionId);
+        this.loadSections();
+    } catch (e) {
+        alert('Error al eliminar: ' + e.message);
+    }
+}
 }
 
 // Create singleton and expose globally

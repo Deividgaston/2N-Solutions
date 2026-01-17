@@ -13,6 +13,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import authController from './auth.controller.js';
 import i18n from './i18n.js';
+import { contentService } from './services/content.service.js';
 
 class PresenterController {
     constructor() {
@@ -96,46 +97,64 @@ class PresenterController {
         container.innerHTML = '<p class="placeholder-text">Cargando secciones...</p>';
 
         try {
-            const sectionsRef = collection(db, 'sections');
-            const q = query(
-                sectionsRef,
-                where('verticalId', 'in', this.selectedVerticals),
-                where('isActive', '==', true),
-                orderBy('order', 'asc')
-            );
-            const snapshot = await getDocs(q);
+            this.availableSections = [];
 
-            if (snapshot.empty) {
+            // Fetch sections for all selected verticals in parallel
+            const promises = this.selectedVerticals.map(vid => contentService.getSections(vid));
+            const results = await Promise.all(promises);
+
+            // Flatten results and associate with verticalId
+            results.forEach((sections, index) => {
+                const verticalId = this.selectedVerticals[index];
+                sections.forEach(s => {
+                    this.availableSections.push({ ...s, verticalId });
+                });
+            });
+
+            if (this.availableSections.length === 0) {
                 container.innerHTML = '<p class="placeholder-text">No hay secciones disponibles para las verticales seleccionadas</p>';
-                this.availableSections = [];
                 return;
             }
 
-            this.availableSections = [];
             container.innerHTML = '';
 
-            snapshot.forEach(doc => {
-                const section = { id: doc.id, ...doc.data() };
-                this.availableSections.push(section);
+            // Sort by creation time (optional, as getSections already sorts)
+            // But if mixing verticals, we might want to group by vertical or sort by time?
+            // Let's group by Vertical for display clarity
 
-                const lang = i18n.currentLang;
-                const title = section.title?.[lang] || section.title?.es || 'Sin título';
-                const verticalLabel = i18n.t(`verticals.${section.verticalId}`);
+            this.selectedVerticals.forEach(vid => {
+                const verticalSections = this.availableSections.filter(s => s.verticalId === vid);
+                if (verticalSections.length > 0) {
+                    const groupTitle = document.createElement('h4');
+                    groupTitle.className = 'vertical-group-title';
+                    groupTitle.textContent = i18n.t(`verticals.${vid}`);
+                    container.appendChild(groupTitle);
 
-                const item = document.createElement('div');
-                item.className = 'section-item';
-                item.innerHTML = `
-                    <input type="checkbox" id="section-${doc.id}" value="${doc.id}">
-                    <label for="section-${doc.id}">${title}</label>
-                    <span class="section-vertical-tag">${verticalLabel}</span>
-                `;
+                    verticalSections.forEach(section => {
+                        const item = document.createElement('div');
+                        item.className = 'section-item';
+                        // Use section.text first 50 chars as title since we don't have separate title
+                        const displayTitle = section.text.substring(0, 50) + (section.text.length > 50 ? '...' : '');
 
-                item.querySelector('input').addEventListener('change', (e) => {
-                    this.handleSectionToggle(doc.id, e.target.checked);
-                });
+                        item.innerHTML = `
+                            <input type="checkbox" id="section-${section.id}" value="${section.id}">
+                            <label for="section-${section.id}">
+                                <div class="section-preview-row">
+                                    <img src="${section.imageUrl}" alt="" class="mini-thumb">
+                                    <span>${displayTitle}</span>
+                                </div>
+                            </label>
+                        `;
 
-                container.appendChild(item);
+                        item.querySelector('input').addEventListener('change', (e) => {
+                            this.handleSectionToggle(section.id, e.target.checked);
+                        });
+
+                        container.appendChild(item);
+                    });
+                }
             });
+
         } catch (error) {
             console.error('Error loading sections:', error);
             container.innerHTML = '<p class="placeholder-text error">Error al cargar secciones</p>';
@@ -177,11 +196,14 @@ class PresenterController {
         this.selectedSections.forEach(sectionId => {
             const section = this.availableSections.find(s => s.id === sectionId);
             if (section) {
+                // Determine title from text or vertical
+                const verticalName = i18n.t(`verticals.${section.verticalId}`);
+
                 this.slides.push({
                     type: 'content',
-                    title: section.title?.[lang] || section.title?.es || 'Sin título',
-                    content: section.content?.[lang] || section.content?.es || '',
-                    images: section.images || []
+                    title: verticalName, // Use vertical name as slide title
+                    content: section.text,
+                    imageUrl: section.imageUrl
                 });
             }
         });
@@ -228,9 +250,14 @@ class PresenterController {
                     break;
                 case 'content':
                     content = `
-                        <div class="slide-content">
-                            <h2 class="slide-title">${slide.title}</h2>
-                            <div class="slide-body">${slide.content}</div>
+                        <div class="slide-content content-slide-layout">
+                            <div class="slide-text-col">
+                                <h2 class="slide-title">${slide.title}</h2>
+                                <div class="slide-body">${slide.content}</div>
+                            </div>
+                            <div class="slide-image-col">
+                                <img src="${slide.imageUrl}" alt="Slide Image">
+                            </div>
                         </div>
                     `;
                     break;

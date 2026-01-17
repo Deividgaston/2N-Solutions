@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2N Presenter | Admin</title>
+    <title>2N Especificación | Admin</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,8 +21,8 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo">
-                <span class="logo-2n">2N</span>
-                <span class="logo-presenter">Presenter</span>
+                <img src="assets/2N_Logo_RGB_White.png" alt="2N" style="height: 32px; vertical-align: middle;">
+                <span class="logo-presenter">Especificación</span>
             </div>
         </div>
 
@@ -118,6 +118,10 @@
             <header class="section-header">
                 <h1><i class="fa-solid fa-layer-group"></i> <span data-i18n="admin.content">Gestión de Contenido</span>
                 </h1>
+                <button class="btn btn-primary" id="add-section-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span data-i18n="common.add">Añadir Sección</span>
+                </button>
             </header>
 
             <div class="verticals-tabs">
@@ -197,25 +201,65 @@
                         <input type="file" id="asset-file" accept="image/*" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Verticales asociadas</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" name="verticals" value="bts"> Residencial BTS</label>
-                        <label><input type="checkbox" name="verticals" value="btr"> Residencial BTR</label>
-                        <label><input type="checkbox" name="verticals" value="office"> Oficinas</label>
-                        <label><input type="checkbox" name="verticals" value="hotel"> Hoteles</label>
-                        <label><input type="checkbox" name="verticals" value="retail"> Retail</label>
-                    </div>
-                </div>
-                <div class="upload-progress hidden" id="upload-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <span class="progress-text" id="progress-text">0%</span>
-                </div>
+                <!-- ... existing form content ... -->
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Add Section -->
+    <div class="modal" id="section-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>Añadir Sección</h2>
+                <button class="modal-close" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="section-form">
+                <div class="form-row">
+                    <!-- Image Selection -->
+                    <div class="form-col">
+                        <h3>1. Imagen</h3>
+                        <div class="image-selector-tabs">
+                            <button type="button" class="tab-btn active" data-tab="upload">Subir Nueva</button>
+                            <button type="button" class="tab-btn" data-tab="gallery">Galería Multimedia</button>
+                        </div>
+
+                        <div class="image-tab-content active" id="tab-upload">
+                            <div class="file-upload-area" id="section-file-area">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Haz clic para subir imagen</p>
+                                <span class="file-info" id="section-file-info"></span>
+                                <input type="file" id="section-file" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="image-tab-content" id="tab-gallery">
+                            <div class="gallery-grid" id="multimedia-grid">
+                                <!-- Dynamic gallery images -->
+                                <p>Cargando imágenes...</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selected-image-url">
+                    </div>
+
+                    <!-- Text Content -->
+                    <div class="form-col">
+                        <h3>2. Contenido</h3>
+                        <div class="form-group">
+                            <label>Texto de la sección</label>
+                            <textarea id="section-text" rows="8" required
+                                placeholder="Escribe el contenido aquí..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Sección</button>
                 </div>
             </form>
         </div>
