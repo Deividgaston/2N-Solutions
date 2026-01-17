@@ -42,20 +42,30 @@ class AdminController {
         // Require admin role
         try {
             await authController.requireAdmin();
+            console.log('Admin check passed');
         } catch (e) {
+            console.error('Admin check failed', e);
+            document.body.innerHTML = '<h1>No autorizado</h1>';
             return; // Will redirect
         }
 
-        // Update UI with current user email
-        const userEmailEl = document.getElementById('current-user-email');
-        if (userEmailEl && auth.currentUser) {
-            userEmailEl.textContent = auth.currentUser.email;
-        }
+        try {
+            // Update UI with current user email
+            const userEmailEl = document.getElementById('current-user-email');
+            if (userEmailEl && auth.currentUser) {
+                userEmailEl.textContent = auth.currentUser.email;
+            } else {
+                console.warn('Could not set email', { userEmailEl, user: auth.currentUser });
+            }
 
-        this.bindNavigation();
-        this.bindModals();
-        this.bindForms();
-        this.loadUsers();
+            this.bindNavigation();
+            this.bindModals();
+            this.bindForms();
+            this.loadUsers();
+        } catch (err) {
+            console.error('Init error', err);
+            alert('Error iniciando admin: ' + err.message);
+        }
     }
 
     // ============================
@@ -223,11 +233,6 @@ class AdminController {
             filterVertical.addEventListener('change', () => this.loadAssets());
         }
     }
-
-    // ============================
-    // FORMS
-    // ============================
-    // ... (bindForms is handled above)
 
     resetSectionModal() {
         document.getElementById('section-form').reset();
@@ -602,19 +607,29 @@ class AdminController {
             const text = document.getElementById('section-text').value;
             const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
+            let imageUrl = null;
+
             if (activeTab === 'upload') {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
-                    await contentService.addSection(this.currentVertical, fileInput.files[0], text);
+                    const file = fileInput.files[0];
+                    // Upload file to sections/ path
+                    const fileName = `sections/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    const storageRef = ref(storage, fileName);
+                    const uploadTask = await uploadBytesResumable(storageRef, file);
+                    imageUrl = await getDownloadURL(uploadTask.ref);
                 } else {
                     throw new Error('Por favor selecciona una imagen para subir');
                 }
             } else {
+                // Gallery
                 if (!this.selectedGalleryImage) {
                     throw new Error('Por favor selecciona una imagen de la galería');
                 }
-                await contentService.addSection(this.currentVertical, this.selectedGalleryImage, text);
+                imageUrl = this.selectedGalleryImage;
             }
+
+            await contentService.addSection(this.currentVertical, imageUrl, text);
 
             document.getElementById('section-modal').classList.remove('active');
             this.loadSections();
@@ -638,211 +653,7 @@ class AdminController {
     }
 }
 
-// Create singleton and expose globally
-const adminController = new AdminController();
-window.adminController = adminController;
-
-export default adminController; this.editingUserId = null;
-this.selectedGalleryImage = null; // Track selected image from gallery
-this.init();
-    }
-
-// ... (init, bindNavigation, bindModals kept largely same, but need to add new modal bindings)
-
-bindModals() {
-    // ... (existing user/asset modal bindings) ...
-
-    // Section Modal
-    const addSectionBtn = document.getElementById('add-section-btn');
-    const sectionModal = document.getElementById('section-modal');
-
-    if (addSectionBtn) {
-        addSectionBtn.addEventListener('click', () => {
-            this.resetSectionModal();
-            sectionModal.classList.add('active');
-        });
-    }
-
-    // Close modals
-    document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
-        el.addEventListener('click', () => {
-            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-        });
-    });
-
-    // Tab Switching in Section Modal
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
-
-            btn.classList.add('active');
-            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
-
-            if (btn.dataset.tab === 'gallery') {
-                this.loadMultimediaGallery();
-            }
-        });
-    });
-
-    // Image interactions
-    const sectionFile = document.getElementById('section-file');
-    if (sectionFile) {
-        sectionFile.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) document.getElementById('section-file-info').textContent = file.name;
-        });
-    }
-}
-
-bindForms() {
-    // ... (existing forms) ...
-
-    const sectionForm = document.getElementById('section-form');
-    if (sectionForm) {
-        sectionForm.addEventListener('submit', (e) => this.handleSaveSection(e));
-    }
-}
-
-resetSectionModal() {
-    document.getElementById('section-form').reset();
-    this.selectedGalleryImage = null;
-    document.getElementById('section-file-info').textContent = '';
-    document.querySelector('.tab-btn[data-tab="upload"]').click(); // Reset to upload tab
-    document.getElementById('multimedia-grid').innerHTML = '<p>Cargando imágenes...</p>';
-}
-
-    // ... (User & Asset CRUD methods kept same) ...
-
-    // ============================
-    // CONTENT SECTIONS (Updated)
-    // ============================
-
-    async loadSections() {
-    const list = document.getElementById('sections-list');
-    if (!list) return;
-
-    list.innerHTML = '<p class="text-center">Cargando...</p>';
-
-    try {
-        const sections = await contentService.getSections(this.currentVertical);
-
-        if (sections.length === 0) {
-            list.innerHTML = '<p class="text-center">No hay secciones para esta vertical</p>';
-            return;
-        }
-
-        list.innerHTML = '';
-        sections.forEach(section => {
-            const card = document.createElement('div');
-            card.className = 'section-card';
-            // Simple layout for list item
-            card.innerHTML = `
-                    <div class="section-image">
-                        <img src="${section.imageUrl}" alt="Section Image">
-                    </div>
-                    <div class="section-content">
-                        <p class="section-text">${section.text}</p>
-                        <div class="section-actions">
-                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            list.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Error loading sections:', error);
-        list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
-    }
-}
-
-    async loadMultimediaGallery() {
-    const grid = document.getElementById('multimedia-grid');
-    grid.innerHTML = '<div class="loader"></div>';
-
-    try {
-        const images = await contentService.listMultimediaImages(); // Load from root multimedia or specific vertical logic
-
-        if (images.length === 0) {
-            grid.innerHTML = '<p>No hay imágenes en la galería.</p>';
-            return;
-        }
-
-        grid.innerHTML = '';
-        images.forEach(img => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
-
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-                item.classList.add('selected');
-                this.selectedGalleryImage = img.url;
-            });
-
-            grid.appendChild(item);
-        });
-    } catch (e) {
-        console.error(e);
-        grid.innerHTML = '<p class="error">Error cargando galería</p>';
-    }
-}
-
-    async handleSaveSection(e) {
-    e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Guardando...';
-
-    try {
-        const text = document.getElementById('section-text').value;
-        const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-
-        let imageUrl = null;
-        let imagePath = null; // Only for new uploads if we want
-
-        if (activeTab === 'upload') {
-            const fileInput = document.getElementById('section-file');
-            if (fileInput.files.length > 0) {
-                const result = await contentService.addSection(this.currentVertical, fileInput.files[0], text);
-                // Used the overload for file
-            } else {
-                throw new Error('Por favor selecciona una imagen para subir');
-            }
-        } else {
-            // Gallery
-            if (!this.selectedGalleryImage) {
-                throw new Error('Por favor selecciona una imagen de la galería');
-            }
-            await contentService.addSection(this.currentVertical, this.selectedGalleryImage, text);
-        }
-
-        document.getElementById('section-modal').classList.remove('active');
-        this.loadSections();
-    } catch (error) {
-        alert(error.message);
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-    }
-}
-
-    async deleteSection(sectionId) {
-    if (!confirm('¿Eliminar esta sección?')) return;
-
-    try {
-        await contentService.deleteSection(this.currentVertical, sectionId);
-        this.loadSections();
-    } catch (e) {
-        alert('Error al eliminar: ' + e.message);
-    }
-}
-}
-
-// Create singleton and expose globally
+// Crear instancia única y exponer globalmente
 const adminController = new AdminController();
 window.adminController = adminController;
 
