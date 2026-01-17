@@ -1,0 +1,2 @@
+# Ignore large asset folders - use Firebase Storage instead
+assets/*/
