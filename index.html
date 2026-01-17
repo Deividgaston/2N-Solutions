@@ -4,70 +4,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2N Presenter | Login</title>
-    <meta name="description" content="Plataforma de presentaciones para prescriptores 2N">
+    <title>2N Solutions | Líder Global en Intercomunicadores IP</title>
+    <meta name="description"
+        content="Soluciones de control de acceso y videoporteros IP para edificios residenciales, oficinas, hoteles y retail.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="css/main.css">
+    <style>
+        :root {
+            --primary: #0099FF;
+            --primary-dark: #007ACC;
+            --bg-dark: #000000;
+            --bg-card: #111111;
+            --text-white: #FFFFFF;
+            --text-gray: #999999;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-2n {
+            color: var(--primary);
+        }
+
+        .logo-text {
+            color: var(--text-white);
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-white);
+        }
+
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem;
+            background: radial-gradient(ellipse at 50% 0%, rgba(0, 153, 255, 0.15) 0%, transparent 60%), var(--bg-dark);
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 153, 255, 0.15);
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-white);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Verticals Grid */
+        .verticals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .vertical-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .vertical-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .vertical-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(0, 153, 255, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .vertical-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .vertical-card p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Features */
+        .features {
+            background: var(--bg-card);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 8rem 2rem;
+            background: radial-gradient(ellipse at 50% 100%, rgba(0, 153, 255, 0.1) 0%, transparent 60%);
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 8rem 1.5rem 4rem;
+            }
+
+            .section {
+                padding: 4rem 1.5rem;
+            }
+        }
+    </style>
 </head>
 
-<body class="login-page">
+<body>
 
-    <div class="login-container">
-        <div class="login-branding">
-            <div class="logo">
-                <span class="logo-2n">2N</span>
-                <span class="logo-presenter">Presenter</span>
-            </div>
-            <p class="tagline" data-i18n="login.tagline">Presentaciones profesionales para prescriptores</p>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-2n">2N</span>
+            <span class="logo-text">Solutions</span>
         </div>
+        <ul class="nav-links">
+            <li><a href="#verticals">Verticales</a></li>
+            <li><a href="#features">Beneficios</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+        <a href="login.html" class="btn-login">Acceso Prescriptores</a>
+    </nav>
 
-        <form id="login-form" class="login-form">
-            <h1 data-i18n="login.title">Iniciar Sesión</h1>
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">🏆 Líder Global en Intercomunicadores IP</span>
+            <h1>Soluciones de <span>Control de Acceso</span> para cada vertical</h1>
+            <p>Videoporteros IP, intercomunicadores y control de acceso para edificios residenciales, oficinas, hoteles
+                y retail.</p>
+            <div class="hero-buttons">
+                <a href="#verticals" class="btn btn-primary">
+                    <i class="fa-solid fa-play"></i> Ver Soluciones
+                </a>
+                <a href="login.html" class="btn btn-outline">
+                    <i class="fa-solid fa-user"></i> Área Prescriptores
+                </a>
+            </div>
+        </div>
+    </section>
 
-            <div class="form-group">
-                <label for="email" data-i18n="login.email">Email</label>
-                <div class="input-icon">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="email" name="email" required autocomplete="email"
-                        placeholder="tu@email.com">
+    <section class="section" id="verticals">
+        <div class="section-header">
+            <h2>Verticales de Mercado</h2>
+            <p>Soluciones especializadas para cada tipo de edificio y necesidad</p>
+        </div>
+        <div class="verticals-grid">
+            <div class="vertical-card">
+                <div class="vertical-icon"><i class="fa-solid fa-building"></i></div>
+                <h3>Residencial BTS</h3>
+                <p>Build-to-Sell. Promociones residenciales de venta. Diferenciación y valor añadido.</p>
+            </div>
+            <div class="vertical-card">
+                <div class="vertical-icon"><i class="fa-solid fa-city"></i></div>
+                <h3>Residencial BTR</h3>
+                <p>Build-to-Rent. Edificios de alquiler institucional. Gestión centralizada y escalable.</p>
+            </div>
+            <div class="vertical-card">
+                <div class="vertical-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <h3>Oficinas</h3>
+                <p>Edificios corporativos y coworking. Control de acceso multi-tenant.</p>
+            </div>
+            <div class="vertical-card">
+                <div class="vertical-icon"><i class="fa-solid fa-hotel"></i></div>
+                <h3>Hoteles</h3>
+                <p>Hospitality y resorts. Integración con PMS y experiencia de huésped premium.</p>
+            </div>
+            <div class="vertical-card">
+                <div class="vertical-icon"><i class="fa-solid fa-store"></i></div>
+                <h3>Retail</h3>
+                <p>Comercios y centros comerciales. Seguridad y comunicación con clientes.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section features" id="features">
+        <div class="section-header">
+            <h2>¿Por qué 2N?</h2>
+            <p>Tecnología IP líder respaldada por Axis Communications</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                    <h3>Seguridad de nivel empresarial</h3>
+                    <p>Encriptación end-to-end, autenticación multi-factor y cumplimiento GDPR.</p>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="password" data-i18n="login.password">Contraseña</label>
-                <div class="input-icon">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        placeholder="••••••••">
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div>
+                    <h3>Acceso móvil WaveKey</h3>
+                    <p>Abre puertas con tu smartphone via Bluetooth. Sin llaves ni tarjetas.</p>
                 </div>
             </div>
-
-            <div id="error-message" class="error-message hidden"></div>
-
-            <button type="submit" class="btn btn-primary btn-full">
-                <span data-i18n="login.submit">Entrar</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </form>
-
-        <div class="login-footer">
-            <div class="language-selector">
-                <button class="lang-btn active" data-lang="es">ES</button>
-                <button class="lang-btn" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="pt">PT</button>
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+                <div>
+                    <h3>Integración total</h3>
+                    <p>Compatible con Axis, Milestone, Genetec y los principales sistemas de gestión.</p>
+                </div>
             </div>
-            <p class="copyright">© 2024 2N Telekomunikace a.s.</p>
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-cloud"></i></div>
+                <div>
+                    <h3>Gestión en la nube</h3>
+                    <p>Administra todos tus dispositivos desde cualquier lugar con My2N.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-video"></i></div>
+                <div>
+                    <h3>Cámaras Full HD</h3>
+                    <p>Visión nocturna, gran angular y zoom facial adaptativo.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fa-solid fa-award"></i></div>
+                <div>
+                    <h3>Diseño premiado</h3>
+                    <p>Red Dot Award. Estética premium que eleva el valor de cualquier entrada.</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <script type="module" src="js/firebase-init.js"></script>
-    <script type="module" src="js/i18n.js"></script>
-    <script type="module" src="js/auth.controller.js"></script>
+    <section class="cta" id="contact">
+        <h2>¿Listo para empezar?</h2>
+        <p>Contacta con nuestro equipo de prescripción para una demostración personalizada</p>
+        <a href="mailto:prescripcion@2n.com" class="btn btn-primary">
+            <i class="fa-solid fa-envelope"></i> Contactar
+        </a>
+    </section>
+
+    <footer class="footer">
+        <p>© 2024 2N Telekomunikace a.s. | Parte de Axis Communications</p>
+        <p><a href="login.html">Acceso Prescriptores</a></p>
+    </footer>
+
 </body>
 
 </html>

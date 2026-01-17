@@ -35,7 +35,7 @@ class AuthController {
 
                 // Only redirect from login page
                 const currentPage = window.location.pathname;
-                if (currentPage.endsWith('index.html') || currentPage === '/' || currentPage.endsWith('/')) {
+                if (currentPage.endsWith('login.html') || currentPage === '/' || currentPage.endsWith('/')) {
                     this.redirectByRole();
                 }
             } else {
@@ -45,7 +45,7 @@ class AuthController {
                 // Redirect to login if on protected page
                 const currentPage = window.location.pathname;
                 if (currentPage.includes('admin.html') || currentPage.includes('presenter.html')) {
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 }
             }
         });
@@ -144,7 +144,7 @@ class AuthController {
     async logout() {
         try {
             await signOut(auth);
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -160,7 +160,7 @@ class AuthController {
                 if (user) {
                     resolve(user);
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                     reject(new Error('Not authenticated'));
                 }
             });
