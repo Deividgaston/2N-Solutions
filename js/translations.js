@@ -45,7 +45,7 @@ const translations = {
         nav_about: "About 2N",
         nav_prescribers: "Prescriber Area",
         hero_label: "Global Leader in IP Intercoms",
-        hero_title_1: "Prescribe the future.",
+        hero_title_1: "Specify the future.",
         hero_title_2: "Design the access.",
         hero_subtitle: "IP intercoms, Full HD video door entry, and mobile access control for residential buildings, offices, hotels, and retail. Cutting-edge technology with Red Dot Award-winning design.",
         hero_btn: "Meet 2N",
