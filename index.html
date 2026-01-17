@@ -576,6 +576,50 @@
             font-size: 1.2rem;
             line-height: 1;
         }
+
+        /* Nav Actions Grouping */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* Hero Button High Visibility */
+        .btn-hero-primary {
+            background: #FFFFFF;
+            color: #000000;
+            font-weight: 800;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .btn-hero-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            z-index: -1;
+        }
+
+        .btn-hero-primary:hover::after {
+            transform: translateX(100%);
+        }
     </style>
 </head>
 
@@ -591,32 +635,33 @@
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
 
-        <div class="lang-selector">
-            <button class="lang-btn">
-                <span class="fi fi-es"></span> <span>ES</span> <i class="fa-solid fa-chevron-down"
-                    style="font-size: 0.7rem;"></i>
-            </button>
-            <div class="lang-dropdown">
-                <a href="#" class="lang-option" data-lang="es">
-                    <span class="fi fi-es lang-flag"></span> Español
-                </a>
-                <a href="#" class="lang-option" data-lang="en">
-                    <span class="fi fi-gb lang-flag"></span> English
-                </a>
-                <a href="#" class="lang-option" data-lang="pt">
-                    <span class="fi fi-pt lang-flag"></span> Português
-                </a>
-                <a href="#" class="lang-option" data-lang="fr">
-                    <span class="fi fi-fr lang-flag"></span> Français
-                </a>
-                <a href="#" class="lang-option" data-lang="it">
-                    <span class="fi fi-it lang-flag"></span> Italiano
-                </a>
+        <div class="nav-actions">
+            <div class="lang-selector">
+                <button class="lang-btn">
+                    <span class="fi fi-es"></span> <span>ES</span> <i class="fa-solid fa-chevron-down"
+                        style="font-size: 0.7rem;"></i>
+                </button>
+                <div class="lang-dropdown">
+                    <a href="#" class="lang-option" data-lang="es">
+                        <span class="fi fi-es lang-flag"></span> Español
+                    </a>
+                    <a href="#" class="lang-option" data-lang="en">
+                        <span class="fi fi-gb lang-flag"></span> English
+                    </a>
+                    <a href="#" class="lang-option" data-lang="pt">
+                        <span class="fi fi-pt lang-flag"></span> Português
+                    </a>
+                    <a href="#" class="lang-option" data-lang="fr">
+                        <span class="fi fi-fr lang-flag"></span> Français
+                    </a>
+                    <a href="#" class="lang-option" data-lang="it">
+                        <span class="fi fi-it lang-flag"></span> Italiano
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <a href="login.html" class="btn-cta" style="margin-left: 1.5rem;" data-i18n="nav_prescribers">Área
-            Prescriptores</a>
+            <a href="login.html" class="btn-cta" data-i18n="nav_prescribers">Área Prescriptores</a>
+        </div>
     </nav>
 
     <section class="hero">

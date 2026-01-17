@@ -4,7 +4,7 @@ const translations = {
         nav_about: "Sobre 2N",
         nav_prescribers: "Área Prescriptores",
         hero_label: "Líder mundial en interfonos IP",
-        hero_title_1: "Prescribe el futuro.",
+        hero_title_1: "Especifica el futuro.",
         hero_title_2: "Diseña el acceso.",
         hero_subtitle: "Intercomunicadores IP, videoporteros Full HD y control de acceso móvil para edificios residenciales, oficinas, hoteles y retail. Tecnología puntera con diseño premiado Red Dot Award.",
         hero_btn: "Conoce 2N",
