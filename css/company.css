@@ -1,0 +1,275 @@
+/* Company Page Specific Styles */
+
+/* --- Company Hierarchy Visual --- */
+.company-structure {
+    padding: 6rem 5%;
+    background: linear-gradient(180deg, var(--bg-dark) 0%, #000 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hierarchy-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 4rem auto 0;
+    position: relative;
+}
+
+/* Connecting Lines */
+.hierarchy-row {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.hierarchy-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 300px;
+    text-align: left;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.hierarchy-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+/* Canon Styling */
+.card-canon {
+    border-color: rgba(255, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(200, 0, 0, 0.1) 0%, rgba(100, 0, 0, 0.05) 100%);
+}
+
+.card-canon .h-logo {
+    color: #ff0000;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-canon:hover {
+    box-shadow: 0 20px 40px rgba(255, 0, 0, 0.2);
+}
+
+/* Axis Styling */
+.card-axis {
+    border-color: rgba(255, 204, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.1) 0%, rgba(200, 150, 0, 0.05) 100%);
+}
+
+.card-axis .h-logo {
+    color: #ffcc00;
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.card-axis:hover {
+    box-shadow: 0 20px 40px rgba(255, 204, 0, 0.2);
+}
+
+/* 2N Styling */
+.card-2n {
+    border-color: rgba(0, 153, 255, 0.3);
+    background: linear-gradient(135deg, rgba(0, 153, 255, 0.1) 0%, rgba(0, 100, 200, 0.05) 100%);
+}
+
+.card-2n .h-logo {
+    color: #0099ff;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.card-2n:hover {
+    box-shadow: 0 20px 40px rgba(0, 153, 255, 0.2);
+}
+
+.h-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.h-metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.25rem;
+}
+
+.h-metric strong {
+    color: var(--text-white);
+}
+
+/* Visual Connectors */
+.connector-line {
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    height: 3rem;
+    margin: 0 auto;
+}
+
+/* --- Global Map --- */
+.global-presence {
+    padding: 6rem 5%;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.map-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 153, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.map-bg {
+    width: 100%;
+    display: block;
+    opacity: 0.8;
+    transition: transform 10s linear;
+}
+
+/* Hotspots */
+.map-pin {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.pin-prague {
+    top: 32%;
+    left: 52%;
+    background: #0099ff;
+    box-shadow: 0 0 20px #0099ff;
+}
+
+.pin-lund {
+    top: 25%;
+    left: 51%;
+    background: #ffcc00;
+    box-shadow: 0 0 20px #ffcc00;
+}
+
+.pin-boston {
+    top: 35%;
+    left: 28%;
+    background: #ffcc00;
+    box-shadow: 0 0 20px #ffcc00;
+}
+
+.map-pin::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: inherit;
+    animation: pulse 2s infinite;
+}
+
+.map-pin::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.map-pin:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+}
+
+@keyframes pulse {
+    0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+    }
+
+    100% {
+        width: 400%;
+        height: 400%;
+        opacity: 0;
+    }
+}
+
+/* Legend */
+.map-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-blue {
+    background: #0099ff;
+    box-shadow: 0 0 10px rgba(0, 153, 255, 0.5);
+}
+
+.dot-yellow {
+    background: #ffcc00;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+.dot-orange {
+    background: #ff6600;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+}
