@@ -681,3 +681,231 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* ========================
+   Enhanced Section Modal
+   ======================== */
+
+.extra-large-modal {
+    max-width: 1200px;
+    /* Wider for split view */
+    width: 95%;
+    max-height: 95vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    /* Split with border */
+    flex: 1;
+    overflow: hidden;
+    min-height: 500px;
+}
+
+.editor-column {
+    padding: var(--space-xl);
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+}
+
+.preview-column {
+    background: #000;
+    /* Dark background for preview context */
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-xl);
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.preview-header {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+
+/* Layout Selector */
+.layout-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.layout-option {
+    cursor: pointer;
+    position: relative;
+}
+
+.layout-option input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.layout-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.layout-icon i {
+    font-size: 20px;
+}
+
+.layout-option input:checked+.layout-icon {
+    border-color: var(--primary);
+    background: rgba(0, 153, 255, 0.1);
+    color: var(--primary);
+}
+
+/* Form Styles Override */
+.large-textarea {
+    width: 100%;
+    padding: 15px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.small-upload {
+    padding: 20px;
+}
+
+.small-grid {
+    max-height: 200px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
+
+/* Preview Styles (Mimics Frontend) */
+.preview-card {
+    width: 100%;
+    max-width: 600px;
+    /* Mobile/Tablet width simulation usually */
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 2rem;
+    align-items: center;
+    color: white;
+}
+
+.preview-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.preview-image img,
+.preview-image video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background: #222;
+}
+
+.preview-content {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+/* Layout Variations in Preview */
+.preview-card.layout-left {
+    flex-direction: row;
+}
+
+.preview-card.layout-left .preview-image {
+    width: 50%;
+}
+
+.preview-card.layout-right {
+    flex-direction: row-reverse;
+}
+
+.preview-card.layout-right .preview-image {
+    width: 50%;
+}
+
+.preview-card.layout-top {
+    flex-direction: column;
+}
+
+.preview-card.layout-top .preview-image {
+    width: 100%;
+}
+
+.preview-card.layout-top .preview-content {
+    text-align: center;
+}
+
+.preview-card.layout-bottom {
+    flex-direction: column-reverse;
+}
+
+.preview-card.layout-bottom .preview-image {
+    width: 100%;
+}
+
+.preview-card.layout-bottom .preview-content {
+    text-align: center;
+}
+
+/* Mobile responsive for modal */
+@media (max-width: 900px) {
+    .modal-body-split {
+        grid-template-columns: 1fr;
+        height: auto;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .editor-column {
+        border-right: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .preview-column {
+        display: none;
+    }
+}

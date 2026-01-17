@@ -233,6 +233,57 @@ class AdminController {
         if (filterVertical) {
             filterVertical.addEventListener('change', () => this.loadAssets());
         }
+
+        // Section Form Inputs (for Live Preview)
+        const inputs = [
+            'section-text',
+            'section-file'
+        ];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => this.updatePreview());
+        });
+
+        // Layout radio buttons
+        document.querySelectorAll('input[name="section-layout"]').forEach(radio => {
+            radio.addEventListener('change', () => this.updatePreview());
+        });
+    }
+
+    updatePreview() {
+        const text = document.getElementById('section-text').value;
+        const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+        // Image logic: if file input has file, use local URL; if gallery selected, use that; else placeholder
+
+        let imageUrl = '';
+        const fileInput = document.getElementById('section-file');
+        if (fileInput.files.length > 0) {
+            imageUrl = URL.createObjectURL(fileInput.files[0]);
+        } else if (this.selectedGalleryImage) {
+            imageUrl = this.selectedGalleryImage;
+        }
+
+        const previewContainer = document.getElementById('section-preview');
+        const previewImage = previewContainer.querySelector('.preview-image');
+        const previewText = previewContainer.querySelector('.preview-text');
+
+        // Update Text
+        previewText.textContent = text || 'Tu texto aparecerá aquí...';
+
+        // Update Image
+        if (imageUrl) {
+            const isVideo = imageUrl.match(/\.(mp4|webm|mov)$/i) || (fileInput.files[0]?.type.startsWith('video/'));
+            if (isVideo) {
+                previewImage.innerHTML = `<video src="${imageUrl}" autoplay muted loop playsinline></video>`;
+            } else {
+                previewImage.innerHTML = `<img src="${imageUrl}" alt="Preview">`;
+            }
+        } else {
+            previewImage.innerHTML = '<div class="placeholder-image">Sin imagen</div>';
+        }
+
+        // Update Layout Class
+        previewContainer.className = `section-card preview-card layout-${layout}`;
     }
 
     resetSectionModal() {
@@ -244,6 +295,12 @@ class AdminController {
         }
         const grid = document.getElementById('multimedia-grid');
         if (grid) grid.innerHTML = '<p>Cargando imágenes...</p>';
+
+        // Default layout left
+        const defaultLayout = document.querySelector('input[name="section-layout"][value="left"]');
+        if (defaultLayout) defaultLayout.checked = true;
+
+        this.updatePreview();
     }
 
     // ============================
@@ -644,13 +701,30 @@ class AdminController {
             list.innerHTML = '';
             sections.forEach(section => {
                 const card = document.createElement('div');
-                card.className = 'section-card';
+                card.className = `section-card layout-${section.layout || 'left'}`; // Apply saved layout class
+
+                // For list view, we might want to keep it consistent or show mini-layout. 
+                // Let's keep consistent left-image structure but maybe add an icon indicating layout?
+                // OR actually respect the layout if CSS supports it (our CSS for section-card is flex).
+                // If we add layout-right, it reverses. Top/Bottom changes flex-direction.
+                // admin.css logic: .section-card is flex row. 
+                // We need to add specific layout support for these cards in the list too if we want them to reflect reality.
+                // Let's rely on the classes we added to css/admin.css targetting .preview-card, but maybe we should generalize them?
+                // Actually the preview-card rules target `.preview-card.layout-*`. 
+                // Let's check if we can make them apply to `.section-card.layout-*`.
+
+                // Re-using the structure for admin list view:
                 card.innerHTML = `
                     <div class="section-image">
-                        <img src="${section.imageUrl}" alt="Section Image">
+                        ${section.imageUrl
+                        ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
+                        : '<div class="placeholder">No img</div>'}
                     </div>
                     <div class="section-content">
-                        <p class="section-text">${section.text}</p>
+                        <div class="section-info">
+                            <p class="section-text">${section.text}</p>
+                            <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'top' ? 'arrow-up' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left'))}"></i> ${section.layout || 'left'}</span>
+                        </div>
                         <div class="section-actions">
                             <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')">
                                 <i class="fa-solid fa-trash"></i>
@@ -726,6 +800,7 @@ class AdminController {
                         document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
                         item.classList.add('selected');
                         this.selectedGalleryImage = img.url;
+                        this.updatePreview(); // Update preview when gallery item selected
                     });
                     grid.appendChild(item);
                 });
@@ -750,6 +825,7 @@ class AdminController {
 
         try {
             const text = document.getElementById('section-text').value;
+            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
             const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
             let imageUrl = null;
@@ -781,7 +857,7 @@ class AdminController {
                 imageUrl = this.selectedGalleryImage;
             }
 
-            await contentService.addSection(this.currentVertical, imageUrl, text, storagePath);
+            await contentService.addSection(this.currentVertical, imageUrl, text, storagePath, layout);
 
             document.getElementById('section-modal').classList.remove('active');
 

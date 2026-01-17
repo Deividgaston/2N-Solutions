@@ -106,13 +106,14 @@ class ContentService {
      * @param {string} text 
      * @param {string} imagePath - Optional (if we want to track storage path)
      */
-    async addSection(verticalId, imageUrl, text, imagePath = null) {
+    async addSection(verticalId, imageUrl, text, imagePath = null, layout = 'left') {
         try {
             const sectionsRef = collection(db, 'verticals', verticalId, 'sections');
             const docRef = await addDoc(sectionsRef, {
                 imageUrl,
                 imagePath,
                 text,
+                layout,
                 createdAt: serverTimestamp()
             });
 
