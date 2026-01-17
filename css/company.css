@@ -133,7 +133,8 @@
 
 .map-container {
     position: relative;
-    max-width: 1200px;
+    max-width: 950px;
+    /* Reduced from 1200px */
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
@@ -158,31 +159,30 @@
 /* Hotspots */
 .map-pin {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    transform: translate(-50%, -50%);
     cursor: pointer;
     z-index: 10;
 }
 
 .pin-prague {
-    top: 29%;
-    left: 51.5%;
+    top: 31%;
+    left: 51%;
     background: #0099ff;
     box-shadow: 0 0 20px #0099ff;
 }
 
 .pin-lund {
     top: 24%;
-    left: 50.5%;
+    left: 50%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
 
 .pin-boston {
-    top: 32%;
-    left: 28%;
+    top: 35%;
+    left: 24%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
