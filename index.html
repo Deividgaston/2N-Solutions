@@ -232,8 +232,9 @@
         }
 
         .props-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
@@ -247,6 +248,19 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            width: 32%;
+            flex-grow: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* ... existing styles ... */
+
+        @media (max-width: 1024px) {
+            .prop-card {
+                width: 100%;
+            }
         }
 
         .prop-card::before {
@@ -779,11 +793,12 @@
                 <p data-i18n="prop_warranty_desc">Confianza total con nuestra garantía extendida líder en el mercado.
                 </p>
             </div>
-            <div class="prop-card">
+            <a href="https://www.2n.com/es-ES/instaladores-certificados/mapa-instalador-certificado/" target="_blank"
+                class="prop-card" style="text-decoration: none; color: inherit; display: block;">
                 <div class="prop-icon"><i class="fa-solid fa-user-check"></i></div>
                 <h3 data-i18n="prop_installers_title">Instaladores certificados</h3>
                 <p data-i18n="prop_installers_desc">Red global de partners formados y certificados por 2N.</p>
-            </div>
+            </a>
         </div>
     </section>
 
