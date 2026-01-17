@@ -15,7 +15,7 @@ import { doc, setDoc, collection, serverTimestamp } from 'https://www.gstatic.co
 // ========================================
 // CONFIGURATION - EDIT THIS
 // ========================================
-const ADMIN_UID = 'PASTE_YOUR_UID_HERE'; // <-- Replace with actual UID from Firebase Auth
+const ADMIN_UID = 'nAgDlkn05vaBFOOfBcycFKfnZLx2';
 const ADMIN_EMAIL = 'gastonortigosa@gmail.com';
 const ADMIN_NAME = 'David Gastón';
 
