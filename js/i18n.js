@@ -1,3 +1,5 @@
+import { translations } from './translations.js';
+
 class I18nManager {
     constructor() {
         this.currentLang = localStorage.getItem('2n_lang') || 'es';
@@ -8,7 +10,12 @@ class I18nManager {
             fr: 'fi-fr',
             it: 'fi-it'
         };
-        this.init();
+        // Don't auto-init in constructor, wait for DOM or manual call
+        if (document.readyState !== 'loading') {
+            this.init();
+        } else {
+            document.addEventListener('DOMContentLoaded', () => this.init());
+        }
     }
 
     init() {
@@ -18,20 +25,14 @@ class I18nManager {
     }
 
     setupListeners() {
-        document.querySelectorAll('.lang-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.preventDefault();
-                // Find the closest anchor if click was on span
-                const target = e.target.closest('.lang-option');
-                // Extract lang code from flag class (e.g. 'fi-es' -> 'es') but safer to store it in data attr
-                // Adding data-lang to options would be better, but I'll parse it for now or rely on text
-
-                // Let's assume I'll add data-lang to HTML in the next step. 
-                // For now, I'll infer from the second span's text content mapping or add data attributes.
-                // Actually, I'll rely on the index or text.
-                // BETTER: I will add data-lang="{lang}" to the HTML elements in the next step.
-                const lang = target.getAttribute('data-lang');
+        // Handle dropdown buttons if they exist
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const lang = btn.getAttribute('data-lang');
                 if (lang) {
+                    // Update active state
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
                     this.setLanguage(lang);
                 }
             });
@@ -45,35 +46,44 @@ class I18nManager {
         this.updateSelector();
     }
 
+    t(key) {
+        return this.getNestedValue(translations[this.currentLang], key) || key;
+    }
+
+    getNestedValue(obj, path) {
+        return path.split('.').reduce((prev, curr) => {
+            return prev ? prev[curr] : null;
+        }, obj);
+    }
+
     updateContent() {
-        const texts = translations[this.currentLang];
+        const currentTranslations = translations[this.currentLang];
+        if (!currentTranslations) return;
+
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            if (texts[key]) {
-                // Check if it's an input/placeholder or text
+            const translation = this.getNestedValue(currentTranslations, key);
+
+            if (translation) {
                 if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                    element.placeholder = texts[key];
+                    element.placeholder = translation;
                 } else {
-                    element.textContent = texts[key];
+                    element.textContent = translation;
                 }
             }
         });
     }
 
     updateSelector() {
-        const btn = document.querySelector('.lang-btn');
-        const flagSpan = btn.querySelector('.fi');
-        const textSpan = btn.querySelector('span:nth-child(2)');
-
-        // Update flag
-        flagSpan.className = `fi ${this.flags[this.currentLang]}`;
-
-        // Update text
-        textSpan.textContent = this.currentLang.toUpperCase();
+        // Logic for the simple button selector on login page
+        const activeBtn = document.querySelector(`.lang-btn[data-lang="${this.currentLang}"]`);
+        if (activeBtn) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            activeBtn.classList.add('active');
+        }
     }
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.i18n = new I18nManager();
-});
+const i18n = new I18nManager();
+window.i18n = i18n; // For global access/debugging
+export default i18n;
