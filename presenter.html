@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2N Presenter</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/presenter.css">
+</head>
+
+<body class="presenter-page">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="logo">
+            <span class="logo-2n">2N</span>
+            <span class="logo-presenter">Presenter</span>
+        </div>
+
+        <div class="top-bar-actions">
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="es">ES</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+            <div class="user-menu">
+                <span id="user-name">Usuario</span>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App -->
+    <main class="presenter-main">
+
+        <!-- Left Panel: Builder -->
+        <aside class="builder-panel">
+            <div class="panel-header">
+                <h2 data-i18n="presenter.title">Nueva Presentación</h2>
+            </div>
+
+            <!-- Step 1: Select Verticals -->
+            <div class="builder-step">
+                <h3><span class="step-number">1</span> <span data-i18n="presenter.selectVerticals">Selecciona las
+                        verticales</span></h3>
+                <div class="verticals-selector">
+                    <label class="vertical-checkbox">
+                        <input type="checkbox" name="verticals" value="bts">
+                        <span class="vertical-label">
+                            <i class="fa-solid fa-building"></i>
+                            <span data-i18n="verticals.bts">Residencial BTS</span>
+                        </span>
+                    </label>
+                    <label class="vertical-checkbox">
+                        <input type="checkbox" name="verticals" value="btr">
+                        <span class="vertical-label">
+                            <i class="fa-solid fa-city"></i>
+                            <span data-i18n="verticals.btr">Residencial BTR</span>
+                        </span>
+                    </label>
+                    <label class="vertical-checkbox">
+                        <input type="checkbox" name="verticals" value="office">
+                        <span class="vertical-label">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <span data-i18n="verticals.office">Oficinas</span>
+                        </span>
+                    </label>
+                    <label class="vertical-checkbox">
+                        <input type="checkbox" name="verticals" value="hotel">
+                        <span class="vertical-label">
+                            <i class="fa-solid fa-hotel"></i>
+                            <span data-i18n="verticals.hotel">Hoteles</span>
+                        </span>
+                    </label>
+                    <label class="vertical-checkbox">
+                        <input type="checkbox" name="verticals" value="retail">
+                        <span class="vertical-label">
+                            <i class="fa-solid fa-store"></i>
+                            <span data-i18n="verticals.retail">Retail</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Sections -->
+            <div class="builder-step">
+                <h3><span class="step-number">2</span> <span data-i18n="presenter.selectSections">Selecciona las
+                        secciones</span></h3>
+                <div class="sections-selector" id="sections-selector">
+                    <p class="placeholder-text">Selecciona al menos una vertical para ver las secciones disponibles</p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="builder-actions">
+                <button class="btn btn-outline btn-full" id="preview-btn" disabled>
+                    <i class="fa-solid fa-eye"></i>
+                    <span data-i18n="presenter.preview">Vista Previa</span>
+                </button>
+                <button class="btn btn-primary btn-full" id="present-btn" disabled>
+                    <i class="fa-solid fa-display"></i>
+                    <span data-i18n="presenter.present">Presentar</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Preview -->
+        <section class="preview-panel">
+            <div class="preview-placeholder" id="preview-placeholder">
+                <i class="fa-solid fa-presentation-screen"></i>
+                <h3>Vista previa de la presentación</h3>
+                <p>Selecciona verticales y secciones para generar tu presentación</p>
+            </div>
+
+            <div class="slides-container hidden" id="slides-container">
+                <!-- Dynamic slides -->
+            </div>
+
+            <div class="slides-nav hidden" id="slides-nav">
+                <button class="nav-btn" id="prev-slide"><i class="fa-solid fa-chevron-left"></i></button>
+                <span class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides">1</span></span>
+                <button class="nav-btn" id="next-slide"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Fullscreen Presentation Mode -->
+    <div class="presentation-mode hidden" id="presentation-mode">
+        <div class="presentation-slides" id="presentation-slides">
+            <!-- Fullscreen slides -->
+        </div>
+        <button class="exit-presentation" id="exit-presentation">
+            <i class="fa-solid fa-xmark"></i> ESC para salir
+        </button>
+        <div class="presentation-nav">
+            <button class="nav-btn" id="pres-prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <span class="slide-counter"><span id="pres-current">1</span> / <span id="pres-total">1</span></span>
+            <button class="nav-btn" id="pres-next"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/i18n.js"></script>
+    <script type="module" src="js/auth.controller.js"></script>
+    <script type="module" src="js/presenter.controller.js"></script>
+</body>
+
+</html>

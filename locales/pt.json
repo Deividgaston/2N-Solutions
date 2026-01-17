@@ -1,0 +1,47 @@
+{
+    "login": {
+        "title": "Entrar",
+        "tagline": "Apresentações profissionais para prescritores",
+        "email": "Email",
+        "password": "Senha",
+        "submit": "Entrar",
+        "errors": {
+            "invalidCredentials": "Email ou senha inválidos",
+            "userNotFound": "Usuário não encontrado",
+            "networkError": "Erro de conexão. Tente novamente.",
+            "generic": "Ocorreu um erro. Tente novamente."
+        }
+    },
+    "admin": {
+        "title": "Painel de Administração",
+        "users": "Usuários",
+        "assets": "Arquivos",
+        "content": "Conteúdo",
+        "logout": "Sair"
+    },
+    "presenter": {
+        "title": "Nova Apresentação",
+        "selectVerticals": "Selecione as verticais",
+        "selectSections": "Selecione as seções",
+        "preview": "Pré-visualização",
+        "present": "Apresentar",
+        "myPresentations": "Minhas Apresentações"
+    },
+    "verticals": {
+        "bts": "Residencial BTS",
+        "btr": "Residencial BTR",
+        "office": "Escritórios",
+        "hotel": "Hotéis",
+        "retail": "Varejo"
+    },
+    "common": {
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "edit": "Editar",
+        "add": "Adicionar",
+        "search": "Pesquisar",
+        "loading": "Carregando...",
+        "noResults": "Sem resultados"
+    }
+}

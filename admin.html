@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2N Presenter | Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="admin-page">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-2n">2N</span>
+                <span class="logo-presenter">Presenter</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#users" class="nav-item active" data-section="users">
+                <i class="fa-solid fa-users"></i>
+                <span data-i18n="admin.users">Usuarios</span>
+            </a>
+            <a href="#assets" class="nav-item" data-section="assets">
+                <i class="fa-solid fa-images"></i>
+                <span data-i18n="admin.assets">Archivos</span>
+            </a>
+            <a href="#content" class="nav-item" data-section="content">
+                <i class="fa-solid fa-layer-group"></i>
+                <span data-i18n="admin.content">Contenido</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fa-solid fa-user-shield"></i>
+                <span id="current-user-email">admin@2n.com</span>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span data-i18n="admin.logout">Cerrar Sesión</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Users Section -->
+        <section id="users-section" class="admin-section active">
+            <header class="section-header">
+                <h1><i class="fa-solid fa-users"></i> <span data-i18n="admin.users">Gestión de Usuarios</span></h1>
+                <button class="btn btn-primary" id="add-user-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span data-i18n="common.add">Añadir</span>
+                </button>
+            </header>
+
+            <div class="data-table-wrapper">
+                <table class="data-table" id="users-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Idioma</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Assets Section -->
+        <section id="assets-section" class="admin-section">
+            <header class="section-header">
+                <h1><i class="fa-solid fa-images"></i> <span data-i18n="admin.assets">Gestión de Archivos</span></h1>
+                <button class="btn btn-primary" id="upload-asset-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Subir Imagen</span>
+                </button>
+            </header>
+
+            <div class="assets-filters">
+                <div class="filter-group">
+                    <label>Filtrar por vertical:</label>
+                    <select id="filter-vertical">
+                        <option value="all">Todas</option>
+                        <option value="bts">Residencial BTS</option>
+                        <option value="btr">Residencial BTR</option>
+                        <option value="office">Oficinas</option>
+                        <option value="hotel">Hoteles</option>
+                        <option value="retail">Retail</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="assets-grid" id="assets-grid">
+                <!-- Dynamic content -->
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section id="content-section" class="admin-section">
+            <header class="section-header">
+                <h1><i class="fa-solid fa-layer-group"></i> <span data-i18n="admin.content">Gestión de Contenido</span>
+                </h1>
+            </header>
+
+            <div class="verticals-tabs">
+                <button class="vertical-tab active" data-vertical="bts">Residencial BTS</button>
+                <button class="vertical-tab" data-vertical="btr">Residencial BTR</button>
+                <button class="vertical-tab" data-vertical="office">Oficinas</button>
+                <button class="vertical-tab" data-vertical="hotel">Hoteles</button>
+                <button class="vertical-tab" data-vertical="retail">Retail</button>
+            </div>
+
+            <div class="sections-list" id="sections-list">
+                <!-- Dynamic content -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for Add/Edit User -->
+    <div class="modal" id="user-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="user-modal-title">Nuevo Usuario</h2>
+                <button class="modal-close" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="user-email">Email</label>
+                    <input type="email" id="user-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-name">Nombre</label>
+                    <input type="text" id="user-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Contraseña</label>
+                    <input type="password" id="user-password" placeholder="Dejar vacío para no cambiar">
+                </div>
+                <div class="form-group">
+                    <label for="user-role">Rol</label>
+                    <select id="user-role">
+                        <option value="prescriptor">Prescriptor</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user-lang">Idioma</label>
+                    <select id="user-lang">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Upload Asset -->
+    <div class="modal" id="asset-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Subir Imagen</h2>
+                <button class="modal-close" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="asset-form">
+                <div class="form-group">
+                    <label for="asset-file">Archivo</label>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Arrastra una imagen o haz clic para seleccionar</p>
+                        <span class="file-info" id="file-info"></span>
+                        <input type="file" id="asset-file" accept="image/*" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Verticales asociadas</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="verticals" value="bts"> Residencial BTS</label>
+                        <label><input type="checkbox" name="verticals" value="btr"> Residencial BTR</label>
+                        <label><input type="checkbox" name="verticals" value="office"> Oficinas</label>
+                        <label><input type="checkbox" name="verticals" value="hotel"> Hoteles</label>
+                        <label><input type="checkbox" name="verticals" value="retail"> Retail</label>
+                    </div>
+                </div>
+                <div class="upload-progress hidden" id="upload-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text">0%</span>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/i18n.js"></script>
+    <script type="module" src="js/auth.controller.js"></script>
+    <script type="module" src="js/admin.controller.js"></script>
+</body>
+
+</html>

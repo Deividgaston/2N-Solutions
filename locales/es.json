@@ -1,0 +1,47 @@
+{
+    "login": {
+        "title": "Iniciar Sesión",
+        "tagline": "Presentaciones profesionales para prescriptores",
+        "email": "Email",
+        "password": "Contraseña",
+        "submit": "Entrar",
+        "errors": {
+            "invalidCredentials": "Email o contraseña incorrectos",
+            "userNotFound": "Usuario no encontrado",
+            "networkError": "Error de conexión. Inténtalo de nuevo.",
+            "generic": "Ha ocurrido un error. Inténtalo de nuevo."
+        }
+    },
+    "admin": {
+        "title": "Panel de Administración",
+        "users": "Usuarios",
+        "assets": "Archivos",
+        "content": "Contenido",
+        "logout": "Cerrar Sesión"
+    },
+    "presenter": {
+        "title": "Nueva Presentación",
+        "selectVerticals": "Selecciona las verticales",
+        "selectSections": "Selecciona las secciones",
+        "preview": "Vista Previa",
+        "present": "Presentar",
+        "myPresentations": "Mis Presentaciones"
+    },
+    "verticals": {
+        "bts": "Residencial BTS",
+        "btr": "Residencial BTR",
+        "office": "Oficinas",
+        "hotel": "Hoteles",
+        "retail": "Retail"
+    },
+    "common": {
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "add": "Añadir",
+        "search": "Buscar",
+        "loading": "Cargando...",
+        "noResults": "Sin resultados"
+    }
+}

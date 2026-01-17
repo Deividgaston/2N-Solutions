@@ -1,0 +1,47 @@
+{
+    "login": {
+        "title": "Sign In",
+        "tagline": "Professional presentations for prescribers",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Sign In",
+        "errors": {
+            "invalidCredentials": "Invalid email or password",
+            "userNotFound": "User not found",
+            "networkError": "Connection error. Please try again.",
+            "generic": "An error occurred. Please try again."
+        }
+    },
+    "admin": {
+        "title": "Admin Panel",
+        "users": "Users",
+        "assets": "Files",
+        "content": "Content",
+        "logout": "Logout"
+    },
+    "presenter": {
+        "title": "New Presentation",
+        "selectVerticals": "Select verticals",
+        "selectSections": "Select sections",
+        "preview": "Preview",
+        "present": "Present",
+        "myPresentations": "My Presentations"
+    },
+    "verticals": {
+        "bts": "Residential BTS",
+        "btr": "Residential BTR",
+        "office": "Offices",
+        "hotel": "Hotels",
+        "retail": "Retail"
+    },
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "search": "Search",
+        "loading": "Loading...",
+        "noResults": "No results"
+    }
+}
