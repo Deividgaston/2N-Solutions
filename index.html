@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2N | Prescribe el Futuro del Acceso Inteligente</title>
+    <title>2N | Soluciones de Control de Acceso IP</title>
     <meta name="description"
-        content="Herramientas y recursos exclusivos para arquitectos, promotoras e ingenierías. Diseña edificios que marcan la diferencia.">
+        content="Intercomunicadores IP, videoporteros y control de acceso para edificios residenciales, oficinas, hoteles y retail.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,23 +106,22 @@
             box-shadow: 0 10px 30px rgba(0, 153, 255, 0.4);
         }
 
-        /* Hero - Full Impact */
+        /* Hero - Side by Side */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
             position: relative;
             overflow: hidden;
-            padding: 0 5%;
+            padding: 6rem 5% 4rem;
         }
 
         .hero-bg {
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 153, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 153, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
                 var(--bg-black);
         }
 
@@ -130,44 +129,53 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 60px 60px;
             mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
         }
 
-        .hero-content {
+        .hero-container {
             position: relative;
-            text-align: center;
-            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-content {
+            max-width: 600px;
         }
 
         .hero-label {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.6rem 1.25rem;
+            padding: 0.5rem 1rem;
             background: rgba(0, 153, 255, 0.1);
             border: 1px solid rgba(0, 153, 255, 0.3);
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--primary);
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .hero-label i {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.03em;
+            font-size: clamp(2.2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
         }
 
         .hero h1 .gradient-text {
@@ -178,62 +186,16 @@
         }
 
         .hero-subtitle {
-            font-size: 1.35rem;
+            font-size: 1.1rem;
             color: var(--text-gray);
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            font-weight: 400;
-            line-height: 1.6;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1.25rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-hero {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1.1rem 2.5rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            letter-spacing: 0.02em;
-        }
-
-        .btn-hero-primary {
-            background: var(--gradient-primary);
-            color: #000;
-        }
-
-        .btn-hero-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 153, 255, 0.5);
-        }
-
-        .btn-hero-ghost {
-            background: transparent;
-            color: var(--text-white);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-hero-ghost:hover {
-            border-color: var(--text-white);
-            background: rgba(255, 255, 255, 0.05);
+            line-height: 1.7;
         }
 
         .hero-image {
-            margin-top: 4rem;
-            max-width: 900px;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 40px 80px rgba(0, 153, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 153, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .hero-image img {
@@ -242,60 +204,27 @@
             display: block;
         }
 
-        /* Trusted By */
-        .trusted {
-            padding: 5rem 5%;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .trusted-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-gray);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-        }
-
-        .trusted-logos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4rem;
-            flex-wrap: wrap;
-            opacity: 0.5;
-            filter: grayscale(1);
-        }
-
-        .trusted-logos span {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #666;
-            letter-spacing: 0.05em;
-        }
-
         /* Value Props */
         .value-props {
-            padding: 8rem 5%;
+            padding: 6rem 5%;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 5rem;
+            margin-bottom: 4rem;
         }
 
         .section-eyebrow {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--primary);
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
             font-weight: 800;
             line-height: 1.15;
             letter-spacing: -0.02em;
@@ -304,16 +233,16 @@
         .props-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .prop-card {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 3rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 2.5rem;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
@@ -332,8 +261,8 @@
         }
 
         .prop-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0, 153, 255, 0.3);
+            transform: translateY(-6px);
+            border-color: rgba(0, 153, 255, 0.25);
         }
 
         .prop-card:hover::before {
@@ -341,110 +270,49 @@
         }
 
         .prop-icon {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             background: var(--gradient-primary);
-            border-radius: 16px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
             color: #000;
         }
 
         .prop-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .prop-card p {
             color: var(--text-gray);
-            line-height: 1.7;
-        }
-
-        /* Audience Sections */
-        .audience {
-            padding: 8rem 5%;
-            background: var(--bg-dark);
-        }
-
-        .audience-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .audience-card {
-            padding: 4rem 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-left: none;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .audience-card:first-child {
-            border-left: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .audience-card:hover {
-            background: rgba(0, 153, 255, 0.05);
-        }
-
-        .audience-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        .audience-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .audience-card p {
-            color: var(--text-gray);
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        .audience-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: gap 0.2s;
-        }
-
-        .audience-link:hover {
-            gap: 0.75rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         /* Stats */
         .stats {
-            padding: 6rem 5%;
-            background: var(--bg-black);
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 5rem 5%;
+            background: var(--bg-dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
+            gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             text-align: center;
         }
 
         .stat-number {
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 900;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
@@ -455,48 +323,14 @@
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-gray);
             font-weight: 500;
         }
 
-        /* CTA */
-        .cta {
-            padding: 10rem 5%;
-            text-align: center;
-            position: relative;
-        }
-
-        .cta-bg {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0, 153, 255, 0.2) 0%, transparent 60%);
-        }
-
-        .cta-content {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .cta h2 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .cta p {
-            font-size: 1.25rem;
-            color: var(--text-gray);
-            margin-bottom: 3rem;
-        }
-
         /* Footer */
         .footer {
-            padding: 3rem 5%;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 2.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -505,28 +339,28 @@
         .footer-left {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .footer-left img {
-            height: 24px;
-            opacity: 0.6;
+            height: 22px;
+            opacity: 0.5;
         }
 
         .footer-left span {
             color: var(--text-gray);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .footer-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .footer-links a {
             color: var(--text-gray);
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: color 0.2s;
         }
 
@@ -536,23 +370,27 @@
 
         /* Responsive */
         @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
 
-            .props-grid,
-            .audience-grid {
+            .hero-content {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            .hero-image {
+                max-width: 600px;
+                margin: 2rem auto 0;
+            }
+
+            .props-grid {
                 grid-template-columns: 1fr;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .audience-card {
-                border-left: 1px solid rgba(255, 255, 255, 0.06);
-                border-bottom: none;
-            }
-
-            .audience-card:last-child {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             }
         }
 
@@ -562,26 +400,21 @@
             }
 
             .hero {
-                padding: 0 6%;
-            }
-
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .btn-hero {
-                padding: 1rem 2rem;
-                font-size: 0.9rem;
+                padding: 7rem 5% 3rem;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 2rem;
+                gap: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 2.25rem;
             }
 
             .footer {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 1rem;
                 text-align: center;
             }
         }
@@ -595,8 +428,7 @@
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
         </a>
         <ul class="nav-links">
-            <li><a href="#value">Por qué 2N</a></li>
-            <li><a href="#audience">Para quién</a></li>
+            <li><a href="#solutions">Soluciones</a></li>
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
         <a href="login.html" class="btn-cta">Área Prescriptores</a>
@@ -605,28 +437,20 @@
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="hero-grid"></div>
-        <div class="hero-content">
-            <span class="hero-label">
-                <i class="fa-solid fa-bolt"></i>
-                Plataforma exclusiva para profesionales
-            </span>
-            <h1>
-                Prescribe el futuro.<br>
-                <span class="gradient-text">Diseña el acceso.</span>
-            </h1>
-            <p class="hero-subtitle">
-                Herramientas, especificaciones técnicas y recursos exclusivos para arquitectos, promotoras e ingenierías
-                que diseñan edificios que marcan la diferencia.
-            </p>
-            <div class="hero-buttons">
-                <a href="login.html" class="btn-hero btn-hero-primary">
-                    <i class="fa-solid fa-rocket"></i>
-                    Acceder a recursos
-                </a>
-                <a href="#value" class="btn-hero btn-hero-ghost">
-                    <i class="fa-solid fa-play"></i>
-                    Descubrir más
-                </a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-label">
+                    <i class="fa-solid fa-bolt"></i>
+                    Líder mundial en interfonos IP
+                </span>
+                <h1>
+                    Prescribe el futuro.<br>
+                    <span class="gradient-text">Diseña el acceso.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Intercomunicadores IP, videoporteros Full HD y control de acceso móvil para edificios residenciales,
+                    oficinas, hoteles y retail. Tecnología puntera con diseño premiado Red Dot Award.
+                </p>
             </div>
             <div class="hero-image">
                 <img src="assets/photos_my2n_app_apple_watch/My2N App_Apple_Watch_key_visual_16_9.jpg"
@@ -635,18 +459,7 @@
         </div>
     </section>
 
-    <section class="trusted">
-        <p class="trusted-label">Tecnología de acceso en los edificios más exigentes del mundo</p>
-        <div class="trusted-logos">
-            <span>AXIS</span>
-            <span>MILESTONE</span>
-            <span>GENETEC</span>
-            <span>KONE</span>
-            <span>SCHINDLER</span>
-        </div>
-    </section>
-
-    <section class="value-props" id="value">
+    <section class="value-props" id="solutions">
         <div class="section-header">
             <p class="section-eyebrow">Por qué 2N</p>
             <h2 class="section-title">La diferencia que eleva tu proyecto</h2>
@@ -679,50 +492,14 @@
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-cloud"></i></div>
                 <h3>Gestión cloud con My2N</h3>
-                <p>Administra todos los dispositivos desde cualquier lugar. Actualizaciones OTA, monitorización remota,
-                    cero visitas.</p>
+                <p>Administra todos los dispositivos desde cualquier lugar. Actualizaciones OTA, monitorización remota.
+                </p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-euro-sign"></i></div>
                 <h3>ROI demostrable</h3>
                 <p>Reduce costes de mantenimiento, elimina duplicados de llaves, aumenta el valor percibido de la
                     promoción.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="audience" id="audience">
-        <div class="section-header">
-            <p class="section-eyebrow">Para quién</p>
-            <h2 class="section-title">Soluciones para cada perfil profesional</h2>
-        </div>
-        <div class="audience-grid">
-            <div class="audience-card">
-                <span class="audience-icon">📐</span>
-                <h3>Arquitectos</h3>
-                <p>Especificaciones BIM, materiales CAD, librerías de productos y guías de integración arquitectónica.
-                    Diseña sin límites.</p>
-                <a href="login.html" class="audience-link">
-                    Acceder a recursos <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="audience-card">
-                <span class="audience-icon">🏗️</span>
-                <h3>Promotoras</h3>
-                <p>Casos de éxito, calculadoras de ROI, comparativas y argumentarios comerciales. Diferencia tu
-                    promoción.</p>
-                <a href="login.html" class="audience-link">
-                    Acceder a recursos <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="audience-card">
-                <span class="audience-icon">⚡</span>
-                <h3>Ingenierías</h3>
-                <p>Fichas técnicas, esquemas de conexión, capacidades de integración y soporte técnico especializado.
-                </p>
-                <a href="login.html" class="audience-link">
-                    Acceder a recursos <i class="fa-solid fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </section>
@@ -748,19 +525,6 @@
         </div>
     </section>
 
-    <section class="cta">
-        <div class="cta-bg"></div>
-        <div class="cta-content">
-            <h2>¿Listo para prescribir el futuro?</h2>
-            <p>Accede a presentaciones personalizadas, materiales exclusivos y soporte directo de nuestro equipo de
-                prescripción.</p>
-            <a href="login.html" class="btn-hero btn-hero-primary">
-                <i class="fa-solid fa-arrow-right"></i>
-                Comenzar ahora
-            </a>
-        </div>
-    </section>
-
     <footer class="footer">
         <div class="footer-left">
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
@@ -773,7 +537,6 @@
     </footer>
 
     <script>
-        // Navbar scroll effect
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
