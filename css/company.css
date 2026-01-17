@@ -176,23 +176,41 @@
     z-index: 10;
 }
 
+/* Pin Labels */
+.map-pin::after {
+    content: attr(data-label);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+}
+
 .pin-prague {
-    top: 40%;
+    top: 28%;
     left: 53.5%;
     background: #0099ff;
     box-shadow: 0 0 20px #0099ff;
 }
 
 .pin-lund {
-    top: 28%;
+    top: 23%;
     left: 53%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
 
 .pin-boston {
-    top: 42%;
-    left: 28%;
+    top: 33%;
+    left: 30%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
