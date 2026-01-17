@@ -372,46 +372,75 @@ class AdminController {
     }
 
     // ============================
-    // ASSETS MANAGEMENT
+    // ASSETS MANAGEMENT (EXPLORER)
     // ============================
     async loadAssets() {
-        const grid = document.getElementById('assets-grid');
-        if (!grid) return;
+        this.navigateAssets(this.currentMediaPath);
+    }
 
-        grid.innerHTML = '<p class="text-center">Cargando...</p>';
+    async navigateAssets(path) {
+        this.currentMediaPath = path;
+        const grid = document.getElementById('assets-grid');
+        grid.innerHTML = '<div class="loader">Cargando...</div>';
 
         try {
-            const assetsRef = collection(db, 'assets');
-            let q = query(assetsRef, orderBy('uploadedAt', 'desc'));
-
-            const filter = document.getElementById('filter-vertical')?.value;
-            if (filter && filter !== 'all') {
-                q = query(assetsRef, where('verticals', 'array-contains', filter), orderBy('uploadedAt', 'desc'));
-            }
-
-            const snapshot = await getDocs(q);
-
-            if (snapshot.empty) {
-                grid.innerHTML = '<p class="text-center">No hay archivos</p>';
-                return;
-            }
+            const { folders, files } = await contentService.listMultimediaContents(path);
 
             grid.innerHTML = '';
-            snapshot.forEach(doc => {
-                const asset = doc.data();
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                card.innerHTML = `
-                    <div class="asset-thumbnail">
-                        <img src="${asset.thumbnailUrl || asset.url}" alt="${asset.originalName}" loading="lazy">
-                    </div>
-                    <div class="asset-info">
-                        <div class="asset-name">${asset.originalName}</div>
-                        <div class="asset-meta">${asset.verticals?.join(', ') || 'Sin categoría'}</div>
-                    </div>
+
+            // "Up" button if not at root
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'asset-card gallery-folder up-folder';
+                upItem.innerHTML = `
+                    <div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div>
+                    <div class="folder-name">..</div>
                 `;
-                grid.appendChild(card);
-            });
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.navigateAssets(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
+
+            // Render Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-folder';
+                    item.innerHTML = `
+                        <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
+                        <div class="folder-name">${folder.name}</div>
+                    `;
+                    item.addEventListener('click', () => {
+                        this.navigateAssets(folder.fullPath);
+                    });
+                    grid.appendChild(item);
+                });
+            }
+
+            // Render Files
+            if (files.length > 0) {
+                files.forEach(asset => {
+                    const card = document.createElement('div');
+                    card.className = 'asset-card';
+                    card.innerHTML = `
+                        <div class="asset-thumbnail">
+                            <img src="${asset.url}" alt="${asset.name}" loading="lazy">
+                        </div>
+                        <div class="asset-info">
+                            <div class="asset-name">${asset.name}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            if (folders.length === 0 && files.length === 0) {
+                grid.innerHTML += '<p style="width:100%; text-align:center;">Carpeta vacía</p>';
+            }
+
         } catch (error) {
             console.error('Error loading assets:', error);
             grid.innerHTML = '<p class="text-center error">Error al cargar archivos</p>';
@@ -425,9 +454,6 @@ class AdminController {
         const file = fileInput.files[0];
         if (!file) return;
 
-        const verticals = Array.from(document.querySelectorAll('input[name="verticals"]:checked'))
-            .map(cb => cb.value);
-
         const progressEl = document.getElementById('upload-progress');
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
@@ -438,9 +464,10 @@ class AdminController {
             // Compress image before upload (client-side)
             const compressedFile = await this.compressImage(file);
 
-            // Upload to Storage
+            // Upload to Current Explorer Path
             const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const storageRef = ref(storage, `assets/${fileName}`);
+            const storagePath = `${this.currentMediaPath}/${fileName}`;
+            const storageRef = ref(storage, storagePath);
             const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
             uploadTask.on('state_changed',
@@ -455,23 +482,10 @@ class AdminController {
                     progressEl.classList.add('hidden');
                 },
                 async () => {
-                    // Get download URL
-                    const url = await getDownloadURL(uploadTask.snapshot.ref);
-
-                    // Save metadata to Firestore
-                    await setDoc(doc(collection(db, 'assets')), {
-                        url,
-                        thumbnailUrl: url, // For now, same as main (could generate separate)
-                        originalName: file.name,
-                        type: 'image',
-                        verticals,
-                        uploadedBy: auth.currentUser?.uid,
-                        uploadedAt: serverTimestamp()
-                    });
-
                     document.getElementById('asset-modal').classList.remove('active');
                     progressEl.classList.add('hidden');
-                    this.loadAssets();
+                    // Refresh current view
+                    this.navigateAssets(this.currentMediaPath);
                 }
             );
         } catch (error) {
