@@ -47,7 +47,87 @@
     z-index: 10;
 }
 
-/* ... Canon/Axis/2N styles ... */
+/* Canon Styling */
+.card-canon {
+    border-color: #ff0000;
+    background: linear-gradient(135deg, rgba(200, 0, 0, 0.2) 0%, rgba(50, 0, 0, 0.4) 100%);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
+}
+
+.card-canon .h-logo {
+    color: #ff0000;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.card-canon:hover {
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+    border-color: #ff3333;
+}
+
+/* Axis Styling */
+.card-axis {
+    border-color: #ffcc00;
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.2) 0%, rgba(100, 80, 0, 0.4) 100%);
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.1);
+}
+
+.card-axis .h-logo {
+    color: #ffcc00;
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+}
+
+.card-axis:hover {
+    box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
+    border-color: #ffe066;
+}
+
+/* 2N Styling (Black/White Premium) */
+.card-2n {
+    border-color: #ffffff;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.9) 0%, rgba(0, 0, 0, 0.6) 100%);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.card-2n .h-logo {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.card-2n:hover {
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+    background: #000;
+}
+
+.h-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.h-metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.25rem;
+}
+
+.h-metric strong {
+    color: var(--text-white);
+}
 
 /* Visual Connectors - Horizontal */
 .connector-line {
