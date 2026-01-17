@@ -135,7 +135,6 @@
     position: relative;
     width: 100%;
     max-width: 1000px;
-    aspect-ratio: 16 / 9;
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
@@ -146,10 +145,7 @@
         linear-gradient(rgba(0, 153, 255, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 153, 255, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
-    background-color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .map-bg-svg {
@@ -172,21 +168,21 @@
 }
 
 .pin-prague {
-    top: 48%;
+    top: 21%;
     left: 51%;
     background: #0099ff;
     box-shadow: 0 0 20px #0099ff;
 }
 
 .pin-lund {
-    top: 42%;
+    top: 16%;
     left: 50.5%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
 }
 
 .pin-boston {
-    top: 50%;
+    top: 26%;
     left: 27.5%;
     background: #ffcc00;
     box-shadow: 0 0 20px #ffcc00;
