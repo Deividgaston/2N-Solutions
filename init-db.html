@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2N Presenter - Inicializar Base de Datos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #0099FF;
+        }
+
+        p {
+            color: #999;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .warning {
+            background: rgba(255, 179, 0, 0.1);
+            border: 1px solid #FFB300;
+            color: #FFB300;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        button {
+            background: #0099FF;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #007ACC;
+        }
+
+        #status {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        #status.loading {
+            background: rgba(0, 153, 255, 0.2);
+            color: #0099FF;
+        }
+
+        #status.success {
+            background: rgba(0, 200, 83, 0.2);
+            color: #00C853;
+        }
+
+        #status.error {
+            background: rgba(255, 61, 0, 0.2);
+            color: #FF3D00;
+        }
+
+        #log {
+            margin-top: 1rem;
+            text-align: left;
+            background: #111;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔧 Inicializar Base de Datos</h1>
+        <p>Este script creará el usuario admin, las verticales y secciones de ejemplo en Firestore.</p>
+
+        <div class="warning">
+            <strong>⚠️ ANTES de ejecutar:</strong><br>
+            1. Crea el usuario en Firebase Auth (gastonortigosa@gmail.com)<br>
+            2. Copia el UID del usuario<br>
+            3. Edita <code>js/init-db.js</code> y pega el UID en <code>ADMIN_UID</code>
+        </div>
+
+        <button onclick="runInitialization()">Ejecutar Inicialización</button>
+
+        <div id="status"></div>
+        <div id="log"></div>
+    </div>
+
+    <script type="module" src="js/init-db.js"></script>
+</body>
+
+</html>
