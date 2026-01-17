@@ -294,6 +294,88 @@
             font-size: 0.95rem;
         }
 
+        /* Solutions Grid */
+        .solutions-section {
+            padding: 6rem 5%;
+            background: var(--bg-dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .solution-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-white);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 153, 255, 0.4);
+            background: rgba(0, 153, 255, 0.08);
+        }
+
+        .solution-card:hover::before {
+            opacity: 1;
+        }
+
+        .solution-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+
+        .solution-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .solution-card p {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        .solution-arrow {
+            margin-top: 1.25rem;
+            color: var(--primary);
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+        }
+
+        .solution-card:hover .solution-arrow {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Stats */
         .stats {
             padding: 5rem 5%;
@@ -389,6 +471,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .solutions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -459,7 +545,46 @@
         </div>
     </section>
 
-    <section class="value-props" id="solutions">
+    <section class="solutions-section" id="solutions">
+        <div class="section-header">
+            <p class="section-eyebrow">Soluciones por vertical</p>
+            <h2 class="section-title">Elige tu sector de aplicación</h2>
+        </div>
+        <div class="solutions-grid">
+            <a href="solucion-bts.html" class="solution-card">
+                <span class="solution-icon">🏠</span>
+                <h3>Residencial BTS</h3>
+                <p>Build-to-Sell. Promociones de venta.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+            <a href="solucion-btr.html" class="solution-card">
+                <span class="solution-icon">🏢</span>
+                <h3>Residencial BTR</h3>
+                <p>Build-to-Rent. Alquiler institucional.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+            <a href="solucion-oficinas.html" class="solution-card">
+                <span class="solution-icon">💼</span>
+                <h3>Oficinas</h3>
+                <p>Edificios corporativos y coworking.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+            <a href="solucion-hoteles.html" class="solution-card">
+                <span class="solution-icon">🏨</span>
+                <h3>Hoteles</h3>
+                <p>Hospitality y resorts.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+            <a href="solucion-seguridad.html" class="solution-card">
+                <span class="solution-icon">🔒</span>
+                <h3>Seguridad</h3>
+                <p>Control de acceso avanzado.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="value-props">
         <div class="section-header">
             <p class="section-eyebrow">Por qué 2N</p>
             <h2 class="section-title">La diferencia que eleva tu proyecto</h2>
@@ -474,32 +599,27 @@
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-shield-halved"></i></div>
                 <h3>Seguridad sin compromisos</h3>
-                <p>Encriptación end-to-end, autenticación multi-factor y cumplimiento GDPR. La tranquilidad de tus
-                    clientes, garantizada.</p>
+                <p>Encriptación end-to-end, autenticación multi-factor y cumplimiento GDPR.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-mobile-screen"></i></div>
                 <h3>Acceso móvil nativo</h3>
-                <p>WaveKey permite abrir puertas con el smartphone via Bluetooth. Elimina llaves, códigos y tarjetas
-                    obsoletas.</p>
+                <p>WaveKey permite abrir puertas con el smartphone via Bluetooth.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
                 <h3>Integración total</h3>
-                <p>Compatible con Axis, Milestone, Genetec y los principales VMS. APIs abiertas para desarrolladores.
-                </p>
+                <p>Compatible con Axis, Milestone, Genetec y los principales VMS.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-cloud"></i></div>
                 <h3>Gestión cloud con My2N</h3>
-                <p>Administra todos los dispositivos desde cualquier lugar. Actualizaciones OTA, monitorización remota.
-                </p>
+                <p>Administra todos los dispositivos desde cualquier lugar.</p>
             </div>
             <div class="prop-card">
                 <div class="prop-icon"><i class="fa-solid fa-euro-sign"></i></div>
                 <h3>ROI demostrable</h3>
-                <p>Reduce costes de mantenimiento, elimina duplicados de llaves, aumenta el valor percibido de la
-                    promoción.</p>
+                <p>Reduce costes de mantenimiento, aumenta el valor percibido.</p>
             </div>
         </div>
     </section>

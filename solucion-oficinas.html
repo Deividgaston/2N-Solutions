@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficinas | 2N Solutions</title>
+    <meta name="description"
+        content="Soluciones 2N para edificios de oficinas y coworking. Control de acceso multi-tenant y gestión centralizada.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/solutions.css">
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="/" class="logo"><img src="assets/2N_Logo_RGB_White.png" alt="2N"></a>
+        <ul class="nav-links">
+            <li><a href="/#solutions">Soluciones</a></li>
+            <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
+        </ul>
+        <a href="login.html" class="btn-cta">Área Prescriptores</a>
+    </nav>
+
+    <section class="solution-hero">
+        <div class="solution-hero-bg"></div>
+        <div class="solution-hero-content">
+            <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+            <span class="solution-badge">💼 Corporativo</span>
+            <h1>Oficinas</h1>
+            <p class="solution-subtitle">Edificios corporativos y espacios de coworking. Control de acceso multi-tenant,
+                integración con sistemas de gestión y experiencia de usuario premium.</p>
+        </div>
+    </section>
+
+    <section class="solution-content">
+        <div class="content-grid">
+            <div class="content-main">
+                <h2>Control de acceso para el workplace moderno</h2>
+                <p>Los edificios de oficinas actuales requieren soluciones flexibles que se adapten a múltiples
+                    inquilinos, espacios compartidos y modelos de trabajo híbrido.</p>
+                <p>2N ofrece soluciones de control de acceso que combinan seguridad empresarial con facilidad de uso,
+                    permitiendo gestionar desde un único punto todos los accesos del edificio.</p>
+
+                <h3>Beneficios para propietarios y gestores</h3>
+                <ul class="benefits-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Multi-tenancy:</strong> Gestión independiente para
+                        cada inquilino</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Acceso móvil:</strong> Credenciales en smartphone, sin
+                        tarjetas físicas</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Integración con BMS:</strong> Conecta con sistemas de
+                        gestión de edificios</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Reporting:</strong> Informes de ocupación y
+                        trazabilidad de accesos</li>
+                </ul>
+
+                <h3>Productos recomendados</h3>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <h4>2N IP Style</h4>
+                        <p>Videoportero elegante con pantalla táctil para recepciones premium.</p>
+                    </div>
+                    <div class="product-card">
+                        <h4>2N Access Unit QR</h4>
+                        <p>Lector QR para visitantes y accesos temporales.</p>
+                    </div>
+                    <div class="product-card">
+                        <h4>2N Access Commander</h4>
+                        <p>Software de gestión centralizada para grandes instalaciones.</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="content-sidebar">
+                <div class="sidebar-card">
+                    <h4>¿Necesitas más información?</h4>
+                    <p>Accede a especificaciones técnicas, casos de éxito y herramientas de diseño.</p>
+                    <a href="login.html" class="btn-sidebar">Área Prescriptores</a>
+                </div>
+                <div class="sidebar-card">
+                    <h4>Contacto directo</h4>
+                    <p>Nuestro equipo de prescripción te ayuda con tu proyecto.</p>
+                    <a href="mailto:prescripcion@2n.com" class="btn-sidebar-outline"><i
+                            class="fa-solid fa-envelope"></i> Escribir email</a>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-left">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://www.2n.com" target="_blank">2N.com</a>
+            <a href="login.html">Acceso prescriptores</a>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+
+</html>
