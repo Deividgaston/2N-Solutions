@@ -68,15 +68,22 @@ class ContentService {
      * @param {string} verticalId - Optional, if we want to filter by vertical folder
      * @returns {Promise<Array>} Array of image objects
      */
-    async listMultimediaImages(verticalId = null) {
+    /**
+     * List all content (files and folders) in a specific storage path
+     * @param {string} path - The full storage path (e.g., 'multimedia' or 'multimedia/bts')
+     * @returns {Promise<{folders: Array, files: Array}>} Object containing folders and files
+     */
+    async listMultimediaContents(path = 'multimedia') {
         try {
-            const folderPath = verticalId ? `multimedia/${verticalId}` : 'multimedia';
-            const folderRef = ref(storage, folderPath);
-
-            // listAll is needed
+            const folderRef = ref(storage, path);
             const result = await listAll(folderRef);
 
-            const images = await Promise.all(result.items.map(async (itemRef) => {
+            const folders = result.prefixes.map(folderRef => ({
+                name: folderRef.name,
+                fullPath: folderRef.fullPath
+            }));
+
+            const files = await Promise.all(result.items.map(async (itemRef) => {
                 const url = await getDownloadURL(itemRef);
                 return {
                     name: itemRef.name,
@@ -85,10 +92,10 @@ class ContentService {
                 };
             }));
 
-            return images;
+            return { folders, files };
         } catch (error) {
-            console.error('Error listing multimedia images:', error);
-            return [];
+            console.error('Error listing multimedia contents:', error);
+            return { folders: [], files: [] };
         }
     }
 

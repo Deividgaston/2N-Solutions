@@ -35,6 +35,7 @@ class AdminController {
         this.currentSection = 'users';
         this.currentVertical = 'bts';
         this.editingUserId = null;
+        this.currentMediaPath = 'multimedia'; // Initialize explorer root
         this.init();
     }
 
@@ -565,32 +566,74 @@ class AdminController {
     }
 
     async loadMultimediaGallery() {
+        this.navigateMultimedia(this.currentMediaPath);
+    }
+
+    async navigateMultimedia(path) {
+        this.currentMediaPath = path;
         const grid = document.getElementById('multimedia-grid');
-        grid.innerHTML = '<div class="loader"></div>';
+        grid.innerHTML = '<div class="loader">Loading...</div>';
+
+        // Update breadcrumb (simple version)
+        // You could add a visible breadcrumb element here if the UI supports it
 
         try {
-            // Pass current vertical to list images from the correct folder
-            const images = await contentService.listMultimediaImages(this.currentVertical);
-
-            if (images.length === 0) {
-                grid.innerHTML = '<p>No hay imágenes en la galería de esta vertical.</p>';
-                return;
-            }
+            const { folders, files } = await contentService.listMultimediaContents(path);
 
             grid.innerHTML = '';
-            images.forEach(img => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
 
-                item.addEventListener('click', () => {
-                    document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-                    this.selectedGalleryImage = img.url;
+            // "Up" button if not at root
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'gallery-folder up-folder';
+                upItem.innerHTML = `
+                    <div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div>
+                    <div class="folder-name">..</div>
+                `;
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.navigateMultimedia(parts.join('/'));
                 });
+                grid.appendChild(upItem);
+            }
 
-                grid.appendChild(item);
-            });
+            // Render Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-folder';
+                    item.innerHTML = `
+                        <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
+                        <div class="folder-name">${folder.name}</div>
+                    `;
+                    item.addEventListener('click', () => {
+                        this.navigateMultimedia(folder.fullPath);
+                    });
+                    grid.appendChild(item);
+                });
+            }
+
+            // Render Files
+            if (files.length > 0) {
+                files.forEach(img => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
+
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        this.selectedGalleryImage = img.url;
+                    });
+                    grid.appendChild(item);
+                });
+            }
+
+            if (folders.length === 0 && files.length === 0) {
+                grid.innerHTML += '<p style="width:100%">Carpeta vacía</p>';
+            }
+
         } catch (e) {
             console.error(e);
             grid.innerHTML = '<p class="error">Error cargando galería</p>';
@@ -615,9 +658,13 @@ class AdminController {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    // Upload file to multimedia/{vertical}/ path
+
+                    // Upload to current explorer path
+                    // If user wants a new folder, we could prompt, but for now let's use the current path
+                    // This allows "Navigate to 2n -> Upload"
+
                     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    storagePath = `multimedia/${this.currentVertical}/${fileName}`;
+                    storagePath = `${this.currentMediaPath}/${fileName}`;
 
                     const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, file);
@@ -631,14 +678,18 @@ class AdminController {
                     throw new Error('Por favor selecciona una imagen de la galería');
                 }
                 imageUrl = this.selectedGalleryImage;
-                // Note: We don't verify strict path for gallery images here, 
-                // but that's okay as they are already in storage.
             }
 
             await contentService.addSection(this.currentVertical, imageUrl, text, storagePath);
 
             document.getElementById('section-modal').classList.remove('active');
+
+            // Reload sections list
             this.loadSections();
+
+            // Refresh gallery to show new upload (if we were in that mode, though modal closes)
+            this.loadMultimediaGallery();
+
         } catch (error) {
             alert(error.message);
         } finally {
