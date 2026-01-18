@@ -432,16 +432,6 @@ class AdminController {
 
             grid.innerHTML = '';
 
-            // New Folder Card
-            const newFolderItem = document.createElement('div');
-            newFolderItem.className = 'asset-card gallery-folder new-folder';
-            newFolderItem.innerHTML = `
-                <div class="folder-icon"><i class="fa-solid fa-folder-plus"></i></div>
-                <div class="folder-name">Nueva Carpeta</div>
-            `;
-            newFolderItem.addEventListener('click', () => this.handleCreateFolder());
-            grid.appendChild(newFolderItem);
-
             // "Up" button if not at root
             if (path !== 'multimedia') {
                 const upItem = document.createElement('div');
