@@ -1017,6 +1017,17 @@ class AdminController {
         }
     }
 
+    resetSectionModal() {
+        document.getElementById('section-form').reset();
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-tab="upload"]').classList.add('active');
+        document.getElementById('tab-upload').classList.add('active');
+        document.getElementById('section-file-info').textContent = '';
+        this.selectedGalleryImage = null;
+        this.updatePreview();
+    }
+
     async handleSaveSection(e) {
         e.preventDefault();
         const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -1049,19 +1060,13 @@ class AdminController {
                     const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, file);
                     imageUrl = await getDownloadURL(uploadTask.ref);
-                } else {
-                    // It's possible to create a text-only section or keep existing logic?
-                    // For now, let's allow image to be optional if not strictly required, 
-                    // BUT the original code threw error. Let's keep it strict for now unless user asked otherwise.
-                    // But wait, user might just want to change text/title? No, this is ADD section. 
-                    throw new Error('Por favor selecciona una imagen para subir');
                 }
+                // Image is optional now
             } else {
                 // Gallery
-                if (!this.selectedGalleryImage) {
-                    throw new Error('Por favor selecciona una imagen de la galería');
+                if (this.selectedGalleryImage) {
+                    imageUrl = this.selectedGalleryImage;
                 }
-                imageUrl = this.selectedGalleryImage;
             }
 
             const data = {
