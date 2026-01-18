@@ -352,3 +352,113 @@ body {
         text-align: center;
     }
 }
+/* =========================================
+   Dynamic Sections (Premium Injected Content)
+   ========================================= */
+
+.dynamic-sections-container {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6rem; /* Space between sections */
+}
+
+.dynamic-section {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.dynamic-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Layouts */
+.dynamic-section.layout-right {
+    flex-direction: row-reverse;
+}
+
+.dynamic-section.layout-top {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+}
+
+.dynamic-section.layout-bottom {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 2rem;
+}
+
+/* Content Elements */
+.ds-image-wrapper {
+    flex: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    /* Premium glow effect */
+}
+
+.ds-image-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.ds-image-wrapper img,
+.ds-image-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dynamic-section:hover .ds-image-wrapper img {
+    transform: scale(1.03);
+}
+
+.ds-content {
+    flex: 1;
+}
+
+.ds-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(90deg, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+.ds-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-gray);
+    white-space: pre-line; /* Handle line breaks */
+}
+
+/* Buttons inside sections (if any, but usually text) */
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dynamic-section, 
+    .dynamic-section.layout-right {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: left;
+    }
+    
+    .ds-title {
+        font-size: 1.5rem;
+    }
+}
