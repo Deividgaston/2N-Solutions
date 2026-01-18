@@ -164,7 +164,38 @@ class AdminController {
             createFolderBtn.addEventListener('click', () => this.handleCreateFolder());
         }
 
-        // ... existing listeners ...
+        // Section Modal
+        const addSectionBtn = document.getElementById('add-section-btn');
+        const sectionModal = document.getElementById('section-modal');
+
+        if (addSectionBtn) {
+            addSectionBtn.addEventListener('click', () => {
+                this.resetSectionModal();
+                sectionModal.classList.add('active');
+            });
+        }
+
+        // Close modals
+        document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            });
+        });
+
+        // Tab Switching in Section Modal
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+
+                if (btn.dataset.tab === 'gallery') {
+                    this.loadMultimediaGallery();
+                }
+            });
+        });
 
         // File input display
         const fileInput = document.getElementById('asset-file');
