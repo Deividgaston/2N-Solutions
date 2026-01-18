@@ -1025,83 +1025,82 @@ class AdminController {
         submitBtn.textContent = 'Guardando...';
 
         try {
-            try {
-                const title = document.getElementById('section-title').value.trim();
-                const tagsStr = document.getElementById('section-tags').value.trim();
-                const text = document.getElementById('section-text').value;
-                const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
-                const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+            const title = document.getElementById('section-title').value.trim();
+            const tagsStr = document.getElementById('section-tags').value.trim();
+            const text = document.getElementById('section-text').value;
+            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
-                // Validate tags
-                if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
-                const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
+            // Validate tags
+            if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
+            const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
 
-                let imageUrl = null;
-                let storagePath = null;
+            let imageUrl = null;
+            let storagePath = null;
 
-                if (activeTab === 'upload') {
-                    const fileInput = document.getElementById('section-file');
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
+            if (activeTab === 'upload') {
+                const fileInput = document.getElementById('section-file');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
 
-                        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                        storagePath = `${this.currentMediaPath}/${fileName}`;
+                    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    storagePath = `${this.currentMediaPath}/${fileName}`;
 
-                        const storageRef = ref(storage, storagePath);
-                        const uploadTask = await uploadBytesResumable(storageRef, file);
-                        imageUrl = await getDownloadURL(uploadTask.ref);
-                    } else {
-                        // It's possible to create a text-only section or keep existing logic?
-                        // For now, let's allow image to be optional if not strictly required, 
-                        // BUT the original code threw error. Let's keep it strict for now unless user asked otherwise.
-                        // But wait, user might just want to change text/title? No, this is ADD section. 
-                        throw new Error('Por favor selecciona una imagen para subir');
-                    }
+                    const storageRef = ref(storage, storagePath);
+                    const uploadTask = await uploadBytesResumable(storageRef, file);
+                    imageUrl = await getDownloadURL(uploadTask.ref);
                 } else {
-                    // Gallery
-                    if (!this.selectedGalleryImage) {
-                        throw new Error('Por favor selecciona una imagen de la galería');
-                    }
-                    imageUrl = this.selectedGalleryImage;
+                    // It's possible to create a text-only section or keep existing logic?
+                    // For now, let's allow image to be optional if not strictly required, 
+                    // BUT the original code threw error. Let's keep it strict for now unless user asked otherwise.
+                    // But wait, user might just want to change text/title? No, this is ADD section. 
+                    throw new Error('Por favor selecciona una imagen para subir');
                 }
-
-                const data = {
-                    title,
-                    tags,
-                    text,
-                    imageUrl,
-                    imagePath: storagePath,
-                    layout
-                };
-
-                await contentService.addSection(this.currentVertical, data);
-
-                document.getElementById('section-modal').classList.remove('active');
-                this.loadSections();
-                this.loadMultimediaGallery();
-
-            } catch (error) {
-                alert(error.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+            } else {
+                // Gallery
+                if (!this.selectedGalleryImage) {
+                    throw new Error('Por favor selecciona una imagen de la galería');
+                }
+                imageUrl = this.selectedGalleryImage;
             }
-        }
 
-    async deleteSection(sectionId) {
-            if (!confirm('¿Eliminar esta sección?')) return;
+            const data = {
+                title,
+                tags,
+                text,
+                imageUrl,
+                imagePath: storagePath,
+                layout
+            };
 
-            try {
-                await contentService.deleteSection(this.currentVertical, sectionId);
-                this.loadSections();
-            } catch (e) {
-                alert('Error al eliminar: ' + e.message);
-            }
+            await contentService.addSection(this.currentVertical, data);
+
+            document.getElementById('section-modal').classList.remove('active');
+            this.loadSections();
+            this.loadMultimediaGallery();
+
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     }
 
-    // Crear instancia única y exponer globalmente
-    const adminController = new AdminController();
+    async deleteSection(sectionId) {
+        if (!confirm('¿Eliminar esta sección?')) return;
+
+        try {
+            await contentService.deleteSection(this.currentVertical, sectionId);
+            this.loadSections();
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message);
+        }
+    }
+}
+
+// Crear instancia única y exponer globalmente
+const adminController = new AdminController();
 window.adminController = adminController;
 
 export default adminController;
