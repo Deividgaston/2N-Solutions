@@ -36,6 +36,7 @@ class AdminController {
         this.currentVertical = 'bts';
         this.editingUserId = null;
         this.currentMediaPath = 'multimedia'; // Initialize explorer root
+        this.currentTypeFilter = 'all';
         this.init();
     }
 
@@ -229,10 +230,17 @@ class AdminController {
         }
 
         // Filter
-        const filterVertical = document.getElementById('filter-vertical');
-        if (filterVertical) {
-            filterVertical.addEventListener('change', () => this.loadAssets());
-        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Set filter and reload
+                this.currentTypeFilter = btn.dataset.filter;
+                this.loadAssets();
+            });
+        });
 
         // Section Form Inputs (for Live Preview)
         const inputs = [
@@ -498,7 +506,15 @@ class AdminController {
 
             // Render Files
             if (files.length > 0) {
-                files.forEach(asset => {
+                // Filter files logic
+                const filteredFiles = files.filter(file => {
+                    const isVideo = file.name.match(/\.(mp4|webm|mov)$/i);
+                    if (this.currentTypeFilter === 'image') return !isVideo;
+                    if (this.currentTypeFilter === 'video') return isVideo;
+                    return true;
+                });
+
+                filteredFiles.forEach(asset => {
                     const card = document.createElement('div');
                     card.className = 'asset-card';
                     const isVideo = asset.name.match(/\.(mp4|webm|mov)$/i);

@@ -228,13 +228,33 @@
     font-size: var(--font-size-sm);
 }
 
-.filter-group select {
+.filter-buttons {
+    display: flex;
     background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: var(--space-sm) var(--space-md);
+    padding: 4px;
     border-radius: var(--radius-md);
-    font-family: inherit;
+    border: 1px solid var(--border-color);
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
 }
 
 .assets-grid {
