@@ -38,14 +38,28 @@ class ContentService {
     async getSections(verticalId) {
         try {
             const sectionsRef = collection(db, 'verticals', verticalId, 'sections');
-            // Sort by 'order' first, then 'createdAt' as fallback
-            const sectionsQuery = query(sectionsRef, orderBy('order', 'asc'), orderBy('createdAt', 'asc'));
+            // Fetch all without complex sorting to avoid Index errors for now
+            // and to ensure we get legacy documents that might lack the 'order' field
+            const sectionsQuery = query(sectionsRef);
 
             const snapshot = await getDocs(sectionsQuery);
-            return snapshot.docs.map(doc => ({
+            const sections = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
+            // Client-side sort
+            return sections.sort((a, b) => {
+                const orderA = a.order !== undefined ? a.order : 9999;
+                const orderB = b.order !== undefined ? b.order : 9999;
+
+                if (orderA !== orderB) return orderA - orderB;
+
+                // Secondary sort by createdAt
+                const timeA = a.createdAt?.seconds || 0;
+                const timeB = b.createdAt?.seconds || 0;
+                return timeA - timeB;
+            });
         } catch (error) {
             console.error(`Error getting sections for ${verticalId}:`, error);
             throw error;
