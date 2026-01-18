@@ -159,6 +159,7 @@ class AdminController {
         }
 
         // Create Folder Header Button
+        const createFolderBtn = document.getElementById('create-folder-btn');
         if (createFolderBtn) {
             createFolderBtn.addEventListener('click', () => this.handleCreateFolder());
         }
