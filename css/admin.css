@@ -131,6 +131,11 @@
     color: var(--primary);
 }
 
+.header-actions {
+    display: flex;
+    gap: var(--space-md);
+}
+
 /* Data Table */
 .data-table-wrapper {
     background: var(--bg-card);

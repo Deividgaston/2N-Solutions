@@ -88,10 +88,16 @@
         <section id="assets-section" class="admin-section">
             <header class="section-header">
                 <h1><i class="fa-solid fa-images"></i> <span data-i18n="admin.assets">Gestión de Archivos</span></h1>
-                <button class="btn btn-primary" id="upload-asset-btn">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>Subir Imagen</span>
-                </button>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="create-folder-btn">
+                        <i class="fa-solid fa-folder-plus"></i>
+                        <span>Nueva Carpeta</span>
+                    </button>
+                    <button class="btn btn-primary" id="upload-asset-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Subir Archivos</span>
+                    </button>
+                </div>
             </header>
 
             <div class="assets-filters">
@@ -193,9 +199,9 @@
                     <label for="asset-file">Archivo</label>
                     <div class="file-upload-area" id="file-upload-area">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p>Arrastra una imagen o haz clic para seleccionar</p>
+                        <p>Arrastra imágenes/videos o haz clic para seleccionar (Múltiple)</p>
                         <span class="file-info" id="file-info"></span>
-                        <input type="file" id="asset-file" accept="image/*" required>
+                        <input type="file" id="asset-file" accept="image/*,video/*" multiple required>
                     </div>
                 </div>
                 <!-- ... existing form content ... -->
