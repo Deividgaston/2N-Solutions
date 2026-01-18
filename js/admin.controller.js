@@ -647,7 +647,15 @@ class AdminController {
 
     async handleModalCreateFolder() {
         const name = prompt('Nombre de nueva sub-carpeta:');
-        if (!name || !name.match(/^[a-zA-Z0-9_\-\.]+$/)) return;
+        if (!name) return;
+
+        const cleanName = name.trim();
+        if (cleanName.length === 0) return;
+
+        if (cleanName.match(/[\/\\]/)) {
+            alert('El nombre no puede contener barras "/" o "\\"');
+            return;
+        }
 
         try {
             await contentService.createFolder(this.uploadModalPath, name);
