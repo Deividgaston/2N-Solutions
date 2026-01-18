@@ -281,6 +281,51 @@
     transform: translateY(-2px);
 }
 
+.asset-card.gallery-folder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    gap: var(--space-sm);
+    cursor: pointer;
+    min-height: 140px;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-input));
+}
+
+.asset-card.gallery-folder .folder-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+.asset-card.gallery-folder .folder-name {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    word-break: break-word;
+}
+
+.asset-card.gallery-folder .folder-actions {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.asset-card.gallery-folder .delete-icon {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.asset-card.gallery-folder .delete-icon:hover {
+    color: var(--error);
+    background: rgba(255, 61, 0, 0.1);
+}
+
 .asset-thumbnail {
     aspect-ratio: 16/9;
     background: var(--bg-input);
