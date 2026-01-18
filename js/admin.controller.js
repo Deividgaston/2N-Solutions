@@ -159,9 +159,25 @@ class AdminController {
         }
 
         // Create Folder Header Button
-        const createFolderBtn = document.getElementById('create-folder-btn');
         if (createFolderBtn) {
             createFolderBtn.addEventListener('click', () => this.handleCreateFolder());
+        }
+
+        // Modal Navigation Buttons
+        const modalUpBtn = document.getElementById('modal-up-btn');
+        if (modalUpBtn) {
+            modalUpBtn.addEventListener('click', () => {
+                if (this.uploadModalPath !== 'multimedia') {
+                    const parts = this.uploadModalPath.split('/');
+                    parts.pop();
+                    this.navigateUploadModal(parts.join('/'));
+                }
+            });
+        }
+
+        const modalNewFolderBtn = document.getElementById('modal-new-folder-btn');
+        if (modalNewFolderBtn) {
+            modalNewFolderBtn.addEventListener('click', () => this.handleModalCreateFolder());
         }
 
         // Section Modal
@@ -658,7 +674,7 @@ class AdminController {
         }
 
         try {
-            await contentService.createFolder(this.uploadModalPath, name);
+            await contentService.createFolder(this.uploadModalPath, cleanName);
             this.navigateUploadModal(this.uploadModalPath); // Refresh modal view
             // Also refresh main view if we are looking at the same place
             if (this.currentMediaPath === this.uploadModalPath) {
