@@ -66,7 +66,36 @@ class ContentService {
         }
     }
 
-    // ... listMultimediaContents ...
+    /**
+     * List all content (files and folders) in a specific storage path
+     * @param {string} path - The full storage path (e.g., 'multimedia' or 'multimedia/bts')
+     * @returns {Promise<{folders: Array, files: Array}>} Object containing folders and files
+     */
+    async listMultimediaContents(path = 'multimedia') {
+        try {
+            const folderRef = ref(storage, path);
+            const result = await listAll(folderRef);
+
+            const folders = result.prefixes.map(folderRef => ({
+                name: folderRef.name,
+                fullPath: folderRef.fullPath
+            }));
+
+            const files = await Promise.all(result.items.map(async (itemRef) => {
+                const url = await getDownloadURL(itemRef);
+                return {
+                    name: itemRef.name,
+                    fullPath: itemRef.fullPath,
+                    url
+                };
+            }));
+
+            return { folders, files };
+        } catch (error) {
+            console.error('Error listing multimedia contents:', error);
+            return { folders: [], files: [] };
+        }
+    }
 
     /**
      * Add a new section to a vertical
