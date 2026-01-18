@@ -1013,7 +1013,7 @@ class AdminController {
 
         } catch (e) {
             console.error(e);
-            grid.innerHTML = '<p class="error">Error cargando galería</p>';
+            grid.innerHTML = `<p class="error">Error cargando galería: ${e.message}</p>`;
         }
     }
 
