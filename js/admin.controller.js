@@ -562,14 +562,16 @@ class AdminController {
         const name = prompt('Nombre de la nueva carpeta:');
         if (!name) return;
 
-        // Basic validation
-        if (!name.match(/^[a-zA-Z0-9_\-\.]+$/)) {
-            alert('Nombre inválido. Usa solo letras, números, guiones y puntos.');
+        const cleanName = name.trim();
+        if (cleanName.length === 0) return;
+
+        if (cleanName.match(/[\/\\]/)) {
+            alert('El nombre no puede contener barras "/" o "\\"');
             return;
         }
 
         try {
-            await contentService.createFolder(this.currentMediaPath, name);
+            await contentService.createFolder(this.currentMediaPath, cleanName);
             // Refresh
             this.navigateAssets(this.currentMediaPath);
         } catch (error) {
