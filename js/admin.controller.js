@@ -150,6 +150,10 @@ class AdminController {
             uploadAssetBtn.addEventListener('click', () => {
                 document.getElementById('asset-form').reset();
                 document.getElementById('file-info').textContent = '';
+                // Show current path
+                const pathDisplay = this.currentMediaPath === 'multimedia' ? 'Raíz' : this.currentMediaPath.replace('multimedia/', '');
+                document.getElementById('upload-current-path').textContent = pathDisplay;
+
                 assetModal.classList.add('active');
             });
         }

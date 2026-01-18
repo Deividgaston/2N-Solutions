@@ -426,6 +426,16 @@
     padding: var(--space-lg);
 }
 
+.modal-subtitle {
+    margin-bottom: var(--space-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.modal-subtitle strong {
+    color: var(--primary);
+}
+
 .modal .form-group {
     margin-bottom: var(--space-lg);
 }
@@ -703,6 +713,7 @@
     margin-right: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
