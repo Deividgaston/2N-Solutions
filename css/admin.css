@@ -458,10 +458,80 @@
     font-family: inherit;
 }
 
-.modal .form-group input:focus,
-.modal .form-group select:focus {
-    outline: none;
+/* In-modal explorer */
+.modal-explorer-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--bg-input);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--border-color);
+}
+
+.current-path-display {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.current-path-display strong {
+    color: var(--primary);
+}
+
+.btn-icon {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: var(--space-lg);
+    padding: 4px;
+}
+
+.modal-folder-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.modal-folder-card:hover {
     border-color: var(--primary);
+    background: rgba(0, 153, 255, 0.05);
+}
+
+.modal-folder-card i {
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 4px;
+    display: block;
 }
 
 .modal-actions {

@@ -597,6 +597,68 @@ class AdminController {
         }
     }
 
+    async navigateUploadModal(path) {
+        this.uploadModalPath = path;
+        const grid = document.getElementById('modal-folder-grid');
+        const pathDisplay = document.getElementById('upload-current-path');
+        const upBtn = document.getElementById('modal-up-btn');
+
+        // Update display
+        pathDisplay.textContent = path === 'multimedia' ? 'Raíz' : path.replace('multimedia/', '');
+
+        // Update Up button state
+        if (upBtn) {
+            upBtn.disabled = path === 'multimedia';
+            upBtn.style.opacity = path === 'multimedia' ? '0.5' : '1';
+        }
+
+        grid.innerHTML = '<div class="loader-small">Cargando...</div>';
+
+        try {
+            // Re-use service to list contents, but we essentially only care about folders
+            const { folders } = await contentService.listMultimediaContents(path);
+
+            grid.innerHTML = '';
+
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const el = document.createElement('div');
+                    el.className = 'modal-folder-card';
+                    el.innerHTML = `
+                        <i class="fa-solid fa-folder"></i>
+                        <span class="folder-name">${folder.name}</span>
+                    `;
+                    el.addEventListener('click', () => {
+                        this.navigateUploadModal(folder.fullPath);
+                    });
+                    grid.appendChild(el);
+                });
+            } else {
+                grid.innerHTML = '<span style="font-size:12px; color:#aaa; grid-column:1/-1; text-align:center;">No hay subcarpetas</span>';
+            }
+
+        } catch (error) {
+            console.error('Error navigating modal:', error);
+            grid.innerHTML = '<p class="error">Error</p>';
+        }
+    }
+
+    async handleModalCreateFolder() {
+        const name = prompt('Nombre de nueva sub-carpeta:');
+        if (!name || !name.match(/^[a-zA-Z0-9_\-\.]+$/)) return;
+
+        try {
+            await contentService.createFolder(this.uploadModalPath, name);
+            this.navigateUploadModal(this.uploadModalPath); // Refresh modal view
+            // Also refresh main view if we are looking at the same place
+            if (this.currentMediaPath === this.uploadModalPath) {
+                this.navigateAssets(this.currentMediaPath);
+            }
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
+    }
+
     async handleAssetUpload(e) {
         e.preventDefault();
 
@@ -615,30 +677,23 @@ class AdminController {
         let completed = 0;
         let errors = 0;
 
+        // Use the path selected inside the modal, NOT the background view path
+        const uploadTarget = this.uploadModalPath || this.currentMediaPath;
+
         try {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 progressText.textContent = `Subiendo ${i + 1} de ${files.length}: ${file.name}`;
 
                 try {
-                    // Compress/Optimize Logic
                     let fileToUpload = file;
                     if (file.type.startsWith('image/')) {
                         fileToUpload = await this.compressImage(file);
-                    } else if (file.type.startsWith('video/')) {
-                        // Basic size check for videos (e.g., 50MB warning)
-                        if (file.size > 50 * 1024 * 1024) {
-                            console.warn(`Video grande omitido/advertencia: ${file.name}`);
-                            // We allow it but ideally show warning. In loop, confirmation is annoying.
-                            // Let's just create a toast or console log for now.
-                        }
                     }
 
-                    // Upload to Current Explorer Path
-                    // Fix filename for safety
                     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
                     const fileName = `${Date.now()}_${safeName}`;
-                    const storagePath = `${this.currentMediaPath}/${fileName}`;
+                    const storagePath = `${uploadTarget}/${fileName}`;
                     const storageRef = ref(storage, storagePath);
                     await uploadBytesResumable(storageRef, fileToUpload);
 
@@ -652,16 +707,18 @@ class AdminController {
                 }
             }
 
-            // Finished
             document.getElementById('asset-modal').classList.remove('active');
             progressEl.classList.add('hidden');
-            this.navigateAssets(this.currentMediaPath);
 
-            if (errors > 0) {
-                alert(`Subida completada con ${errors} errores.`);
+            // Refresh main view if we uploaded to where we are currently looking
+            if (this.currentMediaPath === uploadTarget) {
+                this.navigateAssets(this.currentMediaPath);
             } else {
-                // Success feedback?
+                // If we uploaded elsewhere, maybe we should ask to jump there? 
+                // For now, just stay where we are, user knows they sent it elsewhere.
             }
+
+            if (errors > 0) alert(`Subida completada con ${errors} errores.`);
 
         } catch (error) {
             console.error('Error general:', error);

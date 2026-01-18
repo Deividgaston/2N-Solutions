@@ -195,9 +195,25 @@
                 <button class="modal-close" aria-label="Cerrar">&times;</button>
             </div>
             <form id="asset-form">
-                <p class="modal-subtitle">Destino: <strong id="upload-current-path">/</strong></p>
+                <div class="modal-explorer-toolbar">
+                    <button type="button" class="btn-icon" id="modal-up-btn" title="Subir nivel">
+                        <i class="fa-solid fa-arrow-turn-up"></i>
+                    </button>
+                    <div class="current-path-display">
+                        <span class="path-label">Guardar en:</span>
+                        <strong id="upload-current-path">/</strong>
+                    </div>
+                    <button type="button" class="btn-icon" id="modal-new-folder-btn" title="Nueva Carpeta">
+                        <i class="fa-solid fa-folder-plus"></i>
+                    </button>
+                </div>
+
+                <div class="modal-folder-grid" id="modal-folder-grid">
+                    <!-- Folders will be injected here -->
+                </div>
+
                 <div class="form-group">
-                    <label for="asset-file">Archivo</label>
+                    <label for="asset-file">Archivos a subir</label>
                     <div class="file-upload-area" id="file-upload-area">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <p>Arrastra imágenes/videos o haz clic para seleccionar (Múltiple)</p>
