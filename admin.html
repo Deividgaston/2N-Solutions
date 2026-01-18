@@ -250,6 +250,19 @@
                 <!-- LEft Column: Editor -->
                 <div class="editor-column">
                     <form id="section-form">
+                        <!-- New Fields -->
+                        <div class="form-group">
+                            <label for="section-title">Título (Opcional)</label>
+                            <input type="text" id="section-title" placeholder="Ej: Introducción">
+                        </div>
+                        <div class="form-group">
+                            <label for="section-tags">Etiquetas (Obligatorio)</label>
+                            <input type="text" id="section-tags" required
+                                placeholder="Ej: portada, intro (separar por comas)">
+                            <small style="color: var(--text-muted);">Usa etiquetas para identificar internamente la
+                                sección.</small>
+                        </div>
+
                         <!-- Layout Selector -->
                         <div class="form-group">
                             <label>Diseño</label>

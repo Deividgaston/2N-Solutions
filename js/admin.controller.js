@@ -817,22 +817,18 @@ class AdminController {
             }
 
             list.innerHTML = '';
-            sections.forEach(section => {
+            sections.forEach((section, index) => {
                 const card = document.createElement('div');
-                card.className = `section-card layout-${section.layout || 'left'}`; // Apply saved layout class
+                card.className = `section-card layout-${section.layout || 'left'}`;
+                card.draggable = true;
+                card.dataset.id = section.id;
+                card.dataset.order = section.order || index;
 
-                // For list view, we might want to keep it consistent or show mini-layout. 
-                // Let's keep consistent left-image structure but maybe add an icon indicating layout?
-                // OR actually respect the layout if CSS supports it (our CSS for section-card is flex).
-                // If we add layout-right, it reverses. Top/Bottom changes flex-direction.
-                // admin.css logic: .section-card is flex row. 
-                // We need to add specific layout support for these cards in the list too if we want them to reflect reality.
-                // Let's rely on the classes we added to css/admin.css targetting .preview-card, but maybe we should generalize them?
-                // Actually the preview-card rules target `.preview-card.layout-*`. 
-                // Let's check if we can make them apply to `.section-card.layout-*`.
+                // Tags HTML
+                const tagsHtml = (section.tags || []).map(t => `<span class="role-badge prescriptor">${t}</span>`).join(' ');
 
-                // Re-using the structure for admin list view:
                 card.innerHTML = `
+                    <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
                     <div class="section-image">
                         ${section.imageUrl
                         ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
@@ -840,21 +836,108 @@ class AdminController {
                     </div>
                     <div class="section-content">
                         <div class="section-info">
+                            <h4 class="section-title">${section.title || '(Sin título)'}</h4>
+                            <div class="section-tags">${tagsHtml}</div>
                             <p class="section-text">${section.text}</p>
                             <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'top' ? 'arrow-up' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left'))}"></i> ${section.layout || 'left'}</span>
                         </div>
                         <div class="section-actions">
-                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')">
+                            <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')" title="Eliminar">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
                     </div>
                 `;
+
+                // Drag Events
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    card.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', section.id);
+                });
+
+                card.addEventListener('dragend', async (e) => {
+                    card.classList.remove('dragging');
+                    // Recalculate order based on new positions
+                    const newOrder = Array.from(list.children).map(c => c.dataset.id);
+                    // We only need to update if order changed significantly, but for simplicity we can just update all or smart update.
+                    // For now, let's just log it. Real persistence happens in 'drop' or we can trigger a batch update here.
+                    // Actually best practice is to update during drop or dragend.
+
+                    await Promise.all(newOrder.map((id, idx) =>
+                        contentService.updateSectionOrder(this.currentVertical, id, idx)
+                    ));
+                });
+
                 list.appendChild(card);
             });
+
+            // List Drag Over Event
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Allow drop
+                const afterElement = this.getDragAfterElement(list, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                if (afterElement == null) {
+                    list.appendChild(draggable);
+                } else {
+                    list.insertBefore(draggable, afterElement);
+                }
+            });
+
         } catch (error) {
             console.error('Error loading sections:', error);
             list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
+        }
+    }
+
+    // Helper for Drag and Drop
+    getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    async handleCloneSection(sectionId) {
+        const verticals = [
+            { id: 'bts', name: 'Residencial BTS' },
+            { id: 'btr', name: 'Residencial BTR' },
+            { id: 'office', name: 'Oficinas' },
+            { id: 'hotel', name: 'Hoteles' },
+            { id: 'retail', name: 'Retail' },
+            { id: 'security', name: 'Seguridad' } // Adding security from context
+        ].filter(v => v.id !== this.currentVertical);
+
+        const target = prompt(
+            `Escribe el ID de la vertical destino (o varias separadas por coma):\n\nOpciones: ${verticals.map(v => v.id).join(', ')}`
+        );
+
+        if (!target) return;
+
+        const targets = target.split(',').map(t => t.trim().toLowerCase());
+        const validTargets = verticals.map(v => v.id);
+        const finalTargets = targets.filter(t => validTargets.includes(t));
+
+        if (finalTargets.length === 0) {
+            alert('Ninguna vertical válida seleccionada.');
+            return;
+        }
+
+        try {
+            await contentService.cloneSection(this.currentVertical, sectionId, finalTargets);
+            alert(`Sección clonada exitosamente a: ${finalTargets.join(', ')}`);
+        } catch (e) {
+            alert('Error al clonar: ' + e.message);
         }
     }
 
@@ -942,71 +1025,83 @@ class AdminController {
         submitBtn.textContent = 'Guardando...';
 
         try {
-            const text = document.getElementById('section-text').value;
-            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
-            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+            try {
+                const title = document.getElementById('section-title').value.trim();
+                const tagsStr = document.getElementById('section-tags').value.trim();
+                const text = document.getElementById('section-text').value;
+                const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+                const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
-            let imageUrl = null;
-            let storagePath = null;
+                // Validate tags
+                if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
+                const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
 
-            if (activeTab === 'upload') {
-                const fileInput = document.getElementById('section-file');
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
+                let imageUrl = null;
+                let storagePath = null;
 
-                    // Upload to current explorer path
-                    // If user wants a new folder, we could prompt, but for now let's use the current path
-                    // This allows "Navigate to 2n -> Upload"
+                if (activeTab === 'upload') {
+                    const fileInput = document.getElementById('section-file');
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
 
-                    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    storagePath = `${this.currentMediaPath}/${fileName}`;
+                        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                        storagePath = `${this.currentMediaPath}/${fileName}`;
 
-                    const storageRef = ref(storage, storagePath);
-                    const uploadTask = await uploadBytesResumable(storageRef, file);
-                    imageUrl = await getDownloadURL(uploadTask.ref);
+                        const storageRef = ref(storage, storagePath);
+                        const uploadTask = await uploadBytesResumable(storageRef, file);
+                        imageUrl = await getDownloadURL(uploadTask.ref);
+                    } else {
+                        // It's possible to create a text-only section or keep existing logic?
+                        // For now, let's allow image to be optional if not strictly required, 
+                        // BUT the original code threw error. Let's keep it strict for now unless user asked otherwise.
+                        // But wait, user might just want to change text/title? No, this is ADD section. 
+                        throw new Error('Por favor selecciona una imagen para subir');
+                    }
                 } else {
-                    throw new Error('Por favor selecciona una imagen para subir');
+                    // Gallery
+                    if (!this.selectedGalleryImage) {
+                        throw new Error('Por favor selecciona una imagen de la galería');
+                    }
+                    imageUrl = this.selectedGalleryImage;
                 }
-            } else {
-                // Gallery
-                if (!this.selectedGalleryImage) {
-                    throw new Error('Por favor selecciona una imagen de la galería');
-                }
-                imageUrl = this.selectedGalleryImage;
+
+                const data = {
+                    title,
+                    tags,
+                    text,
+                    imageUrl,
+                    imagePath: storagePath,
+                    layout
+                };
+
+                await contentService.addSection(this.currentVertical, data);
+
+                document.getElementById('section-modal').classList.remove('active');
+                this.loadSections();
+                this.loadMultimediaGallery();
+
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
-
-            await contentService.addSection(this.currentVertical, imageUrl, text, storagePath, layout);
-
-            document.getElementById('section-modal').classList.remove('active');
-
-            // Reload sections list
-            this.loadSections();
-
-            // Refresh gallery to show new upload (if we were in that mode, though modal closes)
-            this.loadMultimediaGallery();
-
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
         }
-    }
 
     async deleteSection(sectionId) {
-        if (!confirm('¿Eliminar esta sección?')) return;
+            if (!confirm('¿Eliminar esta sección?')) return;
 
-        try {
-            await contentService.deleteSection(this.currentVertical, sectionId);
-            this.loadSections();
-        } catch (e) {
-            alert('Error al eliminar: ' + e.message);
+            try {
+                await contentService.deleteSection(this.currentVertical, sectionId);
+                this.loadSections();
+            } catch (e) {
+                alert('Error al eliminar: ' + e.message);
+            }
         }
     }
-}
 
-// Crear instancia única y exponer globalmente
-const adminController = new AdminController();
+    // Crear instancia única y exponer globalmente
+    const adminController = new AdminController();
 window.adminController = adminController;
 
 export default adminController;
