@@ -255,10 +255,16 @@ class AdminController {
             assetForm.addEventListener('submit', (e) => this.handleAssetUpload(e));
         }
 
-        // Section form
+        // Section form - Submit logic
         const sectionFormEl = document.getElementById('section-form');
         if (sectionFormEl) {
             sectionFormEl.addEventListener('submit', (e) => this.handleSaveSection(e));
+        }
+
+        // Section Save Button (External to form)
+        const saveSectionBtn = document.getElementById('save-section-btn');
+        if (saveSectionBtn) {
+            saveSectionBtn.addEventListener('click', (e) => this.handleSaveSection(e));
         }
 
         // Filter
@@ -1030,8 +1036,17 @@ class AdminController {
 
     async handleSaveSection(e) {
         e.preventDefault();
-        console.log('handleSaveSection Triggered'); // DEBUG LOG
-        const submitBtn = e.target.querySelector('button[type="submit"]');
+        console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
+
+        // Determine submit button based on event type
+        let submitBtn;
+        if (e.target.tagName === 'BUTTON') {
+            submitBtn = e.target;
+        } else {
+            // It was a form submit
+            submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
+        }
+
         const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'Guardando...';
