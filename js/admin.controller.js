@@ -1030,6 +1030,7 @@ class AdminController {
 
     async handleSaveSection(e) {
         e.preventDefault();
+        console.log('handleSaveSection Triggered'); // DEBUG LOG
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
