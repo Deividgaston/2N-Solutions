@@ -256,9 +256,9 @@ class AdminController {
         }
 
         // Section form
-        const sectionForm = document.getElementById('section-form');
-        if (sectionForm) {
-            sectionForm.addEventListener('submit', (e) => this.handleSaveSection(e));
+        const sectionFormEl = document.getElementById('section-form');
+        if (sectionFormEl) {
+            sectionFormEl.addEventListener('submit', (e) => this.handleSaveSection(e));
         }
 
         // Filter
