@@ -7,7 +7,9 @@ import { auth, db } from './firebase-init.js';
 import {
     signInWithEmailAndPassword,
     signOut,
-    onAuthStateChanged
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithPopup
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import i18n from './i18n.js';
@@ -51,9 +53,9 @@ class AuthController {
         });
 
         // Bind login form if present
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', () => this.handleGoogleLogin());
         }
     }
 
@@ -89,52 +91,37 @@ class AuthController {
     }
 
     /**
-     * Handle login form submission
+     * Handle Google Login
      */
-    async handleLogin(e) {
-        e.preventDefault();
-
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const submitBtn = e.target.querySelector('button[type="submit"]');
+    async handleGoogleLogin() {
+        const provider = new GoogleAuthProvider();
         const errorEl = document.getElementById('error-message');
+        const googleLoginBtn = document.getElementById('google-login-btn');
 
-        // Reset error state
-        errorEl.classList.add('hidden');
-        errorEl.textContent = '';
+        if (errorEl) {
+            errorEl.classList.add('hidden');
+            errorEl.textContent = '';
+        }
 
-        // Add loading state
-        submitBtn.classList.add('loading');
-        submitBtn.disabled = true;
-
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
+        if (googleLoginBtn) {
+            googleLoginBtn.disabled = true;
+            googleLoginBtn.classList.add('loading');
+        }
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            // Auth state listener will handle redirect
+            await signInWithPopup(auth, provider);
+            // Auth state listener handles redirect
         } catch (error) {
-            console.error('Login error:', error);
-
-            let errorKey = 'login.errors.generic';
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    errorKey = 'login.errors.userNotFound';
-                    break;
-                case 'auth/wrong-password':
-                case 'auth/invalid-credential':
-                    errorKey = 'login.errors.invalidCredentials';
-                    break;
-                case 'auth/network-request-failed':
-                    errorKey = 'login.errors.networkError';
-                    break;
+            console.error('Google Login error:', error);
+            if (errorEl) {
+                errorEl.textContent = 'Error al iniciar sesión con Google. Inténtalo de nuevo.';
+                errorEl.classList.remove('hidden');
             }
-
-            errorEl.textContent = i18n.t(errorKey);
-            errorEl.classList.remove('hidden');
         } finally {
-            submitBtn.classList.remove('loading');
-            submitBtn.disabled = false;
+            if (googleLoginBtn) {
+                googleLoginBtn.disabled = false;
+                googleLoginBtn.classList.remove('loading');
+            }
         }
     }
 

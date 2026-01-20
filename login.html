@@ -27,34 +27,58 @@
             <p class="tagline" data-i18n="login.tagline">Presentaciones profesionales para prescriptores</p>
         </div>
 
-        <form id="login-form" class="login-form">
+        <div class="login-auth-methods">
             <h1 data-i18n="login.title">Iniciar Sesión</h1>
+            <p style="text-align: center; color: var(--text-gray); margin-bottom: 2rem;">Acceso exclusivo para partners
+                autorizados.</p>
 
-            <div class="form-group">
-                <label for="email" data-i18n="login.email">Email</label>
-                <div class="input-icon">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="email" name="email" required autocomplete="email"
-                        placeholder="tu@email.com">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password" data-i18n="login.password">Contraseña</label>
-                <div class="input-icon">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        placeholder="••••••••">
-                </div>
-            </div>
-
-            <div id="error-message" class="error-message hidden"></div>
-
-            <button type="submit" class="btn btn-primary btn-full">
-                <span data-i18n="login.submit">Entrar</span>
-                <i class="fa-solid fa-arrow-right"></i>
+            <button id="google-login-btn" class="btn btn-google btn-full">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                    style="width: 18px; margin-right: 10px;">
+                <span>Entrar con Google</span>
             </button>
-        </form>
+
+            <div id="error-message" class="error-message hidden" style="margin-top: 1rem;"></div>
+        </div>
+
+        <style>
+            .btn-google {
+                background: white !important;
+                color: #757575 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #ddd !important;
+                transition: background 0.2s, box-shadow 0.2s !important;
+                font-weight: 500 !important;
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .btn-google:hover {
+                background: #f8f8f8 !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .btn-google.loading {
+                opacity: 0.7;
+                pointer-events: none;
+            }
+
+            .login-auth-methods {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 2.5rem;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+            }
+
+            .login-auth-methods h1 {
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+        </style>
 
         <div class="login-footer">
             <div class="language-selector">
