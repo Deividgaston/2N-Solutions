@@ -352,6 +352,7 @@ body {
         text-align: center;
     }
 }
+
 /* =========================================
    Dynamic Sections (Premium Injected Content)
    ========================================= */
@@ -360,7 +361,8 @@ body {
     margin-top: 4rem;
     display: flex;
     flex-direction: column;
-    gap: 6rem; /* Space between sections */
+    gap: 6rem;
+    /* Space between sections */
 }
 
 .dynamic-section {
@@ -394,7 +396,14 @@ body {
     gap: 2rem;
 }
 
-/* Content Elements */
+.dynamic-section.layout-top .ds-image-wrapper,
+.dynamic-section.layout-bottom .ds-image-wrapper {
+    max-width: 800px;
+    max-height: 500px;
+    margin: 0 auto;
+    width: 100%;
+}
+
 .ds-image-wrapper {
     flex: 1;
     border-radius: 16px;
@@ -436,6 +445,7 @@ body {
     margin-bottom: 1.25rem;
     background: linear-gradient(90deg, #fff, #aaa);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.2;
 }
@@ -444,20 +454,22 @@ body {
     font-size: 1rem;
     line-height: 1.7;
     color: var(--text-gray);
-    white-space: pre-line; /* Handle line breaks */
+    white-space: pre-line;
+    /* Handle line breaks */
 }
 
 /* Buttons inside sections (if any, but usually text) */
 
 /* Responsive */
 @media (max-width: 900px) {
-    .dynamic-section, 
+
+    .dynamic-section,
     .dynamic-section.layout-right {
         flex-direction: column;
         gap: 2rem;
         text-align: left;
     }
-    
+
     .ds-title {
         font-size: 1.5rem;
     }

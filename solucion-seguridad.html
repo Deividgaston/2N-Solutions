@@ -33,6 +33,10 @@
             <h1>Seguridad</h1>
             <p class="solution-subtitle">Control de acceso avanzado para infraestructuras críticas. Biometría,
                 integración con CCTV, seguridad perimetral y cumplimiento normativo.</p>
+            <button id="download-dossier-btn" class="btn-sidebar-outline"
+                style="margin-top: 1.5rem; width: auto; display: inline-flex;">
+                <i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF
+            </button>
         </div>
     </section>
 
@@ -76,8 +80,10 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script type="module" src="js/firebase-init.js"></script>
     <script type="module" src="js/vertical-renderer.js"></script>
+    <script type="module" src="js/pdf-handler.js"></script>
     <script>
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
