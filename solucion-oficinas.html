@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/solutions.css">
 </head>
 
-<body>
+<body data-vertical="office">
     <nav class="navbar" id="navbar">
         <a href="/" class="logo"><img src="assets/2N_Logo_RGB_White.png" alt="2N"></a>
         <ul class="nav-links">
@@ -37,7 +37,7 @@
     </section>
 
     <section class="solution-content">
-        <div class="content-grid">
+        <div class="content-grid" style="grid-template-columns: 1fr;">
             <div class="content-main">
                 <h2>Control de acceso para el workplace moderno</h2>
                 <p>Los edificios de oficinas actuales requieren soluciones flexibles que se adapten a múltiples
@@ -57,35 +57,10 @@
                         trazabilidad de accesos</li>
                 </ul>
 
-                <h3>Productos recomendados</h3>
-                <div class="products-grid">
-                    <div class="product-card">
-                        <h4>2N IP Style</h4>
-                        <p>Videoportero elegante con pantalla táctil para recepciones premium.</p>
-                    </div>
-                    <div class="product-card">
-                        <h4>2N Access Unit QR</h4>
-                        <p>Lector QR para visitantes y accesos temporales.</p>
-                    </div>
-                    <div class="product-card">
-                        <h4>2N Access Commander</h4>
-                        <p>Software de gestión centralizada para grandes instalaciones.</p>
-                    </div>
+                <div id="dynamic-sections-container" class="dynamic-sections-container">
+                    <!-- Dynamic sections from private area will be injected here -->
                 </div>
             </div>
-            <aside class="content-sidebar">
-                <div class="sidebar-card">
-                    <h4>¿Interesado en esta solución?</h4>
-                    <p>Contacta con nuestro equipo comercial para una propuesta personalizada.</p>
-                    <a href="mailto:comercial@2n.com" class="btn-sidebar"><i class="fa-solid fa-envelope"></i> Solicitar información</a>
-                </div>
-                <div class="sidebar-card">
-                    <h4>Más información técnica</h4>
-                    <p>Visita nuestra web oficial para especificaciones detalladas.</p>
-                    <a href="https://www.2n.com" target="_blank" class="btn-sidebar-outline"><i
-                            class="fa-solid fa-envelope"></i> Ir a 2N.com</a>
-                </div>
-            </aside>
         </div>
     </section>
 
@@ -100,6 +75,8 @@
         </div>
     </footer>
 
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/vertical-renderer.js"></script>
     <script>
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
