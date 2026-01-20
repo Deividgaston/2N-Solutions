@@ -18,11 +18,16 @@ class PDFService {
      * @param {Object} data - Data to include in the PDF
      */
     async generateDossier(verticalName, data) {
-        // Create a hidden container for PDF generation
+        // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        container.style.width = '800px'; // Fixed width for consistent rendering
+        container.id = 'pdf-generation-container';
+        container.style.position = 'fixed';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = '800px';
+        container.style.zIndex = '-1000';
+        container.style.opacity = '0.01';
+        container.style.pointerEvents = 'none';
         container.style.backgroundColor = '#000';
         container.style.color = '#fff';
         container.style.fontFamily = "'Inter', sans-serif";
@@ -34,13 +39,15 @@ class PDFService {
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
                 
                 .pdf-page {
-                    width: 100%;
-                    min-height: 1120px; /* A4-ish height */
-                    padding: 80px 60px;
+                    width: 794px; /* A4 width at 96 DPI approx */
+                    min-height: 1122px; 
+                    padding: 60px;
                     box-sizing: border-box;
                     page-break-after: always;
                     position: relative;
                     background: #000;
+                    color: #fff;
+                    overflow: hidden;
                 }
                 
                 /* Cover Page */
@@ -48,64 +55,107 @@ class PDFService {
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
-                    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('assets/pdf_cover.png');
-                    background-size: cover;
-                    background-position: center;
+                    padding: 0;
                 }
                 
+                .cover-img-wrapper {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                }
+                
+                .cover-img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                
+                .cover-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.9));
+                    z-index: 2;
+                }
+                
+                .cover-content {
+                    position: relative;
+                    z-index: 3;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    padding: 60px;
+                }
+
                 .logo-header { text-align: right; }
                 .logo-header img { height: 40px; }
                 
                 .cover-footer h1 {
-                    font-size: 64px;
+                    font-size: 56px;
                     font-weight: 900;
                     margin: 0;
                     letter-spacing: -2px;
+                    color: #fff;
                 }
                 
                 .cover-footer .subtitle {
-                    font-size: 24px;
+                    font-size: 22px;
                     color: #0099FF;
                     margin-top: 10px;
+                    font-weight: 600;
                 }
                 
                 /* Common Styles */
                 h2 { font-size: 32px; font-weight: 800; color: #0099FF; margin-bottom: 30px; }
-                p { line-height: 1.6; color: #aaa; margin-bottom: 20px; font-size: 16px; }
+                h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 20px; }
+                p { line-height: 1.6; color: #ccc; margin-bottom: 20px; font-size: 16px; }
                 
                 .section-badge {
                     display: inline-block;
-                    padding: 6px 12px;
+                    padding: 6px 14px;
                     border: 1px solid #0099FF;
                     border-radius: 50px;
                     color: #0099FF;
-                    font-size: 12px;
-                    font-weight: 700;
+                    font-size: 11px;
+                    font-weight: 800;
                     text-transform: uppercase;
-                    margin-bottom: 20px;
+                    margin-bottom: 25px;
+                    letter-spacing: 1px;
                 }
                 
                 .benefit-item {
                     display: flex;
                     gap: 15px;
-                    margin-bottom: 15px;
+                    margin-bottom: 18px;
+                    align-items: flex-start;
                 }
                 
-                .benefit-item .icon { color: #0099FF; font-weight: bold; }
+                .benefit-item .icon { 
+                    color: #0099FF; 
+                    font-weight: bold; 
+                    font-size: 20px;
+                    line-height: 1;
+                }
                 
                 /* Dynamic Sections */
                 .ds-block {
-                    margin-top: 50px;
+                    margin-top: 40px;
                     border-top: 1px solid #222;
-                    padding-top: 50px;
+                    padding-top: 40px;
                 }
                 
-                .ds-title { font-size: 24px; margin-bottom: 15px; color: #fff; }
+                .ds-title { font-size: 24px; margin-bottom: 15px; color: #fff; font-weight: 700; }
                 .ds-img {
                     width: 100%;
                     border-radius: 12px;
                     margin-bottom: 20px;
-                    max-height: 400px;
+                    max-height: 350px;
                     object-fit: cover;
                 }
                 
@@ -116,22 +166,28 @@ class PDFService {
                     right: 60px;
                     display: flex;
                     justify-content: space-between;
-                    font-size: 10px;
-                    color: #444;
-                    border-top: 1px solid #111;
-                    padding-top: 10px;
+                    font-size: 11px;
+                    color: #555;
+                    border-top: 1px solid #222;
+                    padding-top: 15px;
                 }
             </style>
 
             <!-- PAGE 1: COVER -->
             <div class="pdf-page cover-page">
-                <div class="logo-header">
-                    <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo">
+                <div class="cover-img-wrapper">
+                    <img src="assets/pdf_cover.png" class="cover-img">
+                    <div class="cover-overlay"></div>
                 </div>
-                <div class="cover-footer">
-                    <span class="section-badge">${data.verticalLabel || 'Solución'}</span>
-                    <h1>${verticalName}</h1>
-                    <p class="subtitle">Propuesta tecnológica para prescriptores</p>
+                <div class="cover-content">
+                    <div class="logo-header">
+                        <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo">
+                    </div>
+                    <div class="cover-footer">
+                        <span class="section-badge">${data.verticalLabel || 'Solución'}</span>
+                        <h1>${verticalName}</h1>
+                        <p class="subtitle">Dossier Técnico para Prescriptores</p>
+                    </div>
                 </div>
             </div>
 
@@ -143,16 +199,16 @@ class PDFService {
                 
                 <span class="section-badge">Sobre Nosotros</span>
                 <h2>${this.companyInfo.title}</h2>
-                <p style="font-size: 18px; color: #eee;">${this.companyInfo.description}</p>
+                <p style="font-size: 18px; color: #fff; font-weight: 500;">${this.companyInfo.description}</p>
                 <p>${this.companyInfo.innovation}</p>
                 
-                <div style="margin-top: 60px;">
-                    <h3>Líderes en Innovación</h3>
-                    <p>Como parte de Axis Communications, 2N integra las tecnologías más avanzadas de vídeo y audio IP para ofrecer la mayor fiabilidad del mercado.</p>
+                <div style="margin-top: 60px; padding: 30px; background: #111; border-radius: 16px; border: 1px solid #222;">
+                    <h3 style="margin-top: 0;">Líderes en Innovación</h3>
+                    <p style="margin-bottom: 0;">Como parte de Axis Communications (Grupo Canon), 2N integra las tecnologías más avanzadas de vídeo y audio IP para ofrecer la mayor fiabilidad y diseño del mercado global.</p>
                 </div>
 
                 <div class="footer-page">
-                    <span>© 2024 2N Telekomunikace a.s.</span>
+                    <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
                     <span>2n.com</span>
                 </div>
             </div>
@@ -164,7 +220,7 @@ class PDFService {
                 </div>
                 
                 <span class="section-badge">Dossier de Solución</span>
-                <h2>${data.mainTitle || 'El Reto'}</h2>
+                <h2>${data.mainTitle || 'Propuesta de Valor'}</h2>
                 <div style="margin-bottom: 40px;">
                     ${data.mainIntro.map(p => `<p>${p}</p>`).join('')}
                 </div>
@@ -180,7 +236,7 @@ class PDFService {
                 </div>
 
                 <div class="footer-page">
-                    <span>Dossier ${verticalName}</span>
+                    <span>Propuesta Técnica: ${verticalName}</span>
                     <span>Página 3</span>
                 </div>
             </div>
@@ -188,8 +244,23 @@ class PDFService {
             ${data.dynamicSections.length > 0 ? this.renderDynamicPages(data.dynamicSections, verticalName) : ''}
         `;
 
-        // Wait for images to potentially load (even if they are local)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Function to wait for all images in the container
+        const waitForImages = () => {
+            const imgs = container.querySelectorAll('img');
+            const promises = Array.from(imgs).map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue anyway on error
+                });
+            });
+            return Promise.all(promises);
+        };
+
+        // Explicitly wait for images
+        await waitForImages();
+        // Small extra delay for fonts and layout settling
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         // Options for html2pdf
         const opt = {
@@ -200,17 +271,19 @@ class PDFService {
                 scale: 2,
                 logging: false,
                 backgroundColor: '#000',
-                useCORS: true
+                useCORS: true,
+                allowTaint: true
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         try {
             // Generate PDF
-            await html2pdf().set(opt).from(container).save();
+            const worker = html2pdf().set(opt).from(container);
+            await worker.save();
         } catch (error) {
             console.error('PDF Generation error:', error);
-            alert('Error al generar el PDF. Por favor, inténtalo de nuevo.');
+            alert('Error al generar el PDF. Por favor, asegúrate de estar conectado a internet.');
         } finally {
             // Cleanup
             document.body.removeChild(container);
