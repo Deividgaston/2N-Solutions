@@ -27,7 +27,7 @@ class PDFService {
         // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
-        container.style.position = 'absolute';
+        container.style.position = 'relative'; // FIXED: Relative positioning ensures height is respected by html2canvas
         container.style.top = '0';
         container.style.left = '0';
         container.style.width = '794px'; // A4 Width
@@ -56,40 +56,54 @@ class PDFService {
         `;
         document.body.appendChild(curtain);
 
-        // 2N CORPORATE DESIGN SYSTEM
+        // 2N CORPORATE DESIGN SYSTEM (DARK MODE)
         container.innerHTML = `
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
                 
                 :root {
-                    --2n-blue: #0068B3; /* Official 2N Blue */
-                    --2n-dark: #121212;
-                    --2n-gray: #f4f4f4;
-                    --text-body: #333333;
+                    --2n-accent: #ffffff;
+                    --2n-bg: #000000;
+                    --2n-card-bg: #111111;
+                    --text-body: #cccccc;
                     --text-light: #ffffff;
+                    --2n-blue: #ffffff; /* Override blue to white for compatibility */
                 }
 
                 .pdf-page {
                     width: 794px;
-                    height: 1122px; /* Strict A4 page */
+                    height: 1122px; 
                     padding: 0;
                     margin: 0;
                     box-sizing: border-box;
                     page-break-after: always;
                     position: relative;
-                    background: #fff; /* Paper background */
+                    background: var(--2n-bg);
                     color: var(--text-body);
-                    overflow: hidden; /* Strict overflow to force correct paging */
+                    overflow: hidden; 
                     font-family: 'Inter', sans-serif;
                 }
 
-                /* ========================
-                   PAGE 1: HERO COVER
-                   ======================== */
                 .cover-page {
                     background: #000;
                     color: #fff;
                 }
+                
+                /* Update text colors for dark mode */
+                .section-title { color: #fff; }
+                .section-title span { color: #fff; }
+                .about-highlight { color: #fff; }
+                .ds-content h3 { color: #fff; }
+                .benefit-card { background: var(--2n-card-bg); border-left: 2px solid #fff; }
+                .benefit-icon { color: #fff; }
+                .benefit-text { color: #eee; }
+                .page-header { background: #333; height: 1px; }
+                .page-footer { border-top: 1px solid #333; color: #555; }
+                .cover-line { background: #fff; }
+                .cover-badge { color: #fff; opacity: 0.6; }
+                
+                /* --- EXISTING STYLES REUSED --- */
+
 
                 .cover-image {
                     position: absolute;
@@ -411,7 +425,7 @@ class PDFService {
             html2canvas: {
                 scale: 2,
                 logging: true,
-                backgroundColor: '#fff', // White background
+                backgroundColor: '#000000', // Black background
                 useCORS: true,
                 allowTaint: false,
                 scrollY: 0,
