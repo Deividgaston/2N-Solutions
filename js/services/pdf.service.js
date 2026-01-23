@@ -31,10 +31,11 @@ class PDFService {
         container.style.top = '0';
         container.style.left = '0';
         container.style.width = '800px'; // Fixed A4 width context
+        container.style.minHeight = '1123px'; // FORCE A4 HEIGHT to prevent 0-height render
         container.style.zIndex = '9998'; // High Z-index
         container.style.opacity = '1';
-        container.style.backgroundColor = '#000';
-        container.style.color = '#fff';
+        container.style.backgroundColor = '#ffffff'; // Force white background
+        container.style.color = '#000'; // Force black text
         container.style.fontFamily = "'Inter', sans-serif";
         document.body.appendChild(container);
 
