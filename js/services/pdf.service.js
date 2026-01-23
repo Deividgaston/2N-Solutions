@@ -21,12 +21,12 @@ class PDFService {
         // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
-        container.style.position = 'fixed';
+        container.style.position = 'absolute';
         container.style.top = '0';
-        container.style.left = '0';
+        container.style.left = '-5000px'; // Move off-screen instead of opacity
         container.style.width = '800px';
         container.style.zIndex = '-1000';
-        container.style.opacity = '0.01';
+        container.style.opacity = '1'; // Fully opaque for renderer
         container.style.pointerEvents = 'none';
         container.style.backgroundColor = '#000';
         container.style.color = '#fff';
@@ -272,7 +272,9 @@ class PDFService {
                 logging: false,
                 backgroundColor: '#000',
                 useCORS: true,
-                allowTaint: true
+                allowTaint: true,
+                scrollY: 0,
+                windowWidth: 1200
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
