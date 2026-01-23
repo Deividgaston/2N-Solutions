@@ -62,8 +62,8 @@ class PDFService {
                     box-sizing: border-box;
                     page-break-after: always;
                     position: relative;
-                    background: #ffffff; /* FORCE WHITE BG */
-                    color: #000000; /* FORCE BLACK TEXT */
+                    background: #000;
+                    color: #fff;
                     overflow: hidden;
                 }
                 
@@ -129,9 +129,9 @@ class PDFService {
                 }
                 
                 /* Common Styles */
-                h2 { font-size: 32px; font-weight: 800; color: #0055aa; margin-bottom: 30px; }
-                h3 { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 20px; }
-                p { line-height: 1.6; color: #333; margin-bottom: 20px; font-size: 16px; }
+                h2 { font-size: 32px; font-weight: 800; color: #0099FF; margin-bottom: 30px; }
+                h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 20px; }
+                p { line-height: 1.6; color: #ccc; margin-bottom: 20px; font-size: 16px; }
                 
                 .section-badge {
                     display: inline-block;
@@ -286,12 +286,13 @@ class PDFService {
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: {
                 scale: 2,
-                logging: false,
+                logging: true,
                 backgroundColor: '#000',
                 useCORS: true,
-                allowTaint: true,
+                allowTaint: false, // CRITICAL: Must be false to allow data export
                 scrollY: 0,
-                windowWidth: 1200
+                windowWidth: 1200,
+                windowHeight: 2000
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
@@ -302,7 +303,7 @@ class PDFService {
             await worker.save();
         } catch (error) {
             console.error('PDF Generation error:', error);
-            alert('Error al generar el PDF. Por favor, asegúrate de estar conectado a internet.');
+            alert(`Error al generar el PDF: ${error.message || error}`);
         } finally {
             // Cleanup
             document.body.removeChild(container);
