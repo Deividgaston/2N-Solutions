@@ -18,6 +18,11 @@ class PDFService {
      * @param {Object} data - Data to include in the PDF
      */
     async generateDossier(verticalName, data) {
+        if (typeof html2pdf === 'undefined') {
+            alert('CRITICAL ERROR: La librería "html2pdf" no se ha cargado. Revisa tu conexión o la consola.');
+            return;
+        }
+
         // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
