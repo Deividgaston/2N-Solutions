@@ -27,17 +27,16 @@ class PDFService {
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
         // Strategy: Place ON TOP to ensure rendering, but cover with a curtain
-        // Strategy: Place ON TOP to ensure rendering, but cover with a curtain
-        container.style.position = 'absolute';
+        container.style.position = 'relative'; // IN FLOW
         container.style.top = '0';
         container.style.left = '0';
         container.style.width = '800px';
-        container.style.height = 'auto'; // Allow expansion
-        container.style.minHeight = '1200px'; // Aggressive min-height
+        container.style.height = '5000px'; // MASSIVE HEIGHT
+        container.style.minHeight = '1200px';
         container.style.zIndex = '9998';
-        container.style.display = 'block'; // Ensure block layout
-        container.style.backgroundColor = '#1a1a1a'; // Dark bg visible
-        container.style.border = '5px solid blue'; // DEBUG: Source Container Border
+        container.style.display = 'block';
+        container.style.backgroundColor = '#1a1a1a';
+        container.style.border = '10px solid lime'; // BRIGHT GREEN BORDER
         container.style.color = '#fff';
         container.style.fontFamily = "'Inter', sans-serif";
         document.body.appendChild(container);
@@ -341,11 +340,12 @@ class PDFService {
             console.error('PDF Generation error:', error);
             alert(`Error al generar el PDF: ${error.message || error}`);
         } finally {
-            // Cleanup
-            document.body.removeChild(container);
-            if (document.body.contains(curtain)) {
-                document.body.removeChild(curtain);
-            }
+            // DEBUG: DO NOT REMOVE ELEMENTS
+            // document.body.removeChild(container);
+            // if (document.body.contains(curtain)) {
+            //    document.body.removeChild(curtain);
+            // }
+            alert('DEBUG: Proceso terminado. ¿Ves el cuadro VERDE abajo del todo o la cortina negra?');
         }
     }
 
