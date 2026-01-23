@@ -51,215 +51,23 @@ class PDFService {
         document.body.appendChild(curtain);
 
         // Build HTML structure
+        // SIMPLIFIED DEBUG CONTENT - REMOVE IMAGES TO TEST ENGINE
         container.innerHTML = `
-            <style>
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-                
-                .pdf-page {
-                    width: 794px; /* A4 width at 96 DPI approx */
-                    min-height: 1122px; 
-                    padding: 60px;
-                    box-sizing: border-box;
-                    page-break-after: always;
-                    position: relative;
-                    background: #000;
-                    color: #fff;
-                    overflow: hidden;
-                }
-                
-                /* Cover Page */
-                .cover-page {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    padding: 0;
-                }
-                
-                .cover-img-wrapper {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 1;
-                }
-                
-                .cover-img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                
-                .cover-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.9));
-                    z-index: 2;
-                }
-                
-                .cover-content {
-                    position: relative;
-                    z-index: 3;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    padding: 60px;
-                }
-
-                .logo-header { text-align: right; }
-                .logo-header img { height: 40px; }
-                
-                .cover-footer h1 {
-                    font-size: 56px;
-                    font-weight: 900;
-                    margin: 0;
-                    letter-spacing: -2px;
-                    color: #fff;
-                }
-                
-                .cover-footer .subtitle {
-                    font-size: 22px;
-                    color: #0099FF;
-                    margin-top: 10px;
-                    font-weight: 600;
-                }
-                
-                /* Common Styles */
-                h2 { font-size: 32px; font-weight: 800; color: #0099FF; margin-bottom: 30px; }
-                h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 20px; }
-                p { line-height: 1.6; color: #ccc; margin-bottom: 20px; font-size: 16px; }
-                
-                .section-badge {
-                    display: inline-block;
-                    padding: 6px 14px;
-                    border: 1px solid #0099FF;
-                    border-radius: 50px;
-                    color: #0099FF;
-                    font-size: 11px;
-                    font-weight: 800;
-                    text-transform: uppercase;
-                    margin-bottom: 25px;
-                    letter-spacing: 1px;
-                }
-                
-                .benefit-item {
-                    display: flex;
-                    gap: 15px;
-                    margin-bottom: 18px;
-                    align-items: flex-start;
-                }
-                
-                .benefit-item .icon { 
-                    color: #0099FF; 
-                    font-weight: bold; 
-                    font-size: 20px;
-                    line-height: 1;
-                }
-                
-                /* Dynamic Sections */
-                .ds-block {
-                    margin-top: 40px;
-                    border-top: 1px solid #222;
-                    padding-top: 40px;
-                }
-                
-                .ds-title { font-size: 24px; margin-bottom: 15px; color: #fff; font-weight: 700; }
-                .ds-img {
-                    width: 100%;
-                    border-radius: 12px;
-                    margin-bottom: 20px;
-                    max-height: 350px;
-                    object-fit: cover;
-                }
-                
-                .footer-page {
-                    position: absolute;
-                    bottom: 40px;
-                    left: 60px;
-                    right: 60px;
-                    display: flex;
-                    justify-content: space-between;
-                    font-size: 11px;
-                    color: #555;
-                    border-top: 1px solid #222;
-                    padding-top: 15px;
-                }
-            </style>
-
-            <!-- PAGE 1: COVER -->
-            <div class="pdf-page cover-page">
-                <div class="cover-img-wrapper">
-                    <img src="assets/pdf_cover.png" class="cover-img">
-                    <div class="cover-overlay"></div>
-                </div>
-                <div class="cover-content">
-                    <div class="logo-header">
-                        <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo">
-                    </div>
-                    <div class="cover-footer">
-                        <span class="section-badge">${data.verticalLabel || 'Solución'}</span>
-                        <h1>${verticalName}</h1>
-                        <p class="subtitle">Dossier Técnico para Prescriptores</p>
-                    </div>
-                </div>
+            <div style="padding: 50px; background: white; color: black; width: 100%; height: 100%;">
+                <h1 style="color: red; font-size: 40px;">TEST DE PDF</h1>
+                <p>Si ves esto, el sistema de generación funciona.</p>
+                <p>El problema anterior era probablemente una imagen corrupta o un estilo CSS complejo.</p>
+                <hr>
+                <p>Vertical: ${verticalName}</p>
             </div>
-
-            <!-- PAGE 2: ABOUT 2N -->
-            <div class="pdf-page">
-                <div class="logo-header" style="margin-bottom: 60px;">
-                    <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo">
-                </div>
-                
-                <span class="section-badge">Sobre Nosotros</span>
-                <h2>${this.companyInfo.title}</h2>
-                <p style="font-size: 18px; color: #fff; font-weight: 500;">${this.companyInfo.description}</p>
-                <p>${this.companyInfo.innovation}</p>
-                
-                <div style="margin-top: 60px; padding: 30px; background: #111; border-radius: 16px; border: 1px solid #222;">
-                    <h3 style="margin-top: 0;">Líderes en Innovación</h3>
-                    <p style="margin-bottom: 0;">Como parte de Axis Communications (Grupo Canon), 2N integra las tecnologías más avanzadas de vídeo y audio IP para ofrecer la mayor fiabilidad y diseño del mercado global.</p>
-                </div>
-
-                <div class="footer-page">
-                    <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
-                    <span>2n.com</span>
-                </div>
-            </div>
-
-            <!-- PAGE 3+: SOLUTION DETAILS & DYNAMIC CONTENT -->
-            <div class="pdf-page">
-                <div class="logo-header" style="margin-bottom: 40px;">
-                    <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo">
-                </div>
-                
-                <span class="section-badge">Dossier de Solución</span>
-                <h2>${data.mainTitle || 'Propuesta de Valor'}</h2>
-                <div style="margin-bottom: 40px;">
-                    ${data.mainIntro.map(p => `<p>${p}</p>`).join('')}
-                </div>
-
-                <h3>Beneficios Clave</h3>
-                <div class="benefits-container">
-                    ${data.benefits.map(b => `
-                        <div class="benefit-item">
-                            <span class="icon">✓</span>
-                            <span>${b}</span>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <div class="footer-page">
-                    <span>Propuesta Técnica: ${verticalName}</span>
-                    <span>Página 3</span>
-                </div>
-            </div>
-            
-            ${data.dynamicSections.length > 0 ? this.renderDynamicPages(data.dynamicSections, verticalName) : ''}
         `;
+
+        /* 
+        // ORIGINAL COMPLEX CONTENT COMMENTED OUT
+        container.innerHTML = `
+            ... (omitted for debug) ...
+        `;
+        */
 
         // Function to wait for all images in the container
         const waitForImages = () => {
