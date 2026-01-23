@@ -21,17 +21,34 @@ class PDFService {
         // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
-        container.style.position = 'absolute';
+        // Strategy: Place ON TOP to ensure rendering, but cover with a curtain
+        container.style.position = 'fixed';
         container.style.top = '0';
-        container.style.left = '-5000px'; // Move off-screen instead of opacity
-        container.style.width = '800px';
-        container.style.zIndex = '-1000';
-        container.style.opacity = '1'; // Fully opaque for renderer
-        container.style.pointerEvents = 'none';
+        container.style.left = '0';
+        container.style.width = '800px'; // Fixed A4 width context
+        container.style.zIndex = '9998'; // High Z-index
+        container.style.opacity = '1';
         container.style.backgroundColor = '#000';
         container.style.color = '#fff';
         container.style.fontFamily = "'Inter', sans-serif";
         document.body.appendChild(container);
+
+        // Create a curtain to hide the flickering/rendering process from user
+        const curtain = document.createElement('div');
+        curtain.id = 'pdf-curtain';
+        curtain.style.position = 'fixed';
+        curtain.style.inset = '0';
+        curtain.style.backgroundColor = '#000';
+        curtain.style.zIndex = '9999'; // On top of everything
+        curtain.style.display = 'flex';
+        curtain.style.flexDirection = 'column';
+        curtain.style.alignItems = 'center';
+        curtain.style.justifyContent = 'center';
+        curtain.innerHTML = `
+            <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">Generando Dossier PDF...</div>
+            <div style="color: #666;">Por favor espere unos segundos</div>
+        `;
+        document.body.appendChild(curtain);
 
         // Build HTML structure
         container.innerHTML = `
@@ -289,6 +306,9 @@ class PDFService {
         } finally {
             // Cleanup
             document.body.removeChild(container);
+            if (document.body.contains(curtain)) {
+                document.body.removeChild(curtain);
+            }
         }
     }
 
