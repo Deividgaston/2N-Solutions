@@ -62,8 +62,8 @@ class PDFService {
                     box-sizing: border-box;
                     page-break-after: always;
                     position: relative;
-                    background: #000;
-                    color: #fff;
+                    background: #ffffff; /* FORCE WHITE BG */
+                    color: #000000; /* FORCE BLACK TEXT */
                     overflow: hidden;
                 }
                 
@@ -129,9 +129,9 @@ class PDFService {
                 }
                 
                 /* Common Styles */
-                h2 { font-size: 32px; font-weight: 800; color: #0099FF; margin-bottom: 30px; }
-                h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 20px; }
-                p { line-height: 1.6; color: #ccc; margin-bottom: 20px; font-size: 16px; }
+                h2 { font-size: 32px; font-weight: 800; color: #0055aa; margin-bottom: 30px; }
+                h3 { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 20px; }
+                p { line-height: 1.6; color: #333; margin-bottom: 20px; font-size: 16px; }
                 
                 .section-badge {
                     display: inline-block;
