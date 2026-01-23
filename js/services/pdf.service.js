@@ -299,8 +299,24 @@ class PDFService {
 
         try {
             // Generate PDF
+            // Generate PDF - DEBUG MODE
+            // Instead of saving, we check if the canvas renders correctly
             const worker = html2pdf().set(opt).from(container);
-            await worker.save();
+
+            worker.toCanvas().then((canvas) => {
+                // FORCE DISPLAY CANVAS ON SCREEN
+                canvas.style.position = 'fixed';
+                canvas.style.top = '50px';
+                canvas.style.left = '50px';
+                canvas.style.zIndex = '10000';
+                canvas.style.border = '10px solid red';
+                canvas.style.maxWidth = '90%';
+                canvas.style.height = 'auto';
+                document.body.appendChild(canvas);
+
+                alert('MODO DEPURACIÓN: He generado una "foto" del PDF y la he puesto en pantalla con borde ROJO. \n\n¿Ves el contenido dentro del borde rojo?\n\n(Si lo ves, el problema es al guardar el archivo. Si está negro/blanco, el problema es el renderizado).');
+            });
+            // await worker.save(); // DISABLED FOR DEBUG
         } catch (error) {
             console.error('PDF Generation error:', error);
             alert(`Error al generar el PDF: ${error.message || error}`);
