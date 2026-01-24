@@ -56,7 +56,7 @@ class PDFService {
         `;
         document.body.appendChild(curtain);
 
-        // 2N CORPORATE DESIGN SYSTEM (DARK MODE)
+        // 2N CORPORATE DESIGN SYSTEM (DARK PREMIUM)
         container.innerHTML = `
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -65,9 +65,9 @@ class PDFService {
                     --2n-accent: #ffffff;
                     --2n-bg: #000000;
                     --2n-card-bg: #111111;
-                    --text-body: #cccccc;
+                    --text-body: #bbbbbb;
                     --text-light: #ffffff;
-                    --2n-blue: #ffffff; /* Override blue to white for compatibility */
+                    --2n-blue: #ffffff;
                 }
 
                 .pdf-page {
@@ -84,35 +84,23 @@ class PDFService {
                     font-family: 'Inter', sans-serif;
                 }
 
+                /* ========================
+                   Page 1: IMPACT COVER
+                   ======================== */
                 .cover-page {
                     background: #000;
                     color: #fff;
+                    position: relative;
                 }
-                
-                /* Update text colors for dark mode */
-                .section-title { color: #fff; }
-                .section-title span { color: #fff; }
-                .about-highlight { color: #fff; }
-                .ds-content h3 { color: #fff; }
-                .benefit-card { background: var(--2n-card-bg); border-left: 2px solid #fff; }
-                .benefit-icon { color: #fff; }
-                .benefit-text { color: #eee; }
-                .page-header { background: #333; height: 1px; }
-                .page-footer { border-top: 1px solid #333; color: #555; }
-                .cover-line { background: #fff; }
-                .cover-badge { color: #fff; opacity: 0.6; }
-                
-                /* --- EXISTING STYLES REUSED --- */
-
 
                 .cover-image {
                     position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
-                    height: 65%; /* Dominant image */
+                    height: 100%; /* Full Height Cover */
                     object-fit: cover;
-                    opacity: 0.8;
+                    opacity: 0.6;
                 }
                 
                 .cover-gradient {
@@ -120,65 +108,58 @@ class PDFService {
                     top: 0;
                     left: 0;
                     width: 100%;
-                    height: 65%;
-                    background: linear-gradient(to bottom, rgba(0,0,0,0.1), #000);
+                    height: 100%;
+                    background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 100%);
                     z-index: 1;
                 }
 
-                .cover-header {
+                .cover-logo-large {
                     position: absolute;
-                    top: 40px;
-                    right: 40px;
+                    top: 60px;
+                    left: 60px;
+                    width: 160px; /* Prominent Logo */
                     z-index: 10;
-                    width: 120px;
+                    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
                 }
 
                 .cover-body {
                     position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 35%;
-                    background: #000;
-                    padding: 40px 60px;
-                    box-sizing: border-box;
+                    bottom: 80px;
+                    left: 60px;
+                    right: 60px;
                     z-index: 2;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
                 }
 
                 .cover-badge {
+                    display: inline-block;
+                    padding: 8px 16px;
+                    background: #fff;
+                    color: #000;
                     font-size: 12px;
-                    letter-spacing: 2px;
-                    text-transform: uppercase;
-                    color: var(--2n-blue);
                     font-weight: 800;
-                    margin-bottom: 20px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 30px;
+                    border-radius: 2px;
                 }
 
                 .cover-title {
-                    font-size: 52px;
-                    font-weight: 300; /* Light */
-                    line-height: 1.1;
-                    margin: 0;
+                    font-size: 64px;
+                    font-weight: 800;
+                    line-height: 1;
+                    margin: 0 0 20px 0;
                     color: #fff;
+                    letter-spacing: -2px;
+                    text-transform: capitalize;
                 }
                 
-                .cover-title strong {
-                    font-weight: 800; /* Bold */
-                }
-
-                .cover-line {
-                    width: 60px;
-                    height: 4px;
-                    background: var(--2n-blue);
-                    margin: 25px 0;
-                }
-
                 .cover-subtitle {
-                    font-size: 16px;
-                    color: #888;
+                    font-size: 20px;
+                    color: #ccc;
+                    font-weight: 300;
+                    border-left: 4px solid #fff;
+                    padding-left: 20px;
+                    margin-top: 20px;
                 }
 
                 /* ========================
@@ -186,206 +167,235 @@ class PDFService {
                    ======================== */
                 .page-header {
                     position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 8px; /* Blue strip */
-                    background: var(--2n-blue);
-                    z-index: 100;
+                    top: 50px;
+                    left: 60px;
+                    right: 60px;
+                    height: 1px;
+                    background: #333;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding-bottom: 10px;
+                    z-index: 10;
+                }
+                
+                .page-header-text {
+                    font-size: 10px;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    color: #666;
+                    background: #000;
+                    padding-right: 20px;
+                    margin-top: -10px;
                 }
 
                 .page-content {
-                    padding: 80px 60px 60px 60px;
+                    padding: 100px 60px 60px 60px;
                     height: 100%;
                     display: flex;
                     flex-direction: column;
                 }
 
-                .page-logo {
-                    position: absolute;
-                    top: 40px;
-                    right: 60px;
-                    width: 40px;
-                }
-
                 .section-title {
-                    font-size: 32px;
+                    font-size: 42px;
                     font-weight: 800;
-                    color: #000;
-                    margin-bottom: 40px;
+                    color: #fff;
+                    margin-bottom: 50px;
                     letter-spacing: -1px;
                 }
-                
-                .section-title span {
-                    color: var(--2n-blue);
-                }
 
-                /* About Page */
-                .about-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1.5fr;
-                    gap: 40px;
-                    height: 100%;
-                }
-
-                .about-text {
-                    font-size: 14px;
-                    line-height: 1.8;
-                    color: #555;
-                }
-
-                .about-highlight {
-                    font-size: 18px;
-                    font-weight: 600;
-                    color: #000;
-                    margin-bottom: 20px;
-                }
-
-                /* Benefits */
-                .benefits-grid {
-                    display: grid;
-                    grid-template-columns: 1fr;
-                    gap: 20px;
-                }
-
-                .benefit-card {
-                    background: #f8f9fa;
-                    padding: 20px;
-                    border-left: 4px solid var(--2n-blue);
+                /* Context Page Grid */
+                .intro-grid {
                     display: flex;
-                    gap: 15px;
+                    flex-direction: column;
+                    gap: 40px;
+                }
+
+                .innovation-card {
+                    background: #111;
+                    border: 1px solid #333;
+                    padding: 30px;
+                    position: relative;
+                    overflow: hidden;
+                    border-radius: 4px;
+                }
+                
+                .innovation-bg {
+                    position: absolute;
+                    top: 0; right: 0; bottom: 0; left: 0;
+                    background-image: url('assets/gold-presence-map.png'); /* Spectacular Asset */
+                    background-size: cover;
+                    background-position: center;
+                    opacity: 0.2;
+                    z-index: 0;
+                }
+                
+                .card-content {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .stat-row {
+                    display: flex;
+                    gap: 40px;
+                    margin-top: 30px;
+                    border-top: 1px solid #333;
+                    padding-top: 20px;
+                }
+
+                .stat-item strong {
+                    font-size: 32px;
+                    color: #fff;
+                    display: block;
+                }
+                
+                .stat-item span {
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    color: #888;
+                }
+
+                /* Benefits List */
+                .benefits-list {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                    margin-top: 40px;
+                }
+
+                .benefit-pill {
+                    background: rgba(255,255,255,0.05);
+                    padding: 15px 20px;
+                    font-size: 13px;
+                    color: #ddd;
+                    border-left: 2px solid #fff;
+                    display: flex;
                     align-items: center;
-                }
-
-                .benefit-icon {
-                    color: var(--2n-blue);
-                    font-size: 20px;
-                }
-
-                .benefit-text {
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: #333;
                 }
 
                 /* Dynamic Sections */
                 .ds-wrapper {
                     display: flex;
                     flex-direction: column;
-                    gap: 40px;
-                    height: 100%;
+                    gap: 60px; /* More space */
                 }
 
                 .ds-item {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr; /* Image Left, Text Right */
+                    display: flex;
                     gap: 30px;
-                    align-items: center;
-                    padding-bottom: 30px;
-                    border-bottom: 1px solid #eee;
+                    align-items: flex-start;
                 }
                 
                 .ds-item.reversed {
-                    grid-template-columns: 1fr 1fr;
-                    direction: rtl; /* Flip order visually */
-                }
-                
-                .ds-item.reversed .ds-content {
-                    direction: ltr; /* Restore text direction */
+                    flex-direction: row-reverse;
                 }
 
                 .ds-img {
-                    width: 100%;
-                    height: 250px;
+                    width: 45%; 
+                    height: 220px;
                     object-fit: cover;
-                    border-radius: 4px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    border-radius: 2px;
+                    filter: grayscale(20%) contrast(110%);
+                }
+
+                .ds-content {
+                    width: 55%;
                 }
 
                 .ds-content h3 {
-                    font-size: 20px;
+                    font-size: 24px;
+                    color: #fff;
+                    margin: 0 0 15px 0;
                     font-weight: 700;
-                    color: #000;
-                    margin-bottom: 15px;
-                    margin-top: 0;
                 }
 
                 .ds-content p {
-                    font-size: 13px;
-                    line-height: 1.6;
-                    color: #666;
-                    white-space: pre-line;
+                    font-size: 14px;
+                    line-height: 1.7;
+                    color: #aaa;
+                    margin: 0;
                 }
 
-                /* Footer */
                 .page-footer {
                     position: absolute;
                     bottom: 30px;
                     left: 60px;
                     right: 60px;
-                    border-top: 1px solid #eee;
+                    border-top: 1px solid #333;
                     padding-top: 15px;
                     display: flex;
                     justify-content: space-between;
                     font-size: 10px;
-                    color: #999;
+                    color: #666;
                     font-weight: 600;
                     text-transform: uppercase;
-                    letter-spacing: 1px;
+                    letter-spacing: 2px;
                 }
             </style>
 
-            <!-- PAGE 1: HERO -->
+            <!-- PAGE 1: HERO COVER -->
             <div class="pdf-page cover-page">
-                <img src="assets/pdf_cover.png" class="cover-image">
+                <img src="assets/pdf_cover.png" class="cover-image" onerror="this.style.display='none'">
                 <div class="cover-gradient"></div>
                 
-                <img src="assets/2N_Logo_RGB_White.png" class="cover-header">
+                <img src="assets/2N_Logo_RGB_White.png" class="cover-logo-large">
 
                 <div class="cover-body">
-                    <div class="cover-badge">${data.verticalLabel || 'SOLUCIÓN'}</div>
-                    <h1 class="cover-title">Dossier Técnico<br><strong>${verticalName}</strong></h1>
-                    <div class="cover-line"></div>
-                    <div class="cover-subtitle">Prepared for Architects & Engineers</div>
+                    <span class="cover-badge">${data.verticalLabel || 'SOLUCIÓN'}</span>
+                    <h1 class="cover-title">${verticalName}</h1>
+                    <div class="cover-subtitle">Manual de Soluciones y Especificaciones Técnicas</div>
                 </div>
             </div>
 
-            <!-- PAGE 2: CONTEXT -->
+            <!-- PAGE 2: CONTEXT & VALUE -->
             <div class="pdf-page">
-                <div class="page-header"></div>
-                <img src="assets/2N_Logo_RGB_White.png" style="filter: invert(1);" class="page-logo">
+                <div class="page-header">
+                    <span class="page-header-text">PROPUESTA DE VALOR</span>
+                </div>
                 
                 <div class="page-content">
-                    <h2 class="section-title">Why <span>2N</span>?</h2>
+                    <h2 class="section-title">El Estándar 2N</h2>
                     
-                    <div class="about-grid">
-                        <div>
-                            <p class="about-highlight">${this.companyInfo.title}</p>
-                            <p class="about-text">${this.companyInfo.description}</p>
+                    <div class="intro-grid">
+                        <!-- Top Text -->
+                        <div style="font-size: 16px; line-height: 1.6; color: #ccc; max-width: 90%;">
+                            <p>${this.companyInfo.description}</p>
                         </div>
-                        <div style="background: #f4f4f4; padding: 30px; border-radius: 8px;">
-                            <h3 style="margin-top:0; font-size:16px;">Global Innovation</h3>
-                            <p class="about-text" style="font-size:13px;">${this.companyInfo.innovation}</p>
-                            <div style="margin-top: 40px; display:flex; gap: 20px;">
-                                <div>
-                                    <strong style="display:block; font-size: 24px; color: var(--2n-blue);">30+</strong>
-                                    <span style="font-size:10px; text-transform:uppercase;">Years</span>
-                                </div>
-                                <div>
-                                    <strong style="display:block; font-size: 24px; color: var(--2n-blue);">No.1</strong>
-                                    <span style="font-size:10px; text-transform:uppercase;">IP Intercoms</span>
+
+                        <!-- Hero Card with Map -->
+                        <div class="innovation-card">
+                            <div class="innovation-bg"></div>
+                            <div class="card-content">
+                                <h3 style="margin-top:0; font-size:20px; color: #fff; margin-bottom: 10px;">Liderazgo Global</h3>
+                                <p style="font-size: 14px; color: #bbb; margin-bottom: 0; line-height: 1.6; max-width: 70%;">
+                                    ${this.companyInfo.innovation}
+                                </p>
+                                
+                                <div class="stat-row">
+                                    <div class="stat-item">
+                                        <strong>30+</strong>
+                                        <span>Años de Historia</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <strong>No.1</strong>
+                                        <span>IP Intercoms</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <strong>100+</strong>
+                                        <span>Países</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div style="margin-top: 60px;">
-                         <h2 class="section-title" style="font-size: 24px; margin-bottom: 30px;">${data.mainTitle}</h2>
-                         <div class="benefits-grid">
+                    <div style="margin-top: 50px; border-top: 1px solid #222; padding-top: 30px;">
+                         <h3 style="font-size: 20px; color: #fff; margin-bottom: 20px;">${data.mainTitle}</h3>
+                         <div class="benefits-list">
                             ${data.benefits.map(b => `
-                                <div class="benefit-card">
-                                    <span class="benefit-icon">✓</span>
-                                    <span class="benefit-text">${b}</span>
+                                <div class="benefit-pill">
+                                    <span>${b}</span>
                                 </div>
                             `).join('')}
                          </div>
@@ -459,8 +469,9 @@ class PDFService {
 
             html += `
                 <div class="pdf-page">
-                    <div class="page-header"></div>
-                    <img src="assets/2N_Logo_RGB_White.png" style="filter: invert(1);" class="page-logo">
+                    <div class="page-header">
+                        <span class="page-header-text">ESPECIFICACIONES TÉCNICAS</span>
+                    </div>
                     
                     <div class="page-content">
                         <div class="ds-wrapper">
@@ -469,7 +480,7 @@ class PDFService {
                     </div>
 
                     <div class="page-footer">
-                        <span>${verticalName} · Technical Details</span>
+                        <span>${verticalName}</span>
                         <span>Page ${3 + Math.floor(i / itemsPerPage)}</span>
                     </div>
                 </div>
@@ -479,14 +490,14 @@ class PDFService {
     }
 
     renderSectionBlock(section, index) {
-        // Alternate layout: Image Left for even, Image Right for odd
+        // Alternate layout: Image Left for even, Image Right for odd (handled by CSS .reversed)
         const isReversed = index % 2 !== 0 ? 'reversed' : '';
 
         return `
             <div class="ds-item ${isReversed}">
-                ${section.imageUrl ? `<img src="${section.imageUrl}" class="ds-img">` : '<div style="background:#eee; height:250px; border-radius:4px;"></div>'}
+                ${section.imageUrl ? `<img src="${section.imageUrl}" class="ds-img">` : '<div style="background:#222; height:220px; width:45%; border-radius:2px;"></div>'}
                 <div class="ds-content">
-                    <h3>${section.title || 'Section'}</h3>
+                    <h3>${section.title || 'Detalle Técnico'}</h3>
                     <p>${section.text}</p>
                 </div>
             </div>
