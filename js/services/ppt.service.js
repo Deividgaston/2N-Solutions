@@ -32,7 +32,10 @@ class PptService {
         const COLOR_BG = '000000';
         const COLOR_ACCENT = '0099FF';
         const COLOR_TEXT = 'FFFFFF';
-        const COLOR_TEXT_MUTED = 'AAAAAA';
+
+        // Logo URL (Served from Hosting or Absolute URL if needed)
+        // Adjust path if your hosting structure is different. Assuming relative to index.html
+        const LOGO_URL = 'assets/2N/2N_Logo_RGB_White.png';
 
         // --- 1. MASTER SLIDE (Dark Theme) ---
         pptx.defineSlideMaster({
@@ -42,10 +45,10 @@ class PptService {
                 // Top Accent Line
                 { rect: { x: 0, y: 0, w: '100%', h: 0.08, fill: COLOR_ACCENT } },
                 // Footer Branding
-                { text: { text: '2N Telecommunications', options: { x: 0.5, y: '96%', fontSize: 9, color: '666666' } } },
+                { text: { text: '2N Telecommunications · Parte de Axis Communications', options: { x: 0.5, y: '96%', fontSize: 9, color: '666666' } } },
                 { text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } },
-                // Corner Logo Placeholder (Text for now)
-                { text: { text: '2N', options: { x: '92%', y: '92%', fontSize: 18, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' } } }
+                // Logo in corner
+                { image: { path: LOGO_URL, x: '90%', y: '92%', w: 0.8, h: 0.3 } }
             ]
         });
 
@@ -56,74 +59,96 @@ class PptService {
 
         // Background Image if available (Hero)
         if (metadata.heroImage) {
-            // Full screen background image
             coverSlide.addImage({ path: metadata.heroImage, x: 0, y: 0, w: '100%', h: '100%' });
-            // Dark Overlay Gradient (Simulated with transparency)
             coverSlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
         }
 
-        // Large 2N Logo Area (Centered)
-        coverSlide.addText('2N', {
-            x: 0, y: 1.5, w: '100%',
-            fontSize: 80, color: 'FFFFFF', bold: true, align: 'center', fontFace: 'Arial Black'
-        });
+        // Giant Background Logo (Simulated Watermark)
+        coverSlide.addImage({ path: LOGO_URL, x: 2, y: 2, w: 9, h: 3, transparency: 90 });
 
         // Title
         coverSlide.addText((metadata.heroTitle || title).toUpperCase(), {
             x: 0.5, y: 2.8, w: '90%',
-            fontSize: 36, color: 'FFFFFF', bold: true, align: 'center', fontFace: 'Arial'
+            fontSize: 40, color: 'FFFFFF', bold: true, align: 'center', fontFace: 'Arial Black'
         });
 
         coverSlide.addText('ESPECIFICACIÓN DE SOLUCIÓN', {
-            x: 0.5, y: 4.0, w: '90%',
+            x: 0.5, y: 4.2, w: '90%',
             fontSize: 14, color: COLOR_ACCENT, align: 'center', charSpacing: 4
         });
 
-        // --- 3. INTRO SLIDE (Company Description) ---
+        // --- 3. COMPANY INTRO SLIDE (New Request) ---
+        const companySlide = pptx.addSlide();
+        companySlide.masterName = 'MASTER_DARK';
+        companySlide.background = { color: COLOR_BG };
+
+        companySlide.addText('SOBRE 2N', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
+
+        // Left: Text
+        companySlide.addText(
+            '2N es el líder mundial en sistemas de control de acceso e intercomunicadores IP. Desde 1991, hemos liderado la innovación en el sector, y desde 2016 formamos parte de Axis Communications.\n\n' +
+            'Nuestros productos se encuentran en los edificios más emblemáticos del mundo, ofreciendo seguridad, diseño y comodidad sin compromisos.',
+            { x: 0.5, y: 1.5, w: 6, h: 4, fontSize: 14, color: 'EEEEEE', align: 'left', lineSpacing: 24 }
+        );
+
+        // Right: Key Info Box
+        companySlide.addShape(pptx.ShapeType.rect, { x: 7, y: 1.5, w: 5.5, h: 3.5, fill: '111111', line: { color: '333333' } });
+        companySlide.addText('DATOS CLAVE', { x: 7.2, y: 1.8, fontSize: 12, color: COLOR_ACCENT, bold: true });
+        companySlide.addText(
+            '• Fundada en 1991 en Praga\n' +
+            '• Parte de Axis Communications (Grupo Canon)\n' +
+            '• +14% Inversión anual en I+D\n' +
+            '• Presencia Global en +100 países\n' +
+            '• Creadores del primer intercomunicador IP',
+            { x: 7.2, y: 2.3, w: 5, fontSize: 12, color: 'CCCCCC', lineSpacing: 28 }
+        );
+
+
+        // --- 4. SOLUTION INTRO SLIDE (Vertical Specific) ---
         if (metadata.introTitle || metadata.introText) {
             const introSlide = pptx.addSlide();
             introSlide.masterName = 'MASTER_DARK';
             introSlide.background = { color: COLOR_BG };
 
             // Title
-            introSlide.addText((metadata.introTitle || 'Sobre la Solución').toUpperCase(), {
+            introSlide.addText((metadata.introTitle || 'Visión de la Solución').toUpperCase(), {
                 x: 0.5, y: 0.8, w: '90%', fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black'
             });
 
-            // Split Layout: Text + Benefits
+            // Text Content
             const introText = metadata.introText ? metadata.introText.replace(/<[^>]*>/g, '') : '';
             introSlide.addText(introText, {
-                x: 0.5, y: 1.5, w: 6, h: 4,
-                fontSize: 14, color: 'EEEEEE', align: 'left', lineSpacing: 24, valign: 'top'
+                x: 0.5, y: 1.5, w: 12, h: 4,
+                fontSize: 16, color: 'EEEEEE', align: 'left', lineSpacing: 28
             });
 
-            // Benefits Side Panel
+            // Benefits (Bottom)
             if (metadata.benefits && metadata.benefits.length > 0) {
-                // Background for benefits
-                introSlide.addShape(pptx.ShapeType.rect, { x: 7, y: 1.5, w: 5.5, h: 4.5, fill: '111111', line: { color: '333333', width: 1 } });
-                introSlide.addText('BENEFICIOS CLAVE', { x: 7.2, y: 1.8, fontSize: 12, color: COLOR_ACCENT, bold: true });
-
-                let yPos = 2.2;
-                metadata.benefits.forEach(b => {
-                    introSlide.addText('• ' + b, { x: 7.2, y: yPos, w: 5, fontSize: 11, color: 'CCCCCC' });
-                    yPos += 0.4;
+                let xPos = 0.5;
+                metadata.benefits.forEach((b, i) => {
+                    // Limit to 3 columns visually
+                    if (i < 3) {
+                        introSlide.addShape(pptx.ShapeType.rect, { x: xPos, y: 5.0, w: 4, h: 1.5, fill: '111111', line: { color: COLOR_ACCENT } });
+                        introSlide.addText(b, { x: xPos + 0.1, y: 5.1, w: 3.8, h: 1.3, fontSize: 11, color: 'FFFFFF', align: 'center', valign: 'middle' });
+                        xPos += 4.2;
+                    }
                 });
             }
         }
 
-        // --- 4. CONTENT SLIDES ---
+        // --- 5. CONTENT SLIDES ---
         sections.forEach((section, index) => {
             this.createSectionSlide(pptx, section, index);
         });
 
         // Save
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_Premium.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_Premium_Final.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
     /**
-     * Helper to add a single slide for a section (Dark Mode)
+     * Section Slide Logic
      */
     createSectionSlide(pptx, section, index) {
         const slide = pptx.addSlide();
@@ -136,25 +161,19 @@ class PptService {
                 x: 0.5, y: 0.5, w: '90%',
                 fontSize: 20, color: 'FFFFFF', bold: true, fontFace: 'Arial Black'
             });
-            // Underline
             slide.addShape(pptx.ShapeType.line, { x: 0.5, y: 0.9, w: 10, h: 0, line: { color: '333333', width: 1 } });
         }
 
-        // Layout Logic
-        // Default: Image Left (Big), Text Right (Compact)
+        // Layout
         let imgX = 0.5, imgY = 1.2, imgW = 6, imgH = 4.2;
         let txtX = 6.8, txtY = 1.2, txtW = 6.0;
 
-        // If layout is 'right' (Text Left, Image Right)
         if (section.layout === 'right') {
             txtX = 0.5;
             imgX = 6.8;
-            imgW = 6;
         }
 
-        // Image Container
         if (section.imageUrl) {
-            // White Border around image
             slide.addShape(pptx.ShapeType.rect, { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: 'FFFFFF' });
 
             if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
@@ -164,7 +183,6 @@ class PptService {
             }
         }
 
-        // Text Content
         const cleanText = section.text ? section.text.replace(/<[^>]*>/g, '') : '';
         slide.addText(cleanText, {
             x: txtX, y: txtY, w: txtW, h: 4.2,
