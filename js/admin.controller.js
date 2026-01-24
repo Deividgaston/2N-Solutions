@@ -96,7 +96,7 @@ class AdminController {
         if (pptBtn) {
             pptBtn.addEventListener('click', () => {
                 if (!this.selectedSectionId) {
-                    alert('⚠️ Por favor, selecciona una sección de la lista (haciendo clic en ella) para descargar su diapositiva.');
+                    alert('⚠️ PASO 1: Haz clic sobre una de las TARJETAS de contenido abajo (Se pondrá AZUL).\n\nPASO 2: Vuelve a pulsar este botón.\n\n(Debes elegir qué sección específica quieres exportar).');
                     return;
                 }
                 this.handleExportPPT(this.selectedSectionId);
