@@ -318,11 +318,51 @@ class AdminController {
         }
 
         const heroFile = document.getElementById('hero-file');
+        const heroPosX = document.getElementById('hero-pos-x');
+        const heroPosY = document.getElementById('hero-pos-y');
+        const openLibraryBtn = document.getElementById('open-library-btn');
+
         if (heroFile) {
-            heroFile.addEventListener('change', (e) => {
+            heroFile.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
-                if (file) document.getElementById('hero-file-info').textContent = file.name;
+                if (file) {
+                    document.getElementById('hero-file-info').textContent = file.name;
+                    // Preview local file
+                    const reader = new FileReader();
+                    reader.onload = (e) => this.updateHeroPreview(e.target.result);
+                    reader.readAsDataURL(file);
+                }
             });
+        }
+
+        if (heroPosX && heroPosY) {
+            const updatePos = () => this.updateHeroPreview(null, heroPosX.value, heroPosY.value);
+            heroPosX.addEventListener('input', updatePos);
+            heroPosY.addEventListener('input', updatePos);
+        }
+
+        if (openLibraryBtn) {
+            openLibraryBtn.addEventListener('click', () => this.openAssetPicker('hero'));
+        }
+
+        // Picker Modal Close
+        document.getElementById('close-asset-picker')?.addEventListener('click', () => {
+            document.getElementById('asset-picker-modal').classList.remove('active');
+        });
+    }
+
+    updateHeroPreview(imageUrl = null, x = null, y = null) {
+        const preview = document.getElementById('hero-preview');
+        if (!preview) return;
+
+        if (imageUrl) {
+            preview.style.backgroundImage = `url('${imageUrl}')`;
+            // If setting a new image, reset position to center conceptually or keep? 
+            // Better to keep existing values unless explicitly reset.
+        }
+
+        if (x !== null && y !== null) {
+            preview.style.backgroundPosition = `${x}% ${y}%`;
         }
     }
 

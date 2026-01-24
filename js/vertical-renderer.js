@@ -81,9 +81,11 @@ class VerticalRenderer {
             const bgDiv = heroSection.querySelector('.solution-hero-bg');
             if (bgDiv) {
                 bgDiv.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                bgDiv.style.backgroundPosition = `${meta.heroPosX || 50}% ${meta.heroPosY || 50}%`;
                 bgDiv.classList.add('dynamic-bg');
             } else {
                 heroSection.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                heroSection.style.backgroundPosition = `${meta.heroPosX || 50}% ${meta.heroPosY || 50}%`;
                 heroSection.classList.add('dynamic-bg');
             }
         }
