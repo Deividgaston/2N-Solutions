@@ -94,12 +94,25 @@ class AdminController {
         // Global PPT Button
         const pptBtn = document.getElementById('global-ppt-btn');
         if (pptBtn) {
-            pptBtn.addEventListener('click', () => {
-                if (!this.selectedSectionId) {
-                    alert('⚠️ PASO 1: Haz clic sobre una de las TARJETAS de contenido abajo (Se pondrá AZUL).\n\nPASO 2: Vuelve a pulsar este botón.\n\n(Debes elegir qué sección específica quieres exportar).');
-                    return;
+            pptBtn.addEventListener('click', async () => {
+                const btnContent = pptBtn.innerHTML;
+                try {
+                    pptBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+
+                    // Fetch all sections for current vertical
+                    const sections = await contentService.getSections(this.currentVertical);
+
+                    // Format Vertical Name properly
+                    const verticalName = this.currentVertical.charAt(0).toUpperCase() + this.currentVertical.slice(1);
+
+                    await pptService.exportFullPresentation(verticalName, sections);
+
+                } catch (error) {
+                    console.error('PPT Export Error:', error);
+                    alert('Error al generar la presentación.');
+                } finally {
+                    pptBtn.innerHTML = btnContent;
                 }
-                this.handleExportPPT(this.selectedSectionId);
             });
         }
     }

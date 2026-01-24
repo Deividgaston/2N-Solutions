@@ -474,3 +474,57 @@ body {
         font-size: 1.5rem;
     }
 }
+/* Print Styles optimized for PDF */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .navbar, .footer, .btn-cta, .back-link, .solution-badge {
+        display: none !important;
+    }
+
+    .solution-hero {
+        padding: 2rem 0 !important;
+        page-break-after: always;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .solution-hero-bg {
+        display: block !important; /* Keep background image if possible, or simple color */
+        background: white !important; /* Save toner? Or user wants exact design? 'del pdf' implies they print web to PDF. */
+    }
+    
+    .dynamic-sections-container {
+        margin-top: 0 !important;
+        gap: 0 !important;
+        display: block !important; /* Block handles breaks better than flex */
+    }
+
+    .dynamic-section {
+        display: flex !important; /* Keep flex for layout */
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 4rem !important; /* Reasonable spacing */
+        padding-top: 1rem;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    .ds-image-wrapper {
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    /* Ensure text is dark for print */
+    p, h1, h2, h3, h4, .ds-text, .ds-title {
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }
+}
