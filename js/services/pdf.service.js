@@ -313,16 +313,35 @@ class PDFService {
                     flex-direction: row-reverse;
                 }
 
-                .ds-img {
-                    width: 45%; 
-                    height: 220px;
+                .ds-wrapper-single {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 30px;
+                    height: 100%;
+                    width: 100%;
+                }
+
+                .ds-img-large {
+                    width: 100%; 
+                    height: 400px;
                     object-fit: cover;
-                    border-radius: 2px;
+                    border-radius: 4px;
                     filter: grayscale(20%) contrast(110%);
                 }
 
-                .ds-content {
-                    width: 55%;
+                .ds-content-large h3 {
+                    font-size: 28px;
+                    color: #fff;
+                    margin: 0 0 20px 0;
+                    font-weight: 700;
+                }
+
+                .ds-content-large p {
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #ccc;
+                    margin: 0;
+                    text-align: justify;
                 }
 
                 .ds-content h3 {
