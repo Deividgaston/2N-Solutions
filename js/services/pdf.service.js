@@ -190,7 +190,7 @@ class PDFService {
                 }
 
                 .page-content {
-                    padding: 100px 60px 60px 60px;
+                    padding: 80px 50px 50px 50px;
                     height: 100%;
                     display: flex;
                     flex-direction: column;
@@ -218,13 +218,13 @@ class PDFService {
                 
                 .innovation-bg {
                     position: absolute;
-                    top: -20px; right: -60px; bottom: -20px; left: -60px; /* Bleed to edges */
+                    top: 0; right: 0; bottom: 0; left: 0; /* Confined to content area */
                     background-image: url('assets/gold-presence-map.png');
                     background-size: cover;
                     background-position: center;
-                    opacity: 0.15;
+                    opacity: 0.2;
                     z-index: 0;
-                    mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+                    border-radius: 4px;
                 }
                 
                 .innovation-content {
