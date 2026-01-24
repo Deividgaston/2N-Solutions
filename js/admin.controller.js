@@ -1129,7 +1129,8 @@ class AdminController {
                             <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'top' ? 'arrow-up' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left'))}"></i> ${section.layout || 'left'}</span>
                         </div>
                         <div class="section-actions">
-                            <button class="btn-icon ppt-export" onclick="adminController.handleExportPPT('${section.id}')" title="Descargar PPT Slide" style="color: #0068B3;">
+                            <!-- PPT Button: Forced Visible -->
+                            <button class="btn-icon ppt-export" onclick="console.log('PPT Click'); adminController.handleExportPPT('${section.id}')" title="Descargar PPT Slide" style="color: #0068B3; display: inline-flex !important; align-items: center; justify-content: center; background: rgba(0, 104, 179, 0.1); border: 1px solid #0068B3;">
                                 <i class="fa-solid fa-file-powerpoint"></i>
                             </button>
                             <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
