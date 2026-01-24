@@ -49,13 +49,21 @@ class VerticalRenderer {
     }
 
     renderHero(meta) {
-        const heroSection = document.querySelector('.hero');
+        // Selector fix: Solution pages use 'solution-hero', not 'hero'
+        const heroSection = document.querySelector('.solution-hero') || document.querySelector('.hero');
         if (!heroSection) return;
 
         // Background Image
         if (meta.heroImageUrl) {
-            heroSection.style.backgroundImage = `url('${meta.heroImageUrl}')`;
-            heroSection.classList.add('dynamic-bg');
+            // Find the background div or apply to section
+            const bgDiv = heroSection.querySelector('.solution-hero-bg');
+            if (bgDiv) {
+                bgDiv.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                bgDiv.classList.add('dynamic-bg');
+            } else {
+                heroSection.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                heroSection.classList.add('dynamic-bg');
+            }
         }
 
         // Title
@@ -66,7 +74,8 @@ class VerticalRenderer {
 
         // Subtitle/Lead
         if (meta.heroSubtitle) {
-            const lead = heroSection.querySelector('.lead');
+            // Selector fix: Solution pages use 'solution-subtitle', not 'lead'
+            const lead = heroSection.querySelector('.solution-subtitle') || heroSection.querySelector('.lead');
             if (lead) lead.textContent = meta.heroSubtitle;
         }
 
