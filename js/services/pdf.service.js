@@ -357,7 +357,7 @@ class PDFService {
                     
                     <div class="intro-grid">
                         <!-- Top Text -->
-                        <div style="font-size: 16px; line-height: 1.6; color: #ccc; max-width: 90%;">
+                        <div style="font-size: 16px; line-height: 1.6; color: #ccc; text-align: justify;">
                             <p>${this.companyInfo.description}</p>
                         </div>
 
@@ -366,9 +366,9 @@ class PDFService {
                             <div class="innovation-bg"></div>
                             <div class="innovation-content">
                                 <h3 style="margin-top:0; font-size:20px; color: #fff; margin-bottom: 10px;">Liderazgo Global</h3>
-                                <p style="font-size: 14px; color: #bbb; margin-bottom: 0; line-height: 1.6; max-width: 80%;">
+                                <div style="font-size: 14px; color: #bbb; margin-bottom: 0; line-height: 1.6; text-align: justify;">
                                     ${this.companyInfo.innovation}
-                                </p>
+                                </div>
                                 
                                 <div class="stat-row">
                                     <div class="stat-item">
