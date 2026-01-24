@@ -136,6 +136,77 @@
                 <button class="vertical-tab" data-vertical="security">Seguridad</button>
             </div>
 
+            <!-- Hero Editor -->
+            <div class="hero-editor-container"
+                style="background: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                <div class="hero-header"
+                    style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
+                    onclick="document.getElementById('hero-form-body').classList.toggle('hidden'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-down'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-up');">
+                    <h3 style="margin: 0; font-size: 16px; color: var(--text-primary);"><i
+                            class="fa-solid fa-image"></i> Editar Portada (Héroe)</h3>
+                    <i class="fa-solid fa-chevron-down toggle-icon" style="color: var(--text-muted);"></i>
+                </div>
+
+                <div id="hero-form-body" class="hidden" style="margin-top: 20px;">
+                    <div class="form-row" style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Título Héroe</label>
+                            <input type="text" id="hero-title" placeholder="Ej: Dossier de Seguridad">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Etiqueta Badge</label>
+                            <input type="text" id="hero-badge" placeholder="Ej: Seguridad">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subtítulo / Lead</label>
+                        <input type="text" id="hero-subtitle"
+                            placeholder="Ej: Manual de Soluciones y Especificaciones Técnicas">
+                    </div>
+
+                    <div class="form-row" style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Imagen de Fondo</label>
+                            <div class="file-upload-area small-upload" id="hero-file-area" style="padding: 10px;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="hero-file-info">Clic para cambiar fondo</span>
+                                <input type="file" id="hero-file" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Color de Acento</label>
+                            <div class="color-selector" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <label class="color-option">
+                                    <input type="radio" name="hero-color" value="blue" checked>
+                                    <span class="color-circle" style="background: #3b82f6;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="hero-color" value="orange">
+                                    <span class="color-circle" style="background: #f97316;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="hero-color" value="green">
+                                    <span class="color-circle" style="background: #22c55e;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="hero-color" value="red">
+                                    <span class="color-circle" style="background: #ef4444;"></span>
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" name="hero-color" value="purple">
+                                    <span class="color-circle" style="background: #a855f7;"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 10px;">
+                        <button class="btn btn-primary" id="save-hero-btn">Guardar Portada</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Intro Editor -->
             <div class="intro-editor-container"
                 style="background: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border-color);">

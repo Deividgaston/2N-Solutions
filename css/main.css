@@ -367,12 +367,38 @@ a:hover {
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-    .login-container {
-        padding: var(--space-lg);
-    }
+.login-form {
+    padding: var(--space-lg);
+}
+}
 
-    .login-form {
-        padding: var(--space-lg);
-    }
+/* Dynamic Badge Colors */
+.solution-badge.blue {
+    background: #3b82f6;
+    color: white;
+}
+
+.solution-badge.orange {
+    background: #f97316;
+    color: white;
+}
+
+.solution-badge.green {
+    background: #22c55e;
+    color: white;
+}
+
+.solution-badge.red {
+    background: #ef4444;
+    color: white;
+}
+
+.solution-badge.purple {
+    background: #a855f7;
+    color: white;
+}
+
+/* Dynamic Hero Background Overlay override */
+.hero.dynamic-bg::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
 }
