@@ -105,7 +105,10 @@ class AdminController {
                     // Format Vertical Name properly
                     const verticalName = this.currentVertical.charAt(0).toUpperCase() + this.currentVertical.slice(1);
 
-                    await pptService.exportFullPresentation(verticalName, sections);
+                    // Fetch Meta
+                    const meta = await contentService.getVerticalMeta(this.currentVertical);
+
+                    await pptService.exportFullPresentation(verticalName, sections, meta || {});
 
                 } catch (error) {
                     console.error('PPT Export Error:', error);
