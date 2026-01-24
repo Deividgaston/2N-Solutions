@@ -36,50 +36,17 @@
             <button id="download-dossier-btn" class="btn-cta" style="margin-top: 1.5rem;">
                 <i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF
             </button>
+            <button id="download-ppt-btn" class="btn-cta"
+                style="margin-top: 1.5rem; background-color: #D24726; margin-left: 10px;">
+                <i class="fa-solid fa-file-powerpoint"></i> Descargar PPT
+            </button>
         </div>
     </section>
 
-    <section class="solution-content">
-        <div class="content-grid" style="grid-template-columns: 1fr;">
-            <div class="content-main">
-                <h2>Seguridad de nivel enterprise</h2>
-                <p>Las instalaciones críticas requieren soluciones de control de acceso que vayan más allá de la simple
-                    apertura de puertas. 2N ofrece integración nativa con los principales sistemas VMS y plataformas de
-                    seguridad.</p>
-                <p>Cumplimiento GDPR, encriptación end-to-end, autenticación multi-factor y trazabilidad completa de
-                    todos los accesos.</p>
-
-                <h3>Capacidades de seguridad</h3>
-                <ul class="benefits-list">
-                    <li><i class="fa-solid fa-check"></i> <strong>Integración CCTV:</strong> Compatible con Axis,
-                        Milestone, Genetec</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Biometría:</strong> Reconocimiento facial y huella
-                        dactilar</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Anti-tailgating:</strong> Detección de accesos no
-                        autorizados</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Gestión de emergencias:</strong> Integración con
-                        sistemas de alarma y evacuación</li>
-                </ul>
-
-                <div id="dynamic-sections-container" class="dynamic-sections-container">
-                    <!-- Dynamic sections from private area will be injected here -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-left">
-            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
-        </div>
-        <div class="footer-links">
-            <a href="https://www.2n.com" target="_blank">2N.com</a>
-            <a href="login.html">Acceso prescriptores</a>
-        </div>
-    </footer>
+    <!-- ... (omitted) ... -->
 
     <script src="js/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script type="module" src="js/firebase-init.js"></script>
     <script type="module" src="js/vertical-renderer.js"></script>
     <script type="module" src="js/pdf-handler.js"></script>
