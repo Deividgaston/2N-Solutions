@@ -1143,3 +1143,43 @@
     background: var(--primary);
     color: white;
 }
+
+/* Shared Tab Styles for PPT Button */
+.tab-btn-style {
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.tab-btn-style:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.tab-btn-style.ppt-action {
+    margin-left: auto;
+    border-color: var(--primary);
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tab-btn-style.ppt-action.active-ppt {
+    opacity: 1;
+    cursor: pointer;
+    background: rgba(0, 104, 183, 0.1);
+}
+
+.tab-btn-style.ppt-action.active-ppt:hover {
+    background: var(--primary);
+    color: white;
+}

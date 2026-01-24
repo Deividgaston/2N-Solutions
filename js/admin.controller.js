@@ -120,6 +120,7 @@ class AdminController {
     }
 
     switchVertical(vertical) {
+        if (!vertical) return; // Prevent crash if button has no data-vertical
         this.currentVertical = vertical;
         document.querySelectorAll('.vertical-tab').forEach(tab => {
             tab.classList.toggle('active', tab.getAttribute('data-vertical') === vertical);
