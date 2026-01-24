@@ -5,7 +5,7 @@
 
 import { auth, db, storage } from './firebase-init.js';
 import { contentService } from './services/content.service.js';
-import { pptService } from './services/ppt.service.js?v=dark5';
+import { pptService } from './services/ppt.service.js?v=dark6';
 import {
     collection,
     doc,
