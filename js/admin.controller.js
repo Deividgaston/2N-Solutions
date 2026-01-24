@@ -1107,6 +1107,7 @@ class AdminController {
         if (!list) return;
 
         list.innerHTML = '<p class="text-center">Cargando...</p>';
+        this.selectedSectionId = null; // Reset selection on reload
 
         try {
             const sections = await contentService.getSections(this.currentVertical);
