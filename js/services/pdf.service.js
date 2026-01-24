@@ -190,7 +190,7 @@ class PDFService {
                 }
 
                 .page-content {
-                    padding: 80px 50px 50px 50px;
+                    padding: 80px 60px 60px 60px; /* Symmetric 60px margins */
                     height: 100%;
                     display: flex;
                     flex-direction: column;
@@ -433,12 +433,12 @@ class PDFService {
             html2canvas: {
                 scale: 2,
                 logging: true,
-                backgroundColor: '#000000', // Black background
+                backgroundColor: '#000000',
                 useCORS: true,
                 allowTaint: false,
                 scrollY: 0,
-                windowWidth: 1200,
-                windowHeight: 2000
+                windowWidth: 794, // MATCH CONTAINER EXACTLY
+                windowHeight: 1123
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
