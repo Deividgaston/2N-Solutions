@@ -470,6 +470,38 @@ class PDFService {
                 </div>
             </div>
 
+            <!-- PAGE 3: BRIEF INTRODUCTION (Dynamic content from HTML) -->
+            <div class="pdf-page">
+                <div class="page-header">
+                    <span class="page-header-text">INTRODUCCIÓN</span>
+                </div>
+                
+                <div class="page-content">
+                    <h2 class="section-title">${data.mainTitle || 'Solución 2N'}</h2>
+                    
+                    <div style="font-size: 16px; line-height: 1.8; color: #ccc; margin-bottom: 40px; text-align: justify;">
+                        ${data.mainIntro.map(p => `<p>${p}</p>`).join('')}
+                    </div>
+
+                    ${data.benefits && data.benefits.length > 0 ? `
+                        <h3 style="font-size: 20px; color: #3b82f6; margin-bottom: 20px;">Capacidades Clave</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            ${data.benefits.map(b => `
+                                <div style="display: flex; align-items: start; gap: 15px;">
+                                    <span style="color: #3b82f6; font-size: 18px; line-height: 1;">✓</span>
+                                    <span style="color: #ddd; font-size: 14px; line-height: 1.5;">${b}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="page-footer">
+                    <span>${verticalName}</span>
+                    <span>2N Solutions</span>
+                </div>
+            </div>
+
             <!-- DYNAMIC PAGES -->
             ${data.dynamicSections.length > 0 ? this.renderDynamicPages(data.dynamicSections, verticalName) : ''}
         `;
@@ -524,27 +556,33 @@ class PDFService {
 
     renderDynamicPages(sections, verticalName) {
         let html = '';
-        // 2 Sections per page to ensure space
-        const itemsPerPage = 2;
+        // 1 Section per page for maximum size and clarity
+        const itemsPerPage = 1;
 
         for (let i = 0; i < sections.length; i += itemsPerPage) {
+            // Because itemsPerPage is 1, a slice gives us an array of 1 item
             const pageItems = sections.slice(i, i + itemsPerPage);
+            const section = pageItems[0];
 
             html += `
                 <div class="pdf-page">
                     <div class="page-header">
-                        <span class="page-header-text">ESPECIFICACIONES TÉCNICAS</span>
+                        <span class="page-header-text">DETALLE TÉCNICO</span>
                     </div>
                     
-                    <div class="page-content">
-                        <div class="ds-wrapper">
-                            ${pageItems.map((section, index) => this.renderSectionBlock(section, index)).join('')}
+                    <div class="page-content" style="justify-content: center;">
+                        <div class="ds-wrapper-single">
+                            ${section.imageUrl ? `<img src="${section.imageUrl}" class="ds-img-large">` : ''}
+                            <div class="ds-content-large">
+                                <h3>${section.title || 'Detalle Técnico'}</h3>
+                                <p>${section.text}</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="page-footer">
                         <span>${verticalName}</span>
-                        <span>Page ${3 + Math.floor(i / itemsPerPage)}</span>
+                        <span>Page ${4 + i}</span>
                     </div>
                 </div>
             `;
@@ -553,18 +591,8 @@ class PDFService {
     }
 
     renderSectionBlock(section, index) {
-        // Alternate layout: Image Left for even, Image Right for odd (handled by CSS .reversed)
-        const isReversed = index % 2 !== 0 ? 'reversed' : '';
-
-        return `
-            <div class="ds-item ${isReversed}">
-                ${section.imageUrl ? `<img src="${section.imageUrl}" class="ds-img">` : '<div style="background:#222; height:220px; width:45%; border-radius:2px;"></div>'}
-                <div class="ds-content">
-                    <h3>${section.title || 'Detalle Técnico'}</h3>
-                    <p>${section.text}</p>
-                </div>
-            </div>
-        `;
+        // Redundant with new logic but kept for safety
+        return '';
     }
 }
 
