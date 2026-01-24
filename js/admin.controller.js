@@ -318,9 +318,36 @@ class AdminController {
         }
 
         const heroFile = document.getElementById('hero-file');
-        const heroPosX = document.getElementById('hero-pos-x');
+        const heroPosX = document.getElementById('hero-pos-x'); // Hidden inputs
         const heroPosY = document.getElementById('hero-pos-y');
         const openLibraryBtn = document.getElementById('open-library-btn');
+
+        // Live Preview Bindings (Text)
+        const bindPreview = (inputId, previewId, isBadge = false) => {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input && preview) {
+                input.addEventListener('input', () => {
+                    preview.textContent = input.value || (isBadge ? 'Badge' : (inputId.includes('subtitle') ? 'Subtítulo' : 'Título'));
+                });
+            }
+        };
+        bindPreview('hero-title', 'preview-title');
+        bindPreview('hero-subtitle', 'preview-subtitle');
+        bindPreview('hero-badge', 'preview-badge', true);
+
+        // Badge Color
+        document.querySelectorAll('input[name="hero-color"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const badge = document.getElementById('preview-badge');
+                if (badge) {
+                    badge.className = 'hero-preview-badge ' + e.target.value;
+                }
+            });
+        });
+
+        // Initialize Drag Logic
+        this.initHeroDrag(heroPosX, heroPosY);
 
         if (heroFile) {
             heroFile.addEventListener('change', async (e) => {
@@ -336,9 +363,8 @@ class AdminController {
         }
 
         if (heroPosX && heroPosY) {
-            const updatePos = () => this.updateHeroPreview(null, heroPosX.value, heroPosY.value);
-            heroPosX.addEventListener('input', updatePos);
-            heroPosY.addEventListener('input', updatePos);
+            // If values change programmatically or manually
+            // Not strictly needed if drag updates style directly, but good for sync
         }
 
         if (openLibraryBtn) {
@@ -351,18 +377,88 @@ class AdminController {
         });
     }
 
+    initHeroDrag(inputX, inputY) {
+        const container = document.getElementById('hero-preview-container');
+        if (!container) return;
+
+        let isDragging = false;
+        let startX, startY;
+        let initialPosX = 50, initialPosY = 50;
+
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+
+            // Get current percentage values
+            initialPosX = parseFloat(inputX.value) || 50;
+            initialPosY = parseFloat(inputY.value) || 50;
+
+            container.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const rect = container.getBoundingClientRect();
+            // Calculate delta as percentage of container dimensions
+            // Movement sensitivity: 1px = 0.5% change? or 1 to 1 mapping with container pixels?
+            // To make it feel like "dragging the image", moving mouse RIGHT should move background position RIGHT (increasing %).
+            // Sensitivity factor helps control speed
+            const sensitivity = 0.2;
+
+            const deltaX = (e.clientX - startX) * sensitivity;
+            const deltaY = (e.clientY - startY) * sensitivity;
+
+            let newX = initialPosX - deltaX; // Dragging "image" left means position goes left (decreases)?? 
+            // Actually background-position: 100% means right edge aligned.
+            // Dragging mouse LEFT -> want image to move LEFT?
+            // Let's stick to direct mapping: Mouse Right -> Value Increase.
+
+            // Re-calc: standard behavior is usually inverted for "pan", but consistent for "position".
+            // Let's try direct mapping. Use sensitivity based on container width to be precise.
+            const pxToPercentX = (1 / rect.width) * 100;
+            const pxToPercentY = (1 / rect.height) * 100;
+
+            // Invert logic: Dragging Left (negative delta) reveals right side (position increases?)
+            // background-position: 0% = left edge. 100% = right edge.
+            // If I see left edge (0%) and drag Left... I want to see right part... so position moves to 100%.
+            // So Drag Left (-delta) -> Increase Position (+).
+
+            newX = initialPosX - ((e.clientX - startX) * pxToPercentX);
+            newY = initialPosY - ((e.clientY - startY) * pxToPercentY);
+
+            // Clamp 0-100
+            newX = Math.max(0, Math.min(100, newX));
+            newY = Math.max(0, Math.min(100, newY));
+
+            inputX.value = newX;
+            inputY.value = newY;
+
+            this.updateHeroPreview(null, newX, newY);
+        });
+
+        const stopDrag = () => {
+            if (isDragging) {
+                isDragging = false;
+                container.style.cursor = 'move';
+            }
+        };
+
+        window.addEventListener('mouseup', stopDrag);
+    }
+
     updateHeroPreview(imageUrl = null, x = null, y = null) {
-        const preview = document.getElementById('hero-preview');
-        if (!preview) return;
+        const bgDiv = document.getElementById('hero-preview-bg');
+        if (!bgDiv) return; // Might be old element if HTML didn't update yet (but it should have)
 
         if (imageUrl) {
-            preview.style.backgroundImage = `url('${imageUrl}')`;
-            // If setting a new image, reset position to center conceptually or keep? 
-            // Better to keep existing values unless explicitly reset.
+            bgDiv.style.backgroundImage = `url('${imageUrl}')`;
         }
 
         if (x !== null && y !== null) {
-            preview.style.backgroundPosition = `${x}% ${y}%`;
+            bgDiv.style.backgroundPosition = `${x}% ${y}%`;
         }
     }
 
