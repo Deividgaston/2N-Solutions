@@ -347,6 +347,13 @@ class AdminController {
             const fileInput = document.getElementById('hero-file');
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
+
+                // Validate Type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    throw new Error('Formato no soportado. Usa JPG, PNG o WEBP.');
+                }
+
                 const fileName = `hero_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                 heroImagePath = `${this.currentMediaPath}/${fileName}`;
 
