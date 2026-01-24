@@ -1129,10 +1129,6 @@ class AdminController {
                             <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'top' ? 'arrow-up' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left'))}"></i> ${section.layout || 'left'}</span>
                         </div>
                         <div class="section-actions">
-                            <!-- PPT Button: Forced Visible -->
-                            <button class="btn-icon ppt-export" onclick="console.log('PPT Click'); adminController.handleExportPPT('${section.id}')" title="Descargar PPT Slide" style="color: #0068B3; display: inline-flex !important; align-items: center; justify-content: center; background: rgba(0, 104, 179, 0.1); border: 1px solid #0068B3;">
-                                <i class="fa-solid fa-file-powerpoint"></i>
-                            </button>
                             <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
                                 <i class="fa-solid fa-copy"></i>
                             </button>
@@ -1142,6 +1138,29 @@ class AdminController {
                         </div>
                     </div>
                 `;
+
+                // Click to Select
+                card.addEventListener('click', (e) => {
+                    // Ignore if clicked on actions
+                    if (e.target.closest('.section-actions') || e.target.closest('.drag-handle')) return;
+
+                    // Deselect previous
+                    document.querySelectorAll('.section-card.selected').forEach(c => c.classList.remove('selected'));
+
+                    // Select current
+                    card.classList.add('selected');
+                    this.selectedSectionId = section.id;
+
+                    // Enable global button
+                    const btn = document.getElementById('global-ppt-btn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.onclick = () => this.handleExportPPT(section.id);
+                        // Visual Feedback
+                        btn.style.borderColor = '#0068B3';
+                        btn.style.color = '#0068B3';
+                    }
+                });
 
                 // Drag Events
                 card.addEventListener('dragstart', (e) => {
