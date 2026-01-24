@@ -211,31 +211,26 @@ class PDFService {
                     gap: 40px;
                 }
 
-                .innovation-card {
-                    background: #111;
-                    border: 1px solid #333;
-                    padding: 30px;
+                .innovation-area {
                     position: relative;
-                    overflow: hidden;
-                    border-radius: 4px;
-                    /* ALIGNMENT FIX: Pull card left so internal text aligns with page titles */
-                    margin-left: -30px;
-                    width: calc(100% + 60px);
+                    margin-top: 20px;
                 }
                 
                 .innovation-bg {
                     position: absolute;
-                    top: 0; right: 0; bottom: 0; left: 0;
-                    background-image: url('assets/gold-presence-map.png'); /* Spectacular Asset */
+                    top: -20px; right: -60px; bottom: -20px; left: -60px; /* Bleed to edges */
+                    background-image: url('assets/gold-presence-map.png');
                     background-size: cover;
                     background-position: center;
-                    opacity: 0.2;
+                    opacity: 0.15;
                     z-index: 0;
+                    mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
                 }
                 
-                .card-content {
+                .innovation-content {
                     position: relative;
                     z-index: 1;
+                    /* No padding, align flush left */
                 }
 
                 .stat-row {
@@ -366,12 +361,12 @@ class PDFService {
                             <p>${this.companyInfo.description}</p>
                         </div>
 
-                        <!-- Hero Card with Map -->
-                        <div class="innovation-card">
+                        <!-- Hero Area with Map -->
+                        <div class="innovation-area">
                             <div class="innovation-bg"></div>
-                            <div class="card-content">
+                            <div class="innovation-content">
                                 <h3 style="margin-top:0; font-size:20px; color: #fff; margin-bottom: 10px;">Liderazgo Global</h3>
-                                <p style="font-size: 14px; color: #bbb; margin-bottom: 0; line-height: 1.6; max-width: 70%;">
+                                <p style="font-size: 14px; color: #bbb; margin-bottom: 0; line-height: 1.6; max-width: 80%;">
                                     ${this.companyInfo.innovation}
                                 </p>
                                 
