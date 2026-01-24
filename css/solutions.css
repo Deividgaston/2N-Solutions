@@ -474,57 +474,98 @@ body {
         font-size: 1.5rem;
     }
 }
+
 /* Print Styles optimized for PDF */
 @media print {
+    @page {
+        margin: 0;
+        /* Remove default browser margins if possible */
+        size: auto;
+    }
+
+    html,
     body {
-        background: white !important;
-        color: black !important;
+        width: 100%;
+        height: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: black !important;
+        /* User wants dark style preserved in PDF too? Screenshot shows dark. */
+        color: white !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
-    
-    .navbar, .footer, .btn-cta, .back-link, .solution-badge {
+
+    .navbar,
+    .footer,
+    .btn-cta,
+    .back-link,
+    .solution-badge,
+    .sidebar-card,
+    .btn-sidebar,
+    .btn-sidebar-outline {
         display: none !important;
     }
 
     .solution-hero {
-        padding: 2rem 0 !important;
+        padding: 4rem 2rem !important;
         page-break-after: always;
-        height: 100vh;
+        height: 100% !important;
+        /* Use % instead of vh */
+        min-height: 95vh;
+        /* Ensure it fills first page */
         display: flex;
         flex-direction: column;
         justify-content: center;
+        background: black !important;
     }
 
     .solution-hero-bg {
-        display: block !important; /* Keep background image if possible, or simple color */
-        background: white !important; /* Save toner? Or user wants exact design? 'del pdf' implies they print web to PDF. */
+        display: block !important;
+        position: absolute;
+        inset: 0;
+        z-index: -1;
     }
-    
+
     .dynamic-sections-container {
-        margin-top: 0 !important;
+        margin-top: 2rem !important;
         gap: 0 !important;
-        display: block !important; /* Block handles breaks better than flex */
+        display: block !important;
     }
 
     .dynamic-section {
-        display: flex !important; /* Keep flex for layout */
+        display: flex !important;
         break-inside: avoid;
         page-break-inside: avoid;
-        margin-bottom: 4rem !important; /* Reasonable spacing */
-        padding-top: 1rem;
+        page-break-after: auto;
+        /* Let content flow */
+        margin-bottom: 3rem !important;
+        padding: 2rem !important;
         opacity: 1 !important;
         transform: none !important;
+        border-bottom: 1px solid #333;
+        /* Visual separation instead of page break */
     }
-    
-    .ds-image-wrapper {
-        box-shadow: none !important;
-        border: none !important;
+
+    /* Remove last border */
+    .dynamic-section:last-child {
+        border-bottom: none;
     }
-    
-    /* Ensure text is dark for print */
-    p, h1, h2, h3, h4, .ds-text, .ds-title {
-        color: black !important;
-        -webkit-text-fill-color: black !important;
+
+    /* Force Dark Mode in Print (since user screenshot shows dark PDF preference) */
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    .ds-text,
+    .ds-text p {
+        color: #dddddd !important;
+        -webkit-text-fill-color: #dddddd !important;
+    }
+
+    .ds-title {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
 }
