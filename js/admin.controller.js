@@ -1461,7 +1461,7 @@ class AdminController {
             if (files.length > 0) {
                 files.forEach(file => {
                     // Filter images
-                    if (!file.contentType.startsWith('image/')) return;
+                    if (!file.contentType || !file.contentType.startsWith('image/')) return;
 
                     const item = document.createElement('div');
                     item.className = 'asset-card gallery-image';
