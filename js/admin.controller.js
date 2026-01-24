@@ -1215,14 +1215,22 @@ class AdminController {
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
 
+                    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
+                    if (!validTypes.includes(file.type)) {
+                        throw new Error('Formato no soportado. Usa JPG, PNG, WEBP o MP4.');
+                    }
+
                     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                     storagePath = `${this.currentMediaPath}/${fileName}`;
 
-                    // Compress (Section: 1200px, 0.75 quality)
-                    const compressedBlob = await compressImage(file, 1200, 0.75);
+                    // If Image, Compress. If Video, Upload direct.
+                    let uploadData = file;
+                    if (file.type.startsWith('image/')) {
+                        uploadData = await compressImage(file, 1200, 0.75);
+                    }
 
                     const storageRef = ref(storage, storagePath);
-                    const uploadTask = await uploadBytesResumable(storageRef, compressedBlob);
+                    const uploadTask = await uploadBytesResumable(storageRef, uploadData);
                     imageUrl = await getDownloadURL(uploadTask.ref);
                 }
             } else if (this.selectedGalleryImage) {
