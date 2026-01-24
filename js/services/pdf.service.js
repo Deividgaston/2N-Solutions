@@ -231,7 +231,7 @@ class PDFService {
                 .innovation-content {
                     position: relative;
                     z-index: 1;
-                    /* No padding, align flush left */
+                    padding-top: 80px; /* Push text down to middle of map */
                 }
 
                 .stat-row {
