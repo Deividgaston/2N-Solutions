@@ -5,6 +5,7 @@
 
 import { auth, db, storage } from './firebase-init.js';
 import { contentService } from './services/content.service.js';
+import { pptService } from './services/ppt.service.js';
 import {
     collection,
     doc,
@@ -1128,6 +1129,9 @@ class AdminController {
                             <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'top' ? 'arrow-up' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left'))}"></i> ${section.layout || 'left'}</span>
                         </div>
                         <div class="section-actions">
+                            <button class="btn-icon ppt-export" onclick="adminController.handleExportPPT('${section.id}')" title="Descargar PPT Slide" style="color: #0068B3;">
+                                <i class="fa-solid fa-file-powerpoint"></i>
+                            </button>
                             <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
                                 <i class="fa-solid fa-copy"></i>
                             </button>
@@ -1192,6 +1196,31 @@ class AdminController {
                 return closest;
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    async handleExportPPT(sectionId) {
+        if (!confirm('¿Generar slide PPT para esta sección?')) return;
+
+        try {
+            // Find section data
+            // We could get it from list elements or fetch again. Fetching is safer.
+            const sectionDoc = await getDoc(doc(db, 'sections', sectionId));
+            if (!sectionDoc.exists()) {
+                alert('Sección no encontrada');
+                return;
+            }
+
+            const sectionData = sectionDoc.data();
+
+            // Show loading state?
+            // pptService calls PptxGenJS which is usually fast for 1 slide.
+
+            await pptService.exportSection(sectionData);
+
+        } catch (error) {
+            console.error('Error exporting PPT:', error);
+            alert('Error al generar PPT');
+        }
     }
 
     async handleCloneSection(sectionId) {

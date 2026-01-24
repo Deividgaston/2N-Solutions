@@ -185,52 +185,26 @@ class VerticalRenderer {
             const titleHtml = section.title ? `<h3 class="ds-title">${section.title}</h3>` : '';
 
             // Content HTML
+            const contentHtml = `
             <div class="ds-content" style="text-align: ${section.textAlign || 'left'}">
                 ${titleHtml}
-                <div class="ds-text" style="text-align: ${section.textAlign || 'left'}">${section.text}</div>
-
-                <!-- PPT Export Button (Hidden by default, shown for Admins) -->
-                <button class="btn-ppt-export" style="display: none; margin-top: 15px; font-size: 12px; padding: 5px 10px; background: #0068B3; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    <i class="fa-solid fa-file-powerpoint"></i> Descargar Slide PPT
-                </button>
-            </div>
+                    <div class="ds-text" style="text-align: ${section.textAlign || 'left'}">${section.text}</div>
+                </div>
             `;
-            
+
             // HTML Structure based on layout (but CSS handles row-reverse for right)
             // We just append both. CSS handles order.
 
             sectionEl.innerHTML = `
-                ${ imageHtml }
-                ${ contentHtml }
+                ${imageHtml}
+                ${contentHtml}
             `;
-            
-            // Bind PPT Click
-            const pptBtn = sectionEl.querySelector('.btn-ppt-export');
-            if(pptBtn) {
-                 pptBtn.addEventListener('click', async (e) => {
-                     e.stopPropagation();
-                     // Dynamic import to avoid loading service if not needed? No, just import top level.
-                     // But we didn't import it at top.
-                     // Let's do dynamic import or assume global if we added script?
-                     // We created a module `ppt.service.js`. Let's import it at top of file.
-                     const { pptService } = await import('./services/ppt.service.js');
-                     pptBtn.textContent = 'Generando...';
-                     try {
-                        await pptService.exportSection(section);
-                     } catch(err) {
-                        alert('Error al generar PPT');
-                        console.error(err);
-                     } finally {
-                        pptBtn.innerHTML = '<i class="fa-solid fa-file-powerpoint"></i> Descargar Slide PPT';
-                     }
-                 });
-            }
 
             this.container.appendChild(sectionEl);
         });
-        
+
         // Check Admin Role to show buttons
-        this.checkAdminVisibility();
+        // this.checkAdminVisibility(); // Not needed for public page anymore
 
 
     }
