@@ -108,9 +108,9 @@ class VerticalRenderer {
 
             // Content HTML
             const contentHtml = `
-                <div class="ds-content">
+                <div class="ds-content" style="text-align: ${section.textAlign || 'left'}">
                     ${titleHtml}
-                    <div class="ds-text">${section.text}</div>
+                    <div class="ds-text" style="text-align: ${section.textAlign || 'left'}">${section.text}</div>
                 </div>
             `;
 

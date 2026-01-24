@@ -295,6 +295,11 @@ class AdminController {
             radio.addEventListener('change', () => this.updatePreview());
         });
 
+        // Alignment radio buttons
+        document.querySelectorAll('input[name="section-align"]').forEach(radio => {
+            radio.addEventListener('change', () => this.updatePreview());
+        });
+
         // Intro Editor Bindings
         const addBenefitBtn = document.getElementById('add-benefit-btn');
         if (addBenefitBtn) {
@@ -359,6 +364,7 @@ class AdminController {
     updatePreview() {
         const text = document.getElementById('section-text').value;
         const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+        const textAlign = document.querySelector('input[name="section-align"]:checked')?.value || 'left';
         // Image logic: if file input has file, use local URL; if gallery selected, use that; else placeholder
 
         let imageUrl = '';
@@ -375,6 +381,7 @@ class AdminController {
 
         // Update Text
         previewText.textContent = text || 'Tu texto aparecerá aquí...';
+        previewText.style.textAlign = textAlign; // Apply alignment
 
         // Update Image
         if (imageUrl) {
@@ -405,6 +412,10 @@ class AdminController {
         // Default layout left
         const defaultLayout = document.querySelector('input[name="section-layout"][value="left"]');
         if (defaultLayout) defaultLayout.checked = true;
+
+        // Default align left
+        const defaultAlign = document.querySelector('input[name="section-align"][value="left"]');
+        if (defaultAlign) defaultAlign.checked = true;
 
         this.updatePreview();
     }
@@ -1116,6 +1127,7 @@ class AdminController {
             const tagsStr = document.getElementById('section-tags').value.trim();
             const text = document.getElementById('section-text').value;
             const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+            const textAlign = document.querySelector('input[name="section-align"]:checked')?.value || 'left';
             const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
             // Validate tags
@@ -1125,24 +1137,19 @@ class AdminController {
             let imageUrl = null;
             let storagePath = null;
 
+            // ... (image upload logic remains) ...
             if (activeTab === 'upload') {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-
                     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                     storagePath = `${this.currentMediaPath}/${fileName}`;
-
                     const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, file);
                     imageUrl = await getDownloadURL(uploadTask.ref);
                 }
-                // Image is optional now
-            } else {
-                // Gallery
-                if (this.selectedGalleryImage) {
-                    imageUrl = this.selectedGalleryImage;
-                }
+            } else if (this.selectedGalleryImage) {
+                imageUrl = this.selectedGalleryImage;
             }
 
             const data = {
@@ -1151,7 +1158,8 @@ class AdminController {
                 text,
                 imageUrl,
                 imagePath: storagePath,
-                layout
+                layout,
+                textAlign
             };
 
             await contentService.addSection(this.currentVertical, data);

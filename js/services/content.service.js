@@ -157,6 +157,7 @@ class ContentService {
                 title: data.title || '',
                 tags: data.tags || [],
                 layout: data.layout || 'left',
+                textAlign: data.textAlign || 'left',
                 order: nextOrder,
                 createdAt: serverTimestamp()
             });
