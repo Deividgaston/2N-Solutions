@@ -1155,10 +1155,8 @@ class AdminController {
                     const btn = document.getElementById('global-ppt-btn');
                     if (btn) {
                         btn.disabled = false;
+                        btn.classList.add('active-ppt'); // Enable visual style
                         btn.onclick = () => this.handleExportPPT(section.id);
-                        // Visual Feedback
-                        btn.style.borderColor = '#0068B3';
-                        btn.style.color = '#0068B3';
                     }
                 });
 
@@ -1223,10 +1221,12 @@ class AdminController {
 
         try {
             // Find section data
-            // We could get it from list elements or fetch again. Fetching is safer.
-            const sectionDoc = await getDoc(doc(db, 'sections', sectionId));
+            // Path: verticals/{verticalId}/sections/{sectionId}
+            const sectionRef = doc(db, 'verticals', this.currentVertical, 'sections', sectionId);
+            const sectionDoc = await getDoc(sectionRef);
+
             if (!sectionDoc.exists()) {
-                alert('Sección no encontrada');
+                alert('Error: La sección no se encuentra en la base de datos.');
                 return;
             }
 

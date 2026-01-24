@@ -1119,3 +1119,27 @@
     border-color: var(--border-color);
     color: var(--text-muted);
 }
+
+/* PPT Action Button (in Tabs) */
+.vertical-tab.ppt-action {
+    margin-left: auto; /* Push to right */
+    border-color: var(--primary);
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5; /* Default disabled state visual */
+    cursor: not-allowed;
+    background: transparent;
+}
+
+.vertical-tab.ppt-action.active-ppt {
+    opacity: 1;
+    cursor: pointer;
+    background: rgba(0, 104, 183, 0.1);
+}
+
+.vertical-tab.ppt-action.active-ppt:hover {
+    background: var(--primary);
+    color: white;
+}
