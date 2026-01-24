@@ -46,7 +46,7 @@ class PptService {
                 // Footer Branding
                 { text: { text: '2N Telecommunications · Parte de Axis Communications', options: { x: 0.5, y: '96%', fontSize: 9, color: '666666' } } },
                 { text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } },
-                // Logo in corner (Contained aspect ratio)
+                // Logo in corner
                 { image: { path: LOGO_URL, x: '88%', y: '91%', w: 1.2, h: 0.5, sizing: { type: 'contain' } } }
             ]
         });
@@ -63,8 +63,7 @@ class PptService {
         }
 
         // Giant Background Logo (Clean White, Lower Opacity)
-        // Adjust sizing to ensure no distortion
-        coverSlide.addImage({ path: LOGO_URL, x: 2, y: 2, w: 9, h: 3, sizing: { type: 'contain' }, transparency: 85 });
+        coverSlide.addImage({ path: LOGO_URL, x: 3, y: 2.5, w: 7, h: 2, sizing: { type: 'contain' }, transparency: 85 });
 
         // Title
         coverSlide.addText((metadata.heroTitle || title).toUpperCase(), {
@@ -84,32 +83,35 @@ class PptService {
 
         // Map Background
         companySlide.addImage({ path: MAP_URL, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-        // Dark Overlay for readability
-        companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 15 });
+        // Lighter Overlay so map is visible (75% transparent black)
+        companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 75 });
 
         // Title
         companySlide.addText('SOBRE 2N', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
 
-        // Content Layout (Clean, no floating box borders)
+        // Content Layout
         // Left Column: Main Text
         companySlide.addText(
             '2N es el líder mundial en sistemas de control de acceso e intercomunicadores IP. Desde 1991, hemos liderado la innovación en el sector.\n\n' +
             'Nuestros productos se encuentran en los edificios más emblemáticos del mundo, ofreciendo seguridad, diseño y comodidad sin compromisos.',
-            { x: 0.5, y: 1.5, w: 6, h: 4, fontSize: 16, color: 'FFFFFF', align: 'left', lineSpacing: 28, bold: true, shadow: { type: 'outer', color: '000000', blur: 3, offset: 2, opacity: 0.5 } }
+            { x: 0.5, y: 1.5, w: 6, h: 4, fontSize: 16, color: 'FFFFFF', align: 'left', lineSpacing: 28, bold: true, shadow: { type: 'outer', color: '000000', blur: 5, offset: 2, opacity: 0.8 } }
         );
 
-        // Right Column: Key Stats (Integrated)
+        // Right Column: Key Stats (Fixed Overlap)
         // Vertical Divider Line
         companySlide.addShape(pptx.ShapeType.line, { x: 7, y: 1.5, w: 0, h: 4, line: { color: COLOR_ACCENT, width: 2 } });
 
-        companySlide.addText('DATOS CLAVE', { x: 7.2, y: 1.5, fontSize: 14, color: COLOR_ACCENT, bold: true });
+        // Header - Moved UP to avoid collision
+        companySlide.addText('DATOS CLAVE', { x: 7.2, y: 1.3, fontSize: 14, color: COLOR_ACCENT, bold: true });
+
+        // List - Moved DOWN and spacing adjusted
         companySlide.addText(
             '• Fundada en 1991 en Praga\n\n' +
             '• Parte de Axis Communications\n\n' +
             '• +14% Inversión anual en I+D\n\n' +
             '• Presencia Global en +100 países\n\n' +
             '• Creadores del primer IP Intercom',
-            { x: 7.2, y: 2.0, w: 5, fontSize: 14, color: 'FFFFFF', lineSpacing: 24, bold: true }
+            { x: 7.2, y: 1.8, w: 5, fontSize: 14, color: 'FFFFFF', lineSpacing: 24, bold: true, shadow: { type: 'outer', color: '000000', blur: 5, offset: 2, opacity: 0.8 } }
         );
 
 
@@ -136,13 +138,11 @@ class PptService {
                 let xPos = 0.5;
                 metadata.benefits.forEach((b, i) => {
                     if (i < 3) {
-                        // Benefits without heavy borders, cleaner look
                         introSlide.addText(b, {
                             x: xPos, y: 5.0, w: 4, h: 1.5,
                             fontSize: 12, color: 'FFFFFF', align: 'center', valign: 'middle',
-                            fill: { color: '111111' }, line: { color: '333333' } // Subtle box
+                            fill: { color: '111111' }, line: { color: '333333' }
                         });
-                        // Accent top border
                         introSlide.addShape(pptx.ShapeType.line, { x: xPos, y: 5.0, w: 4, h: 0, line: { color: COLOR_ACCENT, width: 3 } });
 
                         xPos += 4.2;
@@ -158,7 +158,7 @@ class PptService {
 
         // Save
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_Premium_Final.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_Premium_v2.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
