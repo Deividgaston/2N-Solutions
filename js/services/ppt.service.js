@@ -44,6 +44,7 @@ class PptService {
         // --- 2. COVER SLIDE ---
         const coverSlide = pptx.addSlide();
         coverSlide.masterName = 'MASTER_DARK';
+        coverSlide.background = { color: '000000' };
 
         // Background Image if available (Hero)
         if (metadata.heroImage) {
@@ -68,6 +69,7 @@ class PptService {
         if (metadata.introTitle || metadata.introText) {
             const introSlide = pptx.addSlide();
             introSlide.masterName = 'MASTER_DARK';
+            introSlide.background = { color: '000000' };
 
             // Title
             introSlide.addText((metadata.introTitle || 'Sobre la Solución').toUpperCase(), {
@@ -97,7 +99,7 @@ class PptService {
         }
 
         // Save
-        const filename = `2N_Solucion_${title.replace(/\s+/g, '_')}_Dark.pptx`;
+        const filename = `2N_Solucion_${title.replace(/\s+/g, '_')}_Black.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
@@ -107,6 +109,7 @@ class PptService {
     createSectionSlide(pptx, section) {
         const slide = pptx.addSlide();
         slide.masterName = 'MASTER_DARK';
+        slide.background = { color: '000000' };
 
         // Title
         if (section.title) {
