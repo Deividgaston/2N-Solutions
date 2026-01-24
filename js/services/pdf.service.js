@@ -255,22 +255,45 @@ class PDFService {
                     color: #888;
                 }
 
-                /* Benefits List */
-                .benefits-list {
+                /* Feature Cards (Values) */
+                .feature-grid {
                     display: grid;
-                    grid-template-columns: 1fr 1fr;
+                    grid-template-columns: 1fr 1fr 1fr;
                     gap: 20px;
-                    margin-top: 40px;
                 }
 
-                .benefit-pill {
-                    background: rgba(255,255,255,0.05);
-                    padding: 15px 20px;
-                    font-size: 13px;
-                    color: #ddd;
-                    border-left: 2px solid #fff;
+                .feature-card {
+                    background: #111; /* Dark Card */
+                    border: 1px solid #222;
+                    border-radius: 8px;
+                    padding: 24px 20px;
+                    text-align: center;
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+                }
+
+                .feature-icon {
+                    color: #3b82f6; /* 2N Blue-ish */
+                    margin-bottom: 16px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                
+                .feature-card h4 {
+                    font-size: 16px;
+                    color: #3b82f6;
+                    margin: 0 0 12px 0;
+                    font-weight: 700;
+                }
+
+                .feature-card p {
+                    font-size: 11px;
+                    line-height: 1.5;
+                    color: #999;
+                    margin: 0;
                 }
 
                 /* Dynamic Sections */
@@ -389,14 +412,35 @@ class PDFService {
                         </div>
                     </div>
 
-                    <div style="margin-top: 50px; border-top: 1px solid #222; padding-top: 30px;">
-                         <h3 style="font-size: 20px; color: #fff; margin-bottom: 20px;">${data.mainTitle}</h3>
-                         <div class="benefits-list">
-                            ${data.benefits.map(b => `
-                                <div class="benefit-pill">
-                                    <span>${b}</span>
+                    <div style="margin-top: 50px; border-top: 1px solid #222; padding-top: 40px;">
+                         <!-- FEATURE CARDS (Static 2N Values) -->
+                         <div class="feature-grid">
+                            <!-- Card 1 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
                                 </div>
-                            `).join('')}
+                                <h4>Calidad Premium</h4>
+                                <p>Diseño europeo y fabricación propia con los más altos estándares.</p>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 16.5 8 4.5 4.5 0 0 0 12 3.5 4.5 4.5 0 0 0 7.5 8c0 1.42.74 2.68 1.91 3.5.76.76 1.23 1.52 1.41 2.5"></path></svg>
+                                </div>
+                                <h4>Innovación Continua</h4>
+                                <p>Invertimos el 14% de nuestros ingresos en I+D cada año.</p>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                </div>
+                                <h4>Soporte Global</h4>
+                                <p>Presencia en más de 100 países con soporte técnico especializado.</p>
+                            </div>
                          </div>
                     </div>
                 </div>
