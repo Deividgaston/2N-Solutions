@@ -1100,18 +1100,20 @@
         display: none;
     }
 }
+
 /* Selected Section Card */
 .section-card.selected {
     border: 2px solid var(--primary) !important;
     background-color: rgba(0, 153, 255, 0.05);
     transform: scale(1.005);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Global PPT Button */
 #global-ppt-btn {
     transition: all 0.2s;
 }
+
 #global-ppt-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -1122,13 +1124,15 @@
 
 /* PPT Action Button (in Tabs) */
 .vertical-tab.ppt-action {
-    margin-left: auto; /* Push to right */
+    margin-left: auto;
+    /* Push to right */
     border-color: var(--primary);
     color: var(--primary);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    opacity: 0.5; /* Default disabled state visual */
+    opacity: 0.5;
+    /* Default disabled state visual */
     cursor: not-allowed;
     background: transparent;
 }
@@ -1146,7 +1150,7 @@
 
 /* Shared Tab Styles for PPT Button */
 .tab-btn-style {
-    padding: var(--space-sm) var(--space-md);
+    padding: 8px 16px;
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
@@ -1169,17 +1173,11 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    opacity: 0.5;
-    cursor: not-allowed;
+    background: rgba(0, 104, 183, 0.05);
+    /* Always slight bg */
 }
 
-.tab-btn-style.ppt-action.active-ppt {
-    opacity: 1;
-    cursor: pointer;
-    background: rgba(0, 104, 183, 0.1);
-}
-
-.tab-btn-style.ppt-action.active-ppt:hover {
+.tab-btn-style.ppt-action:hover {
     background: var(--primary);
     color: white;
 }
