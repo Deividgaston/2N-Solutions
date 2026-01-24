@@ -218,6 +218,9 @@ class PDFService {
                     position: relative;
                     overflow: hidden;
                     border-radius: 4px;
+                    /* ALIGNMENT FIX: Pull card left so internal text aligns with page titles */
+                    margin-left: -30px;
+                    width: calc(100% + 60px);
                 }
                 
                 .innovation-bg {
