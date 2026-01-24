@@ -28,6 +28,7 @@ import {
     createUserWithEmailAndPassword
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import authController from './auth.controller.js';
+import { compressImage } from './utils/image.utils.js';
 import i18n from './i18n.js';
 
 class AdminController {
@@ -347,10 +348,13 @@ class AdminController {
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const fileName = `hero_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                heroImagePath = `${this.currentMediaPath}/${fileName}`; // Save in current folder or specific 'heroes' folder? Let's use current.
+                heroImagePath = `${this.currentMediaPath}/${fileName}`;
+
+                // Compress (Hero: 1920px, 0.8 quality)
+                const compressedBlob = await compressImage(file, 1920, 0.8);
 
                 const storageRef = ref(storage, heroImagePath);
-                const uploadTask = await uploadBytesResumable(storageRef, file);
+                const uploadTask = await uploadBytesResumable(storageRef, compressedBlob);
                 heroImageUrl = await getDownloadURL(uploadTask.ref);
             }
 
@@ -1209,10 +1213,15 @@ class AdminController {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
+
                     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                     storagePath = `${this.currentMediaPath}/${fileName}`;
+
+                    // Compress (Section: 1200px, 0.75 quality)
+                    const compressedBlob = await compressImage(file, 1200, 0.75);
+
                     const storageRef = ref(storage, storagePath);
-                    const uploadTask = await uploadBytesResumable(storageRef, file);
+                    const uploadTask = await uploadBytesResumable(storageRef, compressedBlob);
                     imageUrl = await getDownloadURL(uploadTask.ref);
                 }
             } else if (this.selectedGalleryImage) {
