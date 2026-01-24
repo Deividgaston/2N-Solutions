@@ -136,6 +136,44 @@
                 <button class="vertical-tab" data-vertical="security">Seguridad</button>
             </div>
 
+            <!-- Intro Editor -->
+            <div class="intro-editor-container"
+                style="background: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border-color);">
+                <div class="intro-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer;"
+                    onclick="document.getElementById('intro-form-body').classList.toggle('hidden'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-down'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-up');">
+                    <h3 style="margin: 0; font-size: 16px; color: var(--text-primary);"><i
+                            class="fa-solid fa-pen-to-square"></i> Editar Introducción & Beneficios</h3>
+                    <i class="fa-solid fa-chevron-down toggle-icon" style="color: var(--text-muted);"></i>
+                </div>
+
+                <div id="intro-form-body" class="hidden">
+                    <div class="form-group">
+                        <label>Título Principal</label>
+                        <input type="text" id="intro-title" placeholder="Ej: Seguridad de nivel enterprise">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción (Párra. separados por Enter)</label>
+                        <textarea id="intro-text" rows="5" class="large-textarea"
+                            placeholder="Descripción de la solución..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lista de Capacidades/Beneficios</label>
+                        <div id="benefits-container"
+                            style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
+                            <!-- Dynamic inputs -->
+                        </div>
+                        <button class="btn btn-secondary btn-sm" id="add-benefit-btn"><i class="fa-solid fa-plus"></i>
+                            Añadir Item</button>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button class="btn btn-primary" id="save-intro-btn">Guardar Intro</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="sections-list" id="sections-list">
                 <!-- Dynamic content -->
             </div>

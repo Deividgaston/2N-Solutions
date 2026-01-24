@@ -20,15 +20,52 @@ class VerticalRenderer {
 
     async init() {
         try {
-            // Show loader (optional, or just wait)
-            // this.container.innerHTML = '<div class="loader">Cargando contenido...</div>';
+            // Parallel fetch: Sections + Intro Meta
+            const [sections, meta] = await Promise.all([
+                contentService.getSections(this.verticalId),
+                contentService.getVerticalMeta(this.verticalId)
+            ]);
 
-            const sections = await contentService.getSections(this.verticalId);
+            this.renderIntro(meta);
             this.renderSections(sections);
             this.initScrollAnimations();
         } catch (error) {
-            console.error('Error loading sections:', error);
-            // Fail silently or show minimal error
+            console.error('Error loading content:', error);
+        }
+    }
+
+    renderIntro(meta) {
+        if (!meta) return;
+
+        // Title
+        if (meta.introTitle) {
+            const titleEl = document.querySelector('.content-main h2');
+            if (titleEl) titleEl.textContent = meta.introTitle;
+        }
+
+        // Text (Description)
+        if (meta.introText) {
+            // Find logic: Identify first p tags or use a container ID if present
+            // Strategy: Remove existing P tags in content-main before the H3 (Benefits)
+            // But doing so robustly without IDs is hard.
+            // Best approach: Update HTML to have a container. 
+            // Fallback: If container not found, skip.
+            const introContainer = document.getElementById('intro-text-container');
+            if (introContainer) {
+                // Split by newlines and wrap in <p>
+                const paragraphs = meta.introText.split('\n').filter(p => p.trim().length > 0);
+                introContainer.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+            }
+        }
+
+        // Benefits
+        if (meta.benefits && Array.isArray(meta.benefits) && meta.benefits.length > 0) {
+            const listEl = document.querySelector('.benefits-list');
+            if (listEl) {
+                listEl.innerHTML = meta.benefits.map(b => `
+                    <li><i class="fa-solid fa-check"></i> <strong>${b}</strong></li>
+                `).join('');
+            }
         }
     }
 
