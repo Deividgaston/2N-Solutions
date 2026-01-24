@@ -406,15 +406,9 @@ class AdminController {
             // Movement sensitivity: 1px = 0.5% change? or 1 to 1 mapping with container pixels?
             // To make it feel like "dragging the image", moving mouse RIGHT should move background position RIGHT (increasing %).
             // Sensitivity factor helps control speed
-            const sensitivity = 0.2;
 
-            const deltaX = (e.clientX - startX) * sensitivity;
-            const deltaY = (e.clientY - startY) * sensitivity;
 
-            let newX = initialPosX - deltaX; // Dragging "image" left means position goes left (decreases)?? 
-            // Actually background-position: 100% means right edge aligned.
-            // Dragging mouse LEFT -> want image to move LEFT?
-            // Let's stick to direct mapping: Mouse Right -> Value Increase.
+
 
             // Re-calc: standard behavior is usually inverted for "pan", but consistent for "position".
             // Let's try direct mapping. Use sensitivity based on container width to be precise.
