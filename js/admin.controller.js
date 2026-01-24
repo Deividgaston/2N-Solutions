@@ -290,146 +290,148 @@ class AdminController {
             if (el) el.addEventListener('input', () => this.updatePreview());
         });
 
-        radio.addEventListener('change', () => this.updatePreview());
-    });
+        // Layout radio buttons
+        document.querySelectorAll('input[name="section-layout"]').forEach(radio => {
+            radio.addEventListener('change', () => this.updatePreview());
+        });
 
-    // Intro Editor Bindings
-    const addBenefitBtn = document.getElementById('add-benefit-btn');
-    if(addBenefitBtn) {
-        addBenefitBtn.addEventListener('click', () => this.addBenefitInput());
+        // Intro Editor Bindings
+        const addBenefitBtn = document.getElementById('add-benefit-btn');
+        if (addBenefitBtn) {
+            addBenefitBtn.addEventListener('click', () => this.addBenefitInput());
+        }
+
+        const saveIntroBtn = document.getElementById('save-intro-btn');
+        if (saveIntroBtn) {
+            saveIntroBtn.addEventListener('click', () => this.handleSaveIntro());
+        }
     }
 
-    const saveIntroBtn = document.getElementById('save-intro-btn');
-    if(saveIntroBtn) {
-        saveIntroBtn.addEventListener('click', () => this.handleSaveIntro());
-    }
-}
+    // ============================
+    // INTRO EDITOR LOGIC
+    // ============================
+    addBenefitInput(value = '') {
+        const container = document.getElementById('benefits-container');
+        const div = document.createElement('div');
+        div.className = 'benefit-item';
+        div.style.display = 'flex';
+        div.style.gap = '10px';
 
-// ============================
-// INTRO EDITOR LOGIC
-// ============================
-addBenefitInput(value = '') {
-    const container = document.getElementById('benefits-container');
-    const div = document.createElement('div');
-    div.className = 'benefit-item';
-    div.style.display = 'flex';
-    div.style.gap = '10px';
-
-    div.innerHTML = `
+        div.innerHTML = `
             <input type="text" value="${value}" placeholder="Beneficio/Capacidad" style="flex:1;">
             <button class="btn-icon delete" title="Eliminar" style="color:var(--text-error);" onclick="this.parentElement.remove()">
                 <i class="fa-solid fa-trash"></i>
             </button>
         `;
-    container.appendChild(div);
-}
+        container.appendChild(div);
+    }
 
     async handleSaveIntro() {
-    const btn = document.getElementById('save-intro-btn');
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
+        const btn = document.getElementById('save-intro-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
 
-    try {
-        const title = document.getElementById('intro-title').value.trim();
-        const text = document.getElementById('intro-text').value.trim();
+        try {
+            const title = document.getElementById('intro-title').value.trim();
+            const text = document.getElementById('intro-text').value.trim();
 
-        // Collect benefits
-        const benefitInputs = document.querySelectorAll('#benefits-container input');
-        const benefits = Array.from(benefitInputs).map(input => input.value.trim()).filter(v => v.length > 0);
+            // Collect benefits
+            const benefitInputs = document.querySelectorAll('#benefits-container input');
+            const benefits = Array.from(benefitInputs).map(input => input.value.trim()).filter(v => v.length > 0);
 
-        await contentService.updateVerticalMeta(this.currentVertical, {
-            introTitle: title,
-            introText: text,
-            benefits: benefits
-        });
+            await contentService.updateVerticalMeta(this.currentVertical, {
+                introTitle: title,
+                introText: text,
+                benefits: benefits
+            });
 
-        alert('Introducción actualizada correctamente');
-    } catch (error) {
-        console.error(error);
-        alert('Error al guardar: ' + error.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-    }
-}
-
-updatePreview() {
-    const text = document.getElementById('section-text').value;
-    const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
-    // Image logic: if file input has file, use local URL; if gallery selected, use that; else placeholder
-
-    let imageUrl = '';
-    const fileInput = document.getElementById('section-file');
-    if (fileInput.files.length > 0) {
-        imageUrl = URL.createObjectURL(fileInput.files[0]);
-    } else if (this.selectedGalleryImage) {
-        imageUrl = this.selectedGalleryImage;
-    }
-
-    const previewContainer = document.getElementById('section-preview');
-    const previewImage = previewContainer.querySelector('.preview-image');
-    const previewText = previewContainer.querySelector('.preview-text');
-
-    // Update Text
-    previewText.textContent = text || 'Tu texto aparecerá aquí...';
-
-    // Update Image
-    if (imageUrl) {
-        const isVideo = imageUrl.match(/\.(mp4|webm|mov)$/i) || (fileInput.files[0]?.type.startsWith('video/'));
-        if (isVideo) {
-            previewImage.innerHTML = `<video src="${imageUrl}" autoplay muted loop playsinline></video>`;
-        } else {
-            previewImage.innerHTML = `<img src="${imageUrl}" alt="Preview">`;
+            alert('Introducción actualizada correctamente');
+        } catch (error) {
+            console.error(error);
+            alert('Error al guardar: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
         }
-    } else {
-        previewImage.innerHTML = '<div class="placeholder-image">Sin imagen</div>';
     }
 
-    // Update Layout Class
-    previewContainer.className = `section-card preview-card layout-${layout}`;
-}
+    updatePreview() {
+        const text = document.getElementById('section-text').value;
+        const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+        // Image logic: if file input has file, use local URL; if gallery selected, use that; else placeholder
 
-resetSectionModal() {
-    document.getElementById('section-form').reset();
-    this.selectedGalleryImage = null;
-    document.getElementById('section-file-info').textContent = '';
-    if (document.querySelector('.tab-btn[data-tab="upload"]')) {
-        document.querySelector('.tab-btn[data-tab="upload"]').click();
+        let imageUrl = '';
+        const fileInput = document.getElementById('section-file');
+        if (fileInput.files.length > 0) {
+            imageUrl = URL.createObjectURL(fileInput.files[0]);
+        } else if (this.selectedGalleryImage) {
+            imageUrl = this.selectedGalleryImage;
+        }
+
+        const previewContainer = document.getElementById('section-preview');
+        const previewImage = previewContainer.querySelector('.preview-image');
+        const previewText = previewContainer.querySelector('.preview-text');
+
+        // Update Text
+        previewText.textContent = text || 'Tu texto aparecerá aquí...';
+
+        // Update Image
+        if (imageUrl) {
+            const isVideo = imageUrl.match(/\.(mp4|webm|mov)$/i) || (fileInput.files[0]?.type.startsWith('video/'));
+            if (isVideo) {
+                previewImage.innerHTML = `<video src="${imageUrl}" autoplay muted loop playsinline></video>`;
+            } else {
+                previewImage.innerHTML = `<img src="${imageUrl}" alt="Preview">`;
+            }
+        } else {
+            previewImage.innerHTML = '<div class="placeholder-image">Sin imagen</div>';
+        }
+
+        // Update Layout Class
+        previewContainer.className = `section-card preview-card layout-${layout}`;
     }
-    const grid = document.getElementById('multimedia-grid');
-    if (grid) grid.innerHTML = '<p>Cargando imágenes...</p>';
 
-    // Default layout left
-    const defaultLayout = document.querySelector('input[name="section-layout"][value="left"]');
-    if (defaultLayout) defaultLayout.checked = true;
+    resetSectionModal() {
+        document.getElementById('section-form').reset();
+        this.selectedGalleryImage = null;
+        document.getElementById('section-file-info').textContent = '';
+        if (document.querySelector('.tab-btn[data-tab="upload"]')) {
+            document.querySelector('.tab-btn[data-tab="upload"]').click();
+        }
+        const grid = document.getElementById('multimedia-grid');
+        if (grid) grid.innerHTML = '<p>Cargando imágenes...</p>';
 
-    this.updatePreview();
-}
+        // Default layout left
+        const defaultLayout = document.querySelector('input[name="section-layout"][value="left"]');
+        if (defaultLayout) defaultLayout.checked = true;
+
+        this.updatePreview();
+    }
 
     // ============================
     // USERS CRUD
     // ============================
     async loadUsers() {
-    const tbody = document.getElementById('users-tbody');
-    if (!tbody) return;
+        const tbody = document.getElementById('users-tbody');
+        if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando...</td></tr>';
 
-    try {
-        const usersRef = collection(db, 'users');
-        const snapshot = await getDocs(query(usersRef, orderBy('createdAt', 'desc')));
+        try {
+            const usersRef = collection(db, 'users');
+            const snapshot = await getDocs(query(usersRef, orderBy('createdAt', 'desc')));
 
-        if (snapshot.empty) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay usuarios</td></tr>';
-            return;
-        }
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay usuarios</td></tr>';
+                return;
+            }
 
-        tbody.innerHTML = '';
-        snapshot.forEach(doc => {
-            const user = doc.data();
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
+            tbody.innerHTML = '';
+            snapshot.forEach(doc => {
+                const user = doc.data();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
                     <td>${user.email || '-'}</td>
                     <td>${user.displayName || '-'}</td>
                     <td><span class="role-badge ${user.role}">${user.role}</span></td>
@@ -445,168 +447,168 @@ resetSectionModal() {
                         </div>
                     </td>
                 `;
-            tbody.appendChild(tr);
-        });
-    } catch (error) {
-        console.error('Error loading users:', error);
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center error">Error al cargar usuarios</td></tr>';
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error('Error loading users:', error);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center error">Error al cargar usuarios</td></tr>';
+        }
     }
-}
 
     async handleUserSubmit(e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    const email = document.getElementById('user-email').value.trim();
-    const displayName = document.getElementById('user-name').value.trim();
-    const password = document.getElementById('user-password').value;
-    const role = document.getElementById('user-role').value;
-    const language = document.getElementById('user-lang').value;
+        const email = document.getElementById('user-email').value.trim();
+        const displayName = document.getElementById('user-name').value.trim();
+        const password = document.getElementById('user-password').value;
+        const role = document.getElementById('user-role').value;
+        const language = document.getElementById('user-lang').value;
 
-    try {
-        if (this.editingUserId) {
-            // Update existing user
-            await updateDoc(doc(db, 'users', this.editingUserId), {
-                displayName,
-                role,
-                language,
-                updatedAt: serverTimestamp()
-            });
-        } else {
-            // Create new user (requires password)
-            if (!password) {
-                alert('La contraseña es obligatoria para nuevos usuarios');
+        try {
+            if (this.editingUserId) {
+                // Update existing user
+                await updateDoc(doc(db, 'users', this.editingUserId), {
+                    displayName,
+                    role,
+                    language,
+                    updatedAt: serverTimestamp()
+                });
+            } else {
+                // Create new user (requires password)
+                if (!password) {
+                    alert('La contraseña es obligatoria para nuevos usuarios');
+                    return;
+                }
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, 'users', userCredential.user.uid), {
+                    email,
+                    displayName,
+                    role,
+                    language,
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            document.getElementById('user-modal').classList.remove('active');
+            this.loadUsers();
+        } catch (error) {
+            console.error('Error saving user:', error);
+            alert('Error: ' + error.message);
+        }
+    }
+
+    async editUser(userId) {
+        this.editingUserId = userId;
+
+        try {
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            if (!userDoc.exists()) {
+                alert('Usuario no encontrado');
                 return;
             }
 
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, 'users', userCredential.user.uid), {
-                email,
-                displayName,
-                role,
-                language,
-                createdAt: serverTimestamp()
-            });
+            const user = userDoc.data();
+            document.getElementById('user-modal-title').textContent = 'Editar Usuario';
+            document.getElementById('user-email').value = user.email || '';
+            document.getElementById('user-name').value = user.displayName || '';
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-role').value = user.role || 'prescriptor';
+            document.getElementById('user-lang').value = user.language || 'es';
+
+            document.getElementById('user-modal').classList.add('active');
+        } catch (error) {
+            console.error('Error loading user:', error);
         }
-
-        document.getElementById('user-modal').classList.remove('active');
-        this.loadUsers();
-    } catch (error) {
-        console.error('Error saving user:', error);
-        alert('Error: ' + error.message);
     }
-}
-
-    async editUser(userId) {
-    this.editingUserId = userId;
-
-    try {
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        if (!userDoc.exists()) {
-            alert('Usuario no encontrado');
-            return;
-        }
-
-        const user = userDoc.data();
-        document.getElementById('user-modal-title').textContent = 'Editar Usuario';
-        document.getElementById('user-email').value = user.email || '';
-        document.getElementById('user-name').value = user.displayName || '';
-        document.getElementById('user-password').value = '';
-        document.getElementById('user-role').value = user.role || 'prescriptor';
-        document.getElementById('user-lang').value = user.language || 'es';
-
-        document.getElementById('user-modal').classList.add('active');
-    } catch (error) {
-        console.error('Error loading user:', error);
-    }
-}
 
     async deleteUser(userId) {
-    if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+        if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
 
-    try {
-        await deleteDoc(doc(db, 'users', userId));
-        this.loadUsers();
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Error al eliminar: ' + error.message);
+        try {
+            await deleteDoc(doc(db, 'users', userId));
+            this.loadUsers();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Error al eliminar: ' + error.message);
+        }
     }
-}
 
     // ============================
     // ASSETS MANAGEMENT (EXPLORER)
     // ============================
     async loadAssets() {
-    this.navigateAssets(this.currentMediaPath);
-}
+        this.navigateAssets(this.currentMediaPath);
+    }
 
     async navigateAssets(path) {
-    this.currentMediaPath = path;
-    const grid = document.getElementById('assets-grid');
-    grid.innerHTML = '<div class="loader">Cargando...</div>';
+        this.currentMediaPath = path;
+        const grid = document.getElementById('assets-grid');
+        grid.innerHTML = '<div class="loader">Cargando...</div>';
 
-    try {
-        const { folders, files } = await contentService.listMultimediaContents(path);
+        try {
+            const { folders, files } = await contentService.listMultimediaContents(path);
 
-        grid.innerHTML = '';
+            grid.innerHTML = '';
 
-        // "Up" button if not at root
-        if (path !== 'multimedia') {
-            const upItem = document.createElement('div');
-            upItem.className = 'asset-card gallery-folder up-folder';
-            upItem.innerHTML = `
+            // "Up" button if not at root
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'asset-card gallery-folder up-folder';
+                upItem.innerHTML = `
                     <div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div>
                     <div class="folder-name">..</div>
                 `;
-            upItem.addEventListener('click', () => {
-                const parts = path.split('/');
-                parts.pop();
-                this.navigateAssets(parts.join('/'));
-            });
-            grid.appendChild(upItem);
-        }
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.navigateAssets(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
 
-        // Render Folders
-        if (folders.length > 0) {
-            folders.forEach(folder => {
-                const item = document.createElement('div');
-                item.className = 'asset-card gallery-folder';
-                item.innerHTML = `
+            // Render Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-folder';
+                    item.innerHTML = `
                         <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
                         <div class="folder-name">${folder.name}</div>
                         <div class="folder-actions">
                             <i class="fa-solid fa-trash delete-icon" title="Eliminar Carpeta"></i>
                         </div>
                     `;
-                // Navigate on click
-                item.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('delete-icon')) {
-                        e.stopPropagation();
-                        this.handleDeleteElement(folder.fullPath, 'folder');
-                    } else {
-                        this.navigateAssets(folder.fullPath);
-                    }
+                    // Navigate on click
+                    item.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('delete-icon')) {
+                            e.stopPropagation();
+                            this.handleDeleteElement(folder.fullPath, 'folder');
+                        } else {
+                            this.navigateAssets(folder.fullPath);
+                        }
+                    });
+                    grid.appendChild(item);
                 });
-                grid.appendChild(item);
-            });
-        }
+            }
 
-        // Render Files
-        if (files.length > 0) {
-            // Filter files logic
-            const filteredFiles = files.filter(file => {
-                const isVideo = file.name.match(/\.(mp4|webm|mov)$/i);
-                if (this.currentTypeFilter === 'image') return !isVideo;
-                if (this.currentTypeFilter === 'video') return isVideo;
-                return true;
-            });
+            // Render Files
+            if (files.length > 0) {
+                // Filter files logic
+                const filteredFiles = files.filter(file => {
+                    const isVideo = file.name.match(/\.(mp4|webm|mov)$/i);
+                    if (this.currentTypeFilter === 'image') return !isVideo;
+                    if (this.currentTypeFilter === 'video') return isVideo;
+                    return true;
+                });
 
-            filteredFiles.forEach(asset => {
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                const isVideo = asset.name.match(/\.(mp4|webm|mov)$/i);
-                const icon = isVideo ? '<i class="fa-solid fa-video"></i>' : '';
+                filteredFiles.forEach(asset => {
+                    const card = document.createElement('div');
+                    card.className = 'asset-card';
+                    const isVideo = asset.name.match(/\.(mp4|webm|mov)$/i);
+                    const icon = isVideo ? '<i class="fa-solid fa-video"></i>' : '';
 
-                card.innerHTML = `
+                    card.innerHTML = `
                         <div class="asset-thumbnail">
                             ${icon ? `<div class="video-overlay"><i class="fa-solid fa-play"></i></div>` : ''}
                             <img src="${asset.url}" alt="${asset.name}" loading="lazy" style="${isVideo ? 'opacity:0.7' : ''}">
@@ -617,286 +619,286 @@ resetSectionModal() {
                         </div>
                     `;
 
-                // Handle delete
-                card.querySelector('.delete-icon').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.handleDeleteElement(asset.fullPath, 'file');
+                    // Handle delete
+                    card.querySelector('.delete-icon').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.handleDeleteElement(asset.fullPath, 'file');
+                    });
+
+                    // Add click to preview or select if we were implementing selection here
+                    // For assets tab, maybe just preview? Or nothing.
+
+                    grid.appendChild(card);
                 });
+            }
 
-                // Add click to preview or select if we were implementing selection here
-                // For assets tab, maybe just preview? Or nothing.
+            if (folders.length === 0 && files.length === 0) {
+                grid.innerHTML += '<p style="width:100%; text-align:center; padding: 20px;">Carpeta vacía</p>';
+            }
 
-                grid.appendChild(card);
-            });
+        } catch (error) {
+            console.error('Error loading assets:', error);
+            grid.innerHTML = '<p class="text-center error">Error al cargar archivos</p>';
         }
-
-        if (folders.length === 0 && files.length === 0) {
-            grid.innerHTML += '<p style="width:100%; text-align:center; padding: 20px;">Carpeta vacía</p>';
-        }
-
-    } catch (error) {
-        console.error('Error loading assets:', error);
-        grid.innerHTML = '<p class="text-center error">Error al cargar archivos</p>';
     }
-}
 
     async handleCreateFolder() {
-    const name = prompt('Nombre de la nueva carpeta:');
-    if (!name) return;
+        const name = prompt('Nombre de la nueva carpeta:');
+        if (!name) return;
 
-    const cleanName = name.trim();
-    if (cleanName.length === 0) return;
+        const cleanName = name.trim();
+        if (cleanName.length === 0) return;
 
-    if (cleanName.match(/[\/\\]/)) {
-        alert('El nombre no puede contener barras "/" o "\\"');
-        return;
+        if (cleanName.match(/[\/\\]/)) {
+            alert('El nombre no puede contener barras "/" o "\\"');
+            return;
+        }
+
+        try {
+            await contentService.createFolder(this.currentMediaPath, cleanName);
+            // Refresh
+            this.navigateAssets(this.currentMediaPath);
+        } catch (error) {
+            alert('Error al crear carpeta: ' + error.message);
+        }
     }
-
-    try {
-        await contentService.createFolder(this.currentMediaPath, cleanName);
-        // Refresh
-        this.navigateAssets(this.currentMediaPath);
-    } catch (error) {
-        alert('Error al crear carpeta: ' + error.message);
-    }
-}
 
     async handleDeleteElement(path, type) {
-    const msg = type === 'folder'
-        ? '¿Estás seguro de eliminar esta carpeta y TODO su contenido? No se puede deshacer.'
-        : '¿Eliminar este archivo?';
+        const msg = type === 'folder'
+            ? '¿Estás seguro de eliminar esta carpeta y TODO su contenido? No se puede deshacer.'
+            : '¿Eliminar este archivo?';
 
-    if (!confirm(msg)) return;
+        if (!confirm(msg)) return;
 
-    try {
-        if (type === 'folder') {
-            await contentService.deleteFolder(path);
-        } else {
-            await contentService.deleteFile(path);
+        try {
+            if (type === 'folder') {
+                await contentService.deleteFolder(path);
+            } else {
+                await contentService.deleteFile(path);
+            }
+            // Refresh
+            this.navigateAssets(this.currentMediaPath);
+        } catch (error) {
+            alert('Error al eliminar: ' + error.message);
         }
-        // Refresh
-        this.navigateAssets(this.currentMediaPath);
-    } catch (error) {
-        alert('Error al eliminar: ' + error.message);
     }
-}
 
     async navigateUploadModal(path) {
-    this.uploadModalPath = path;
-    const grid = document.getElementById('modal-folder-grid');
-    const pathDisplay = document.getElementById('upload-current-path');
-    const upBtn = document.getElementById('modal-up-btn');
+        this.uploadModalPath = path;
+        const grid = document.getElementById('modal-folder-grid');
+        const pathDisplay = document.getElementById('upload-current-path');
+        const upBtn = document.getElementById('modal-up-btn');
 
-    // Update display
-    pathDisplay.textContent = path === 'multimedia' ? 'Raíz' : path.replace('multimedia/', '');
+        // Update display
+        pathDisplay.textContent = path === 'multimedia' ? 'Raíz' : path.replace('multimedia/', '');
 
-    // Update Up button state
-    if (upBtn) {
-        upBtn.disabled = path === 'multimedia';
-        upBtn.style.opacity = path === 'multimedia' ? '0.5' : '1';
-    }
+        // Update Up button state
+        if (upBtn) {
+            upBtn.disabled = path === 'multimedia';
+            upBtn.style.opacity = path === 'multimedia' ? '0.5' : '1';
+        }
 
-    grid.innerHTML = '<div class="loader-small">Cargando...</div>';
+        grid.innerHTML = '<div class="loader-small">Cargando...</div>';
 
-    try {
-        // Re-use service to list contents, but we essentially only care about folders
-        const { folders } = await contentService.listMultimediaContents(path);
+        try {
+            // Re-use service to list contents, but we essentially only care about folders
+            const { folders } = await contentService.listMultimediaContents(path);
 
-        grid.innerHTML = '';
+            grid.innerHTML = '';
 
-        if (folders.length > 0) {
-            folders.forEach(folder => {
-                const el = document.createElement('div');
-                el.className = 'modal-folder-card';
-                el.innerHTML = `
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const el = document.createElement('div');
+                    el.className = 'modal-folder-card';
+                    el.innerHTML = `
                         <i class="fa-solid fa-folder"></i>
                         <span class="folder-name">${folder.name}</span>
                     `;
-                el.addEventListener('click', () => {
-                    this.navigateUploadModal(folder.fullPath);
+                    el.addEventListener('click', () => {
+                        this.navigateUploadModal(folder.fullPath);
+                    });
+                    grid.appendChild(el);
                 });
-                grid.appendChild(el);
-            });
-        } else {
-            grid.innerHTML = '<span style="font-size:12px; color:#aaa; grid-column:1/-1; text-align:center;">No hay subcarpetas</span>';
-        }
+            } else {
+                grid.innerHTML = '<span style="font-size:12px; color:#aaa; grid-column:1/-1; text-align:center;">No hay subcarpetas</span>';
+            }
 
-    } catch (error) {
-        console.error('Error navigating modal:', error);
-        grid.innerHTML = '<p class="error">Error</p>';
+        } catch (error) {
+            console.error('Error navigating modal:', error);
+            grid.innerHTML = '<p class="error">Error</p>';
+        }
     }
-}
 
     async handleModalCreateFolder() {
-    const name = prompt('Nombre de nueva sub-carpeta:');
-    if (!name) return;
+        const name = prompt('Nombre de nueva sub-carpeta:');
+        if (!name) return;
 
-    const cleanName = name.trim();
-    if (cleanName.length === 0) return;
+        const cleanName = name.trim();
+        if (cleanName.length === 0) return;
 
-    if (cleanName.match(/[\/\\]/)) {
-        alert('El nombre no puede contener barras "/" o "\\"');
-        return;
-    }
-
-    try {
-        await contentService.createFolder(this.uploadModalPath, cleanName);
-        this.navigateUploadModal(this.uploadModalPath); // Refresh modal view
-        // Also refresh main view if we are looking at the same place
-        if (this.currentMediaPath === this.uploadModalPath) {
-            this.navigateAssets(this.currentMediaPath);
+        if (cleanName.match(/[\/\\]/)) {
+            alert('El nombre no puede contener barras "/" o "\\"');
+            return;
         }
-    } catch (e) {
-        alert('Error: ' + e.message);
+
+        try {
+            await contentService.createFolder(this.uploadModalPath, cleanName);
+            this.navigateUploadModal(this.uploadModalPath); // Refresh modal view
+            // Also refresh main view if we are looking at the same place
+            if (this.currentMediaPath === this.uploadModalPath) {
+                this.navigateAssets(this.currentMediaPath);
+            }
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
     }
-}
 
     async handleAssetUpload(e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    const fileInput = document.getElementById('asset-file');
-    const files = Array.from(fileInput.files);
-    if (files.length === 0) return;
+        const fileInput = document.getElementById('asset-file');
+        const files = Array.from(fileInput.files);
+        if (files.length === 0) return;
 
-    const progressEl = document.getElementById('upload-progress');
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
+        const progressEl = document.getElementById('upload-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
 
-    progressEl.classList.remove('hidden');
-    progressFill.style.width = '0%';
-    progressText.textContent = 'Iniciando subida...';
+        progressEl.classList.remove('hidden');
+        progressFill.style.width = '0%';
+        progressText.textContent = 'Iniciando subida...';
 
-    let completed = 0;
-    let errors = 0;
+        let completed = 0;
+        let errors = 0;
 
-    // Use the path selected inside the modal, NOT the background view path
-    const uploadTarget = this.uploadModalPath || this.currentMediaPath;
+        // Use the path selected inside the modal, NOT the background view path
+        const uploadTarget = this.uploadModalPath || this.currentMediaPath;
 
-    try {
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            progressText.textContent = `Subiendo ${i + 1} de ${files.length}: ${file.name}`;
+        try {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                progressText.textContent = `Subiendo ${i + 1} de ${files.length}: ${file.name}`;
 
-            try {
-                let fileToUpload = file;
-                if (file.type.startsWith('image/')) {
-                    fileToUpload = await this.compressImage(file);
+                try {
+                    let fileToUpload = file;
+                    if (file.type.startsWith('image/')) {
+                        fileToUpload = await this.compressImage(file);
+                    }
+
+                    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                    const fileName = `${Date.now()}_${safeName}`;
+                    const storagePath = `${uploadTarget}/${fileName}`;
+                    const storageRef = ref(storage, storagePath);
+                    await uploadBytesResumable(storageRef, fileToUpload);
+
+                    completed++;
+                    const percent = (completed / files.length) * 100;
+                    progressFill.style.width = `${percent}%`;
+
+                } catch (err) {
+                    console.error(`Error subiendo ${file.name}`, err);
+                    errors++;
                 }
-
-                const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-                const fileName = `${Date.now()}_${safeName}`;
-                const storagePath = `${uploadTarget}/${fileName}`;
-                const storageRef = ref(storage, storagePath);
-                await uploadBytesResumable(storageRef, fileToUpload);
-
-                completed++;
-                const percent = (completed / files.length) * 100;
-                progressFill.style.width = `${percent}%`;
-
-            } catch (err) {
-                console.error(`Error subiendo ${file.name}`, err);
-                errors++;
             }
+
+            document.getElementById('asset-modal').classList.remove('active');
+            progressEl.classList.add('hidden');
+
+            // Refresh main view if we uploaded to where we are currently looking
+            if (this.currentMediaPath === uploadTarget) {
+                this.navigateAssets(this.currentMediaPath);
+            } else {
+                // If we uploaded elsewhere, maybe we should ask to jump there? 
+                // For now, just stay where we are, user knows they sent it elsewhere.
+            }
+
+            if (errors > 0) alert(`Subida completada con ${errors} errores.`);
+
+        } catch (error) {
+            console.error('Error general:', error);
+            alert('Error: ' + error.message);
+            progressEl.classList.add('hidden');
         }
-
-        document.getElementById('asset-modal').classList.remove('active');
-        progressEl.classList.add('hidden');
-
-        // Refresh main view if we uploaded to where we are currently looking
-        if (this.currentMediaPath === uploadTarget) {
-            this.navigateAssets(this.currentMediaPath);
-        } else {
-            // If we uploaded elsewhere, maybe we should ask to jump there? 
-            // For now, just stay where we are, user knows they sent it elsewhere.
-        }
-
-        if (errors > 0) alert(`Subida completada con ${errors} errores.`);
-
-    } catch (error) {
-        console.error('Error general:', error);
-        alert('Error: ' + error.message);
-        progressEl.classList.add('hidden');
     }
-}
 
     /**
      * Compress image to WebP format. Returns original file if not an image.
      */
     async compressImage(file, maxWidth = 1920, quality = 0.8) {
-    if (!file.type.startsWith('image/')) return file;
+        if (!file.type.startsWith('image/')) return file;
 
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
 
-                // Resize if needed
-                if (width > maxWidth) {
-                    height = (height * maxWidth) / width;
-                    width = maxWidth;
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Convert to WebP blob
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                        resolve(blob);
-                    } else {
-                        reject(new Error('Failed to compress image'));
+                    // Resize if needed
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
                     }
-                }, 'image/webp', quality);
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Convert to WebP blob
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(new Error('Failed to compress image'));
+                        }
+                    }, 'image/webp', quality);
+                };
+                img.onerror = () => reject(new Error('Failed to load image'));
+                img.src = e.target.result;
             };
-            img.onerror = () => reject(new Error('Failed to load image'));
-            img.src = e.target.result;
-        };
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
-    });
-}
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsDataURL(file);
+        });
+    }
 
     // ============================
     // CONTENT SECTIONS
     // ============================
     async loadSections() {
-    const list = document.getElementById('sections-list');
-    if (!list) return;
+        const list = document.getElementById('sections-list');
+        if (!list) return;
 
-    list.innerHTML = '<p class="text-center">Cargando...</p>';
+        list.innerHTML = '<p class="text-center">Cargando...</p>';
 
-    try {
-        const sections = await contentService.getSections(this.currentVertical);
+        try {
+            const sections = await contentService.getSections(this.currentVertical);
 
-        if (sections.length === 0) {
-            list.innerHTML = '<p class="text-center">No hay secciones para esta vertical</p>';
-            return;
-        }
+            if (sections.length === 0) {
+                list.innerHTML = '<p class="text-center">No hay secciones para esta vertical</p>';
+                return;
+            }
 
-        list.innerHTML = '';
-        sections.forEach((section, index) => {
-            const card = document.createElement('div');
-            card.className = `section-card layout-${section.layout || 'left'}`;
-            card.draggable = true;
-            card.dataset.id = section.id;
-            card.dataset.order = section.order || index;
+            list.innerHTML = '';
+            sections.forEach((section, index) => {
+                const card = document.createElement('div');
+                card.className = `section-card layout-${section.layout || 'left'}`;
+                card.draggable = true;
+                card.dataset.id = section.id;
+                card.dataset.order = section.order || index;
 
-            // Tags HTML
-            const tagsHtml = (section.tags || []).map(t => `<span class="role-badge prescriptor">${t}</span>`).join(' ');
+                // Tags HTML
+                const tagsHtml = (section.tags || []).map(t => `<span class="role-badge prescriptor">${t}</span>`).join(' ');
 
-            card.innerHTML = `
+                card.innerHTML = `
                     <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
                     <div class="section-image">
                         ${section.imageUrl
-                    ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
-                    : '<div class="placeholder">No img</div>'}
+                        ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
+                        : '<div class="placeholder">No img</div>'}
                     </div>
                     <div class="section-content">
                         <div class="section-info">
@@ -916,266 +918,266 @@ resetSectionModal() {
                     </div>
                 `;
 
-            // Drag Events
-            card.addEventListener('dragstart', (e) => {
-                e.dataTransfer.effectAllowed = 'move';
-                card.classList.add('dragging');
-                e.dataTransfer.setData('text/plain', section.id);
+                // Drag Events
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    card.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', section.id);
+                });
+
+                card.addEventListener('dragend', async (e) => {
+                    card.classList.remove('dragging');
+                    // Recalculate order based on new positions
+                    const newOrder = Array.from(list.children).map(c => c.dataset.id);
+                    // We only need to update if order changed significantly, but for simplicity we can just update all or smart update.
+                    // For now, let's just log it. Real persistence happens in 'drop' or we can trigger a batch update here.
+                    // Actually best practice is to update during drop or dragend.
+
+                    await Promise.all(newOrder.map((id, idx) =>
+                        contentService.updateSectionOrder(this.currentVertical, id, idx)
+                    ));
+                });
+
+                list.appendChild(card);
             });
 
-            card.addEventListener('dragend', async (e) => {
-                card.classList.remove('dragging');
-                // Recalculate order based on new positions
-                const newOrder = Array.from(list.children).map(c => c.dataset.id);
-                // We only need to update if order changed significantly, but for simplicity we can just update all or smart update.
-                // For now, let's just log it. Real persistence happens in 'drop' or we can trigger a batch update here.
-                // Actually best practice is to update during drop or dragend.
-
-                await Promise.all(newOrder.map((id, idx) =>
-                    contentService.updateSectionOrder(this.currentVertical, id, idx)
-                ));
+            // List Drag Over Event
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Allow drop
+                const afterElement = this.getDragAfterElement(list, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                if (afterElement == null) {
+                    list.appendChild(draggable);
+                } else {
+                    list.insertBefore(draggable, afterElement);
+                }
             });
 
-            list.appendChild(card);
-        });
-
-        // List Drag Over Event
-        list.addEventListener('dragover', (e) => {
-            e.preventDefault(); // Allow drop
-            const afterElement = this.getDragAfterElement(list, e.clientY);
-            const draggable = document.querySelector('.dragging');
-            if (afterElement == null) {
-                list.appendChild(draggable);
-            } else {
-                list.insertBefore(draggable, afterElement);
-            }
-        });
-
-    } catch (error) {
-        console.error('Error loading sections:', error);
-        list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
-    }
-}
-
-// Helper for Drag and Drop
-getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
-
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
+        } catch (error) {
+            console.error('Error loading sections:', error);
+            list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
         }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
+    }
+
+    // Helper for Drag and Drop
+    getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
 
     async handleCloneSection(sectionId) {
-    const verticals = [
-        { id: 'bts', name: 'Residencial BTS' },
-        { id: 'btr', name: 'Residencial BTR' },
-        { id: 'office', name: 'Oficinas' },
-        { id: 'hotel', name: 'Hoteles' },
-        { id: 'retail', name: 'Retail' },
-        { id: 'security', name: 'Seguridad' } // Adding security from context
-    ].filter(v => v.id !== this.currentVertical);
+        const verticals = [
+            { id: 'bts', name: 'Residencial BTS' },
+            { id: 'btr', name: 'Residencial BTR' },
+            { id: 'office', name: 'Oficinas' },
+            { id: 'hotel', name: 'Hoteles' },
+            { id: 'retail', name: 'Retail' },
+            { id: 'security', name: 'Seguridad' } // Adding security from context
+        ].filter(v => v.id !== this.currentVertical);
 
-    const target = prompt(
-        `Escribe el ID de la vertical destino (o varias separadas por coma):\n\nOpciones: ${verticals.map(v => v.id).join(', ')}`
-    );
+        const target = prompt(
+            `Escribe el ID de la vertical destino (o varias separadas por coma):\n\nOpciones: ${verticals.map(v => v.id).join(', ')}`
+        );
 
-    if (!target) return;
+        if (!target) return;
 
-    const targets = target.split(',').map(t => t.trim().toLowerCase());
-    const validTargets = verticals.map(v => v.id);
-    const finalTargets = targets.filter(t => validTargets.includes(t));
+        const targets = target.split(',').map(t => t.trim().toLowerCase());
+        const validTargets = verticals.map(v => v.id);
+        const finalTargets = targets.filter(t => validTargets.includes(t));
 
-    if (finalTargets.length === 0) {
-        alert('Ninguna vertical válida seleccionada.');
-        return;
+        if (finalTargets.length === 0) {
+            alert('Ninguna vertical válida seleccionada.');
+            return;
+        }
+
+        try {
+            await contentService.cloneSection(this.currentVertical, sectionId, finalTargets);
+            alert(`Sección clonada exitosamente a: ${finalTargets.join(', ')}`);
+        } catch (e) {
+            alert('Error al clonar: ' + e.message);
+        }
     }
-
-    try {
-        await contentService.cloneSection(this.currentVertical, sectionId, finalTargets);
-        alert(`Sección clonada exitosamente a: ${finalTargets.join(', ')}`);
-    } catch (e) {
-        alert('Error al clonar: ' + e.message);
-    }
-}
 
     async loadMultimediaGallery() {
-    this.navigateMultimedia(this.currentMediaPath);
-}
+        this.navigateMultimedia(this.currentMediaPath);
+    }
 
     async navigateMultimedia(path) {
-    this.currentMediaPath = path;
-    const grid = document.getElementById('multimedia-grid');
-    grid.innerHTML = '<div class="loader">Loading...</div>';
+        this.currentMediaPath = path;
+        const grid = document.getElementById('multimedia-grid');
+        grid.innerHTML = '<div class="loader">Loading...</div>';
 
-    // Update breadcrumb (simple version)
-    // You could add a visible breadcrumb element here if the UI supports it
+        // Update breadcrumb (simple version)
+        // You could add a visible breadcrumb element here if the UI supports it
 
-    try {
-        const { folders, files } = await contentService.listMultimediaContents(path);
+        try {
+            const { folders, files } = await contentService.listMultimediaContents(path);
 
-        grid.innerHTML = '';
+            grid.innerHTML = '';
 
-        // "Up" button if not at root
-        if (path !== 'multimedia') {
-            const upItem = document.createElement('div');
-            upItem.className = 'gallery-folder up-folder';
-            upItem.innerHTML = `
+            // "Up" button if not at root
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'gallery-folder up-folder';
+                upItem.innerHTML = `
                     <div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div>
                     <div class="folder-name">..</div>
                 `;
-            upItem.addEventListener('click', () => {
-                const parts = path.split('/');
-                parts.pop();
-                this.navigateMultimedia(parts.join('/'));
-            });
-            grid.appendChild(upItem);
-        }
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.navigateMultimedia(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
 
-        // Render Folders
-        if (folders.length > 0) {
-            folders.forEach(folder => {
-                const item = document.createElement('div');
-                item.className = 'gallery-folder';
-                item.innerHTML = `
+            // Render Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-folder';
+                    item.innerHTML = `
                         <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
                         <div class="folder-name">${folder.name}</div>
                     `;
-                item.addEventListener('click', () => {
-                    this.navigateMultimedia(folder.fullPath);
+                    item.addEventListener('click', () => {
+                        this.navigateMultimedia(folder.fullPath);
+                    });
+                    grid.appendChild(item);
                 });
-                grid.appendChild(item);
-            });
-        }
+            }
 
-        // Render Files
-        if (files.length > 0) {
-            files.forEach(img => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
+            // Render Files
+            if (files.length > 0) {
+                files.forEach(img => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `<img src="${img.url}" loading="lazy" title="${img.name}">`;
 
-                item.addEventListener('click', () => {
-                    document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-                    this.selectedGalleryImage = img.url;
-                    this.updatePreview(); // Update preview when gallery item selected
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        this.selectedGalleryImage = img.url;
+                        this.updatePreview(); // Update preview when gallery item selected
+                    });
+                    grid.appendChild(item);
                 });
-                grid.appendChild(item);
-            });
-        }
+            }
 
-        if (folders.length === 0 && files.length === 0) {
-            grid.innerHTML += '<p style="width:100%">Carpeta vacía</p>';
-        }
+            if (folders.length === 0 && files.length === 0) {
+                grid.innerHTML += '<p style="width:100%">Carpeta vacía</p>';
+            }
 
-    } catch (e) {
-        console.error(e);
-        grid.innerHTML = `<p class="error">Error cargando galería: ${e.message}</p>`;
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = `<p class="error">Error cargando galería: ${e.message}</p>`;
+        }
     }
-}
 
-resetSectionModal() {
-    document.getElementById('section-form').reset();
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector('[data-tab="upload"]').classList.add('active');
-    document.getElementById('tab-upload').classList.add('active');
-    document.getElementById('section-file-info').textContent = '';
-    this.selectedGalleryImage = null;
-    this.updatePreview();
-}
+    resetSectionModal() {
+        document.getElementById('section-form').reset();
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-tab="upload"]').classList.add('active');
+        document.getElementById('tab-upload').classList.add('active');
+        document.getElementById('section-file-info').textContent = '';
+        this.selectedGalleryImage = null;
+        this.updatePreview();
+    }
 
     async handleSaveSection(e) {
-    e.preventDefault();
-    console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
+        e.preventDefault();
+        console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
 
-    // Determine submit button based on event type
-    let submitBtn;
-    if (e.target.tagName === 'BUTTON') {
-        submitBtn = e.target;
-    } else {
-        // It was a form submit
-        submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
-    }
-
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Guardando...';
-
-    try {
-        const title = document.getElementById('section-title').value.trim();
-        const tagsStr = document.getElementById('section-tags').value.trim();
-        const text = document.getElementById('section-text').value;
-        const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
-        const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-
-        // Validate tags
-        if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
-        const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
-
-        let imageUrl = null;
-        let storagePath = null;
-
-        if (activeTab === 'upload') {
-            const fileInput = document.getElementById('section-file');
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-
-                const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                storagePath = `${this.currentMediaPath}/${fileName}`;
-
-                const storageRef = ref(storage, storagePath);
-                const uploadTask = await uploadBytesResumable(storageRef, file);
-                imageUrl = await getDownloadURL(uploadTask.ref);
-            }
-            // Image is optional now
+        // Determine submit button based on event type
+        let submitBtn;
+        if (e.target.tagName === 'BUTTON') {
+            submitBtn = e.target;
         } else {
-            // Gallery
-            if (this.selectedGalleryImage) {
-                imageUrl = this.selectedGalleryImage;
-            }
+            // It was a form submit
+            submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
         }
 
-        const data = {
-            title,
-            tags,
-            text,
-            imageUrl,
-            imagePath: storagePath,
-            layout
-        };
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
 
-        await contentService.addSection(this.currentVertical, data);
+        try {
+            const title = document.getElementById('section-title').value.trim();
+            const tagsStr = document.getElementById('section-tags').value.trim();
+            const text = document.getElementById('section-text').value;
+            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
-        document.getElementById('section-modal').classList.remove('active');
-        this.loadSections();
-        this.loadMultimediaGallery();
+            // Validate tags
+            if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
+            const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
 
-    } catch (error) {
-        alert(error.message);
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+            let imageUrl = null;
+            let storagePath = null;
+
+            if (activeTab === 'upload') {
+                const fileInput = document.getElementById('section-file');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+
+                    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    storagePath = `${this.currentMediaPath}/${fileName}`;
+
+                    const storageRef = ref(storage, storagePath);
+                    const uploadTask = await uploadBytesResumable(storageRef, file);
+                    imageUrl = await getDownloadURL(uploadTask.ref);
+                }
+                // Image is optional now
+            } else {
+                // Gallery
+                if (this.selectedGalleryImage) {
+                    imageUrl = this.selectedGalleryImage;
+                }
+            }
+
+            const data = {
+                title,
+                tags,
+                text,
+                imageUrl,
+                imagePath: storagePath,
+                layout
+            };
+
+            await contentService.addSection(this.currentVertical, data);
+
+            document.getElementById('section-modal').classList.remove('active');
+            this.loadSections();
+            this.loadMultimediaGallery();
+
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     }
-}
 
     async deleteSection(sectionId) {
-    if (!confirm('¿Eliminar esta sección?')) return;
+        if (!confirm('¿Eliminar esta sección?')) return;
 
-    try {
-        await contentService.deleteSection(this.currentVertical, sectionId);
-        this.loadSections();
-    } catch (e) {
-        alert('Error al eliminar: ' + e.message);
+        try {
+            await contentService.deleteSection(this.currentVertical, sectionId);
+            this.loadSections();
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message);
+        }
     }
-}
 }
 
 // Crear instancia única y exponer globalmente
