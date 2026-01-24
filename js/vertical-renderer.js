@@ -27,6 +27,7 @@ class VerticalRenderer {
             ]);
 
             this.renderIntro(meta);
+            this.updateSEO(meta);
             this.renderSections(sections);
             this.initScrollAnimations();
         } catch (error) {
