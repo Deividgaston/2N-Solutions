@@ -1318,6 +1318,82 @@ class AdminController {
             alert('Error al eliminar: ' + e.message);
         }
     }
+
+    // ============================
+    // ASSET PICKER
+    // ============================
+    openAssetPicker(mode) {
+        this.pickerMode = mode; // 'hero' or other
+        this.pickerCurrentPath = this.currentMediaPath || 'multimedia';
+        document.getElementById('asset-picker-modal').classList.add('active');
+        this.loadPickerAssets(this.pickerCurrentPath);
+    }
+
+    async loadPickerAssets(path) {
+        const grid = document.getElementById('picker-grid');
+        grid.innerHTML = '<div class="loader">Cargando...</div>';
+
+        try {
+            const { folders, files } = await contentService.listMultimediaContents(path);
+            grid.innerHTML = '';
+
+            // Up Button
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'asset-card gallery-folder up-folder';
+                upItem.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div><div class="folder-name">..</div>`;
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.loadPickerAssets(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
+
+            // Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-folder';
+                    item.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-folder"></i></div><div class="folder-name">${folder.name}</div>`;
+                    item.addEventListener('click', () => this.loadPickerAssets(folder.fullPath));
+                    grid.appendChild(item);
+                });
+            }
+
+            // Files (Images only for now if Hero)
+            if (files.length > 0) {
+                files.forEach(file => {
+                    // Filter images
+                    if (!file.contentType.startsWith('image/')) return;
+
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-image';
+                    item.innerHTML = `
+                        <div class="image-preview" style="background-image: url('${file.url}'); height: 120px;"></div>
+                        <div class="file-name">${file.name}</div>
+                    `;
+                    item.addEventListener('click', () => this.handleAssetSelected(file));
+                    grid.appendChild(item);
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            grid.innerHTML = '<div class="error">Error al cargar librería</div>';
+        }
+    }
+
+    handleAssetSelected(file) {
+        if (this.pickerMode === 'hero') {
+            this.pendingHeroImage = { url: file.url, path: file.fullPath };
+            this.updateHeroPreview(file.url);
+            document.getElementById('hero-file-info').textContent = "Seleccionado: " + file.name;
+            // Clear file input so it doesn't override
+            document.getElementById('hero-file').value = '';
+        }
+        document.getElementById('asset-picker-modal').classList.remove('active');
+    }
 }
 
 // Crear instancia única y exponer globalmente
