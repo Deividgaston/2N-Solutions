@@ -426,8 +426,8 @@ class AdminController {
             // If I see left edge (0%) and drag Left... I want to see right part... so position moves to 100%.
             // So Drag Left (-delta) -> Increase Position (+).
 
-            newX = initialPosX - ((e.clientX - startX) * pxToPercentX);
-            newY = initialPosY - ((e.clientY - startY) * pxToPercentY);
+            let newX = initialPosX - ((e.clientX - startX) * pxToPercentX);
+            let newY = initialPosY - ((e.clientY - startY) * pxToPercentY);
 
             // Clamp 0-100
             newX = Math.max(0, Math.min(100, newX));
