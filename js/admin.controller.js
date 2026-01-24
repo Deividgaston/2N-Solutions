@@ -306,6 +306,7 @@ class AdminController {
             addBenefitBtn.addEventListener('click', () => this.addBenefitInput());
         }
 
+        const saveIntroBtn = document.getElementById('save-intro-btn');
         if (saveIntroBtn) {
             saveIntroBtn.addEventListener('click', () => this.handleSaveIntro());
         }
