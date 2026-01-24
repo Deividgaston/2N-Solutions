@@ -374,8 +374,9 @@ class AdminController {
             alert('Portada actualizada correctamente');
 
         } catch (error) {
-            console.error(error);
-            alert('Error al guardar portada: ' + error.message);
+            console.error('Save Hero Error:', error);
+            const msg = error.message || error.code || 'Error desconocido';
+            alert('Error al guardar portada: ' + msg);
         } finally {
             btn.disabled = false;
             btn.textContent = originalText;

@@ -46,8 +46,8 @@ export async function compressImage(file, maxWidth = 1920, quality = 0.8) {
                     quality
                 );
             };
-            img.onerror = (err) => reject(err);
+            img.onerror = (err) => reject(new Error('Failed to load image for compression'));
         };
-        reader.onerror = (err) => reject(err);
+        reader.onerror = (err) => reject(new Error('Failed to read file: ' + (err.target?.error?.message || 'Unknown error')));
     });
 }
