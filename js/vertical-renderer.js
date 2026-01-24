@@ -232,16 +232,7 @@ class VerticalRenderer {
         // Check Admin Role to show buttons
         this.checkAdminVisibility();
 
-            // HTML Structure based on layout (but CSS handles row-reverse for right)
-            // We just append both. CSS handles order.
 
-            sectionEl.innerHTML = `
-                ${ imageHtml }
-                ${ contentHtml }
-            `;
-
-            this.container.appendChild(sectionEl);
-        });
     }
 
     initScrollAnimations() {
