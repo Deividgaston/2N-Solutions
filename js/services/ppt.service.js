@@ -177,12 +177,16 @@ class PptService {
         finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
 
         // Image LEFT
-        // Note: XML image x=457200 (approx 0.5 inch), y=1097280 (approx 1.2 inch)
-        // using 'innovationBase64' as placeholder for the security image
-        if (innovationBase64) {
-            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 5, h: 4, sizing: { type: 'cover' } });
-        } else if (logoBase64) {
-            finalSlide.addImage({ data: logoBase64, x: 0.5, y: 1.2, w: 5, h: 2, sizing: { type: 'contain' } });
+        // XML image x=457200 (approx 0.5 inch), y=1097280 (approx 1.2 inch)
+        // Using the EXACT image from the User's PPT (hosted on Firebase)
+        const securityImgUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2FIP%20STYLE%2F1768729924517_9157101_IP-Style_Office_List-Companies.jpg?alt=media&token=8cb80545-c394-497e-9104-3d04844b6c5d';
+        const securityImgBase64 = await this.imageUrlToBase64(securityImgUrl);
+
+        if (securityImgBase64) {
+            finalSlide.addImage({ data: securityImgBase64, x: 0.5, y: 1.2, w: 5.5, h: 3.8, sizing: { type: 'cover' } });
+        } else if (innovationBase64) {
+            // Fallback
+            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 5.5, h: 3.8, sizing: { type: 'cover' } });
         }
 
         // Text RIGHT
@@ -194,7 +198,7 @@ class PptService {
             '• Protección contra ataques\n' +
             '• Firmware seguro y actualizaciones periódicas\n' +
             '• Cumplimiento con normativas',
-            { x: 5.8, y: 1.2, w: 7, h: 4.5, fontSize: 13, color: 'CCCCCC', lineSpacing: 22, valign: 'top' }
+            { x: 6.8, y: 1.2, w: 6.2, h: 4.5, fontSize: 13, color: 'CCCCCC', lineSpacing: 22, valign: 'top' }
         );
 
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();

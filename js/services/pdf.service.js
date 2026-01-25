@@ -517,7 +517,7 @@ class PDFService {
                     <div style="display: flex; gap: 40px; align-items: flex-start;">
                          <!-- Image Left (Matches PPT XML coordinates) -->
                          <div style="flex: 0 0 45%;">
-                            <img src="assets/security_cyb.jpg" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
+                            <img src="https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2FIP%20STYLE%2F1768729924517_9157101_IP-Style_Office_List-Companies.jpg?alt=media&token=8cb80545-c394-497e-9104-3d04844b6c5d" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
                          </div>
 
                          <!-- Content Right -->
