@@ -22,7 +22,6 @@ class PDFService {
         }
 
         // --- 1. PREPARE DATA ---
-        // Title Mapping
         const verticalRaw = data.vertical || data.metadata?.heroTitle || '2N Solution';
         const mapTitle = (t) => {
             const lower = t.toLowerCase();
@@ -37,11 +36,12 @@ class PDFService {
         const verticalName = mapTitle(verticalRaw);
 
         // Assets
+        // Use Firebase for Cover (User Request)
         const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753951_Portada.png?alt=media&token=2566ea37-c62e-4a62-a078-445ee34504c8';
-        const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
-
-        // Local Asset for "The Building" (Restored from previous version)
-        const buildingImgPath = 'assets/extracted_image9.png';
+        // Use Local Assets for Layout Fidelity (User "El de antes" Request)
+        const worldMapUrl = 'assets/world-map.svg';
+        const extractedMapUrl = 'assets/extracted_map.png';
+        const buildingImgUrl = 'assets/extracted_image9.png';
 
         // --- 2. SETUP CONTAINER ---
         const container = document.createElement('div');
@@ -72,7 +72,7 @@ class PDFService {
         `;
         document.body.appendChild(curtain);
 
-        // --- 3. BUILD CONTENT ---
+        // --- 3. BUILD CONTENT (MATCHING ORIGINAL COMMIT 60f1557) ---
         container.innerHTML = `
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -147,23 +147,24 @@ class PDFService {
                     display: flex; justify-content: space-between;
                 }
 
-                /* Split Layout for Innovation Page */
-                .split-layout { display: flex; gap: 40px; height: 100%; margin-top: 20px; }
-                .split-left { flex: 0 0 50%; } /* Image Side */
-                .split-right { flex: 1; display: flex; flex-direction: column; }
-
-                .building-img {
-                    width: 100%;
-                    height: auto;
-                    border-radius: 4px;
-                    border: 1px solid #333;
-                    filter: grayscale(20%);
+                /* Layout Classes */
+                .ds-wrapper-single {
+                    display: flex; flex-direction: column; gap: 30px;
+                    height: 100%;
                 }
-
-                .feature-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 40px; }
-                .feature-item { display: flex; align-items: start; gap: 15px; }
-                .feature-marker { color: #0099FF; font-size: 18px; line-height: 1; }
-                .feature-text { font-size: 12px; color: #ccc; }
+                .ds-img-large {
+                    width: 100%; height: 400px;
+                    object-fit: contain;
+                    background: #111;
+                    padding: 10px;
+                    border: 1px solid #333;
+                }
+                .ds-content-large h3 {
+                    font-size: 24px; color: #fff; margin-bottom: 20px;
+                }
+                .ds-content-large p {
+                    font-size: 14px; line-height: 1.6; color: #ccc;
+                }
             </style>
 
             <!-- PAGE 1: COVER -->
@@ -173,45 +174,38 @@ class PDFService {
                 </div>
             </div>
 
-            <!-- PAGE 2: INNOVATION (Restored "Building" Layout) -->
+            <!-- PAGE 2: CONTEXT & VALUE (Restored Map Layout) -->
             <div class="pdf-page">
                 <div class="page-header">
-                    <span>PROPUESTA DE VALOR</span>
+                    <span>CONTEXT & VALUE</span>
                     <span>2N</span>
                 </div>
                 <div class="page-content">
-                    <h2 class="section-title">INNOVACIÓN EN NUESTRO ADN</h2>
+                    <h2 class="section-title">EL ESTÁNDAR 2N</h2>
                     
-                    <div class="split-layout">
-                        <!-- Left: The Building Image -->
-                        <div class="split-left">
-                            <img src="${buildingImgPath}" class="building-img" alt="2N Building">
+                    <div style="display: flex; gap: 40px; margin-bottom: 40px;">
+                        <div style="flex: 1;">
+                            <p style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 20px;">
+                                ${this.companyInfo.innovation}
+                            </p>
+                            <p style="font-size: 14px; line-height: 1.6; text-align: justify;">
+                                Nuestro compromiso con la calidad y la innovación nos ha permitido ser un referente en el mercado global, ofreciendo soluciones que se adaptan a las necesidades de cada proyecto.
+                            </p>
                         </div>
+                        <div style="flex: 1; display: flex; align-items: center;">
+                             <!-- Original Layout used world-map.svg -->
+                             <img src="${worldMapUrl}" style="width: 100%; opacity: 0.8;">
+                        </div>
+                    </div>
 
-                        <!-- Right: Text Content -->
-                        <div class="split-right">
-                             <div style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; color: #ddd;">
-                                <p>${this.companyInfo.innovation}</p>
-                            </div>
-
-                            <div class="feature-grid">
-                                <div class="feature-item">
-                                    <span class="feature-marker">●</span>
-                                    <div class="feature-text"><strong>Calidad Premium</strong><br>Diseño y fabricación europea bajo estándares ISO.</div>
-                                </div>
-                                <div class="feature-item">
-                                    <span class="feature-marker">●</span>
-                                    <div class="feature-text"><strong>Ciberseguridad</strong><br>Protección avanzada de datos y comunicaciones.</div>
-                                </div>
-                                <div class="feature-item">
-                                    <span class="feature-marker">●</span>
-                                    <div class="feature-text"><strong>Integración Abierta</strong><br>Compatible con las principales plataformas del mercado.</div>
-                                </div>
-                                 <div class="feature-item">
-                                    <span class="feature-marker">●</span>
-                                    <div class="feature-text"><strong>Fiabilidad</strong><br>Productos robustos con garantía extendida.</div>
-                                </div>
-                            </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: #111; padding: 20px; border: 1px solid #333;">
+                            <h4 style="color: #0099ff; margin-bottom: 10px;">Global Presence</h4>
+                            <p style="font-size: 12px; color: #999;">Offices and distributors in major markets worldwide.</p>
+                        </div>
+                        <div style="background: #111; padding: 20px; border: 1px solid #333;">
+                            <h4 style="color: #0099ff; margin-bottom: 10px;">Market Leader</h4>
+                            <p style="font-size: 12px; color: #999;">#1 in IP Intercoms according to IHS Markit.</p>
                         </div>
                     </div>
                 </div>
@@ -244,16 +238,51 @@ class PDFService {
             <!-- DYNAMIC SECTIONS -->
             ${this.renderDynamicPages(data.dynamicSections, verticalName)}
 
-             <!-- PAGE FINAL: POR QUE 2N -->
-             <div class="pdf-page">
-                <div class="page-header"><span>RESUMEN</span><span>2N</span></div>
-                <div class="page-content" style="background-image: url('${why2nUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; height: 100%;">
+            <!-- PAGE FINAL: QUE APORTA 2N (Restored Building Layout) -->
+            <div class="pdf-page">
+                <div class="page-header">
+                    <span class="page-header-text">VALOR DIFERENCIAL</span>
                 </div>
+                
+                <!-- Background Map -->
+                <div class="page-content" style="justify-content: flex-start; padding-top: 60px; background-image: url('${extractedMapUrl}'); background-size: cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.6);">
+                    <h2 class="section-title">QUE APORTA 2N</h2>
+                    
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                         <!-- Image Left (The Building) -->
+                         <div style="flex: 0 0 50%;">
+                            <img src="${buildingImgUrl}" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
+                         </div>
+
+                         <!-- Content Right -->
+                         <div style="flex: 1;">
+                            <p style="font-size: 12px; line-height: 1.6; color: #ccc; margin-bottom: 20px; text-align: justify; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px;">
+                                La seguridad física y la ciberseguridad deben ir de la mano. En 2N, garantizamos la protección de datos y comunicaciones frente a amenazas digitales.
+                            </p>
+
+                            <div style="margin-top: 0px; display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: #3b82f6; font-size: 12px;">●</span>
+                                    <span style="color: #eee; font-size: 12px;"><strong>Cifrado extremo a extremo</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: #3b82f6; font-size: 12px;">●</span>
+                                    <span style="color: #eee; font-size: 12px;"><strong>Autenticación segura</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: #3b82f6; font-size: 12px;">●</span>
+                                    <span style="color: #eee; font-size: 12px;"><strong>Protección contra ataques</strong></span>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+
                 <div class="page-footer">
-                     <span>${verticalName}</span>
+                    <span>${verticalName}</span>
                     <span>2N Solutions</span>
                 </div>
-             </div>
+            </div>
         `;
 
         // --- 4. PRELOAD & GENERATE ---
@@ -280,7 +309,7 @@ class PDFService {
         });
 
         await Promise.all(loadPromises);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         const opt = {
             margin: 0,
@@ -289,7 +318,7 @@ class PDFService {
             html2canvas: {
                 scale: 2,
                 useCORS: true,
-                allowTaint: false, // INVALID FOR PDF EXPORT - MUST BE FALSE
+                allowTaint: false, // MANDATORY FALSE
                 scrollY: 0,
                 windowWidth: 794,
                 width: 794
@@ -312,33 +341,33 @@ class PDFService {
     }
 
     renderDynamicPages(sections, verticalName) {
-        return sections.map(section => `
-            <div class="pdf-page">
-                <div class="page-header">
-                    <span>${verticalName}</span>
-                    <span>SOLUCIÓN</span>
-                </div>
-                <div class="page-content">
-                    <h2 class="section-title">${section.title || 'Detalle'}</h2>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 30px;">
-                        ${section.imageUrl ? `
-                            <div style="width: 100%; height: 350px; background: #111; display: flex; align-items: center; justify-content: center; border: 1px solid #333; overflow: hidden; border-radius: 4px;">
-                                <img src="${section.imageUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+        let html = '';
+        const itemsPerPage = 1;
+        for (let i = 0; i < sections.length; i += itemsPerPage) {
+            const pageItems = sections.slice(i, i + itemsPerPage);
+            const section = pageItems[0];
+            html += `
+                <div class="pdf-page">
+                    <div class="page-header">
+                        <span class="page-header-text">DETALLE TÉCNICO</span>
+                    </div>
+                    <div class="page-content" style="justify-content: center;">
+                        <div class="ds-wrapper-single">
+                            ${section.imageUrl ? `<img src="${section.imageUrl}" class="ds-img-large">` : ''}
+                            <div class="ds-content-large">
+                                <h3>${section.title || 'Detalle Técnico'}</h3>
+                                <div style="color: #ccc; font-size: 14px; line-height: 1.6;">${section.text}</div>
                             </div>
-                        ` : ''}
-                        
-                        <div style="font-size: 14px; line-height: 1.6; color: #ccc;">
-                            ${section.text || ''}
                         </div>
                     </div>
+                    <div class="page-footer">
+                        <span>${verticalName}</span>
+                         <span>2N Solutions</span>
+                    </div>
                 </div>
-                <div class="page-footer">
-                    <span>${verticalName}</span>
-                    <span>2N Solutions</span>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }
+        return html;
     }
 }
 
