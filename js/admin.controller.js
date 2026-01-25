@@ -1133,6 +1133,7 @@ class AdminController {
 
             // Load Sections
             const sections = await contentService.getSections(this.currentVertical);
+            this.sections = sections; // Store for local lookup in Edit Mode
 
             if (sections.length === 0) {
                 container.innerHTML = `
@@ -1244,23 +1245,39 @@ class AdminController {
 
         card.innerHTML = `
             <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
-            <div class="card-image" style="background-image: url('${section.imageUrl || 'assets/placeholder-image.jpg'}'); ${section.isVisible === false ? 'filter: grayscale(1); opacity: 0.6;' : ''}"></div>
-            <div class="card-content">
-                <h4>
-                    ${section.title || 'Sin Título'} 
-                    ${section.isVisible === false ? '<span style="font-size: 0.7em; background: #444; color: #ccc; padding: 2px 6px; border-radius: 4px; margin-left: 5px;"><i class="fa-solid fa-eye-slash"></i> Oculto</span>' : ''}
-                </h4>
-                <p>${section.text ? section.text.substring(0, 60) + '...' : 'Sin texto...'}</p>
-                <div class="card-meta">
-                    <span class="tag">${section.layout || 'left'}</span>
-                    <span class="tag">${section.tags ? section.tags[0] : 'general'}</span>
+            
+            <!-- Image Thumbnail -->
+            <div class="section-image">
+                ${section.imageUrl
+                ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
+                : '<div class="placeholder" style="width:100%;height:100%;background:#333;display:flex;align-items:center;justify-content:center;color:#666;font-size:10px;">IMG</div>'}
+            </div>
+            
+            <!-- Content -->
+            <div class="section-content">
+                <div class="section-info">
+                    <h4 class="section-title">
+                        ${section.title || '(Sin título)'}
+                        ${section.isVisible === false ? '<span style="font-size: 0.7em; background: #444; color: #ccc; padding: 2px 6px; border-radius: 4px; margin-left: 5px;"><i class="fa-solid fa-eye-slash"></i> Oculto</span>' : ''}
+                    </h4>
+                    <div class="section-tags">${tagsHtml}</div>
+                    <p class="section-text">${section.text || ''}</p>
                 </div>
-                <!-- Action Buttons: Clone, Edit, Delete -->
-                <div class="section-actions" style="margin-top: 10px; display: flex; gap: 5px; justify-content: flex-end;">
-                    <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
+
+                <!-- Actions Right Aligned -->
+                <div class="section-actions" style="display: flex; gap: 8px; align-items: center;">
+                    <!-- Visibility Toggle (Incluir) -->
+                    <button class="btn-icon" 
+                            onclick="adminController.toggleSectionVisibility('${section.id}', ${section.isVisible !== false}, this)" 
+                            title="${section.isVisible !== false ? 'Publicar (Incluir)' : 'Ocultar (No incluir)'}"
+                            style="color: ${section.isVisible !== false ? 'var(--primary)' : 'var(--text-muted)'}; border: 1px solid var(--border-color);">
+                        <i class="fa-solid ${section.isVisible !== false ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+                    </button>
+
+                    <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar">
                         <i class="fa-solid fa-copy"></i>
                     </button>
-                    <button class="btn-icon edit" onclick="adminController.openEditSectionModal('${section.id}')" title="Editar Sección">
+                    <button class="btn-icon edit" onclick="adminController.openEditSectionModal('${section.id}')" title="Editar">
                         <i class="fa-solid fa-pen"></i>
                     </button>
                     <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')" title="Eliminar">
@@ -1417,6 +1434,54 @@ class AdminController {
         }
 
         document.getElementById('section-modal').classList.add('active');
+    }
+
+    async toggleSectionVisibility(sectionId, currentStatus, btnElement) {
+        try {
+            // Optimistic Update
+            const newStatus = !currentStatus;
+
+            // Allow passing button directly or finding it
+            const btn = btnElement || document.querySelector(`button[onclick*="'${sectionId}'"]`);
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (newStatus) {
+                    btn.title = 'Publicar (Incluir)';
+                    btn.style.color = 'var(--primary)';
+                    if (icon) {
+                        icon.classList.remove('fa-toggle-off');
+                        icon.classList.add('fa-toggle-on');
+                    }
+                } else {
+                    btn.title = 'Ocultar (No incluir)';
+                    btn.style.color = 'var(--text-muted)';
+                    if (icon) {
+                        icon.classList.remove('fa-toggle-on');
+                        icon.classList.add('fa-toggle-off');
+                    }
+                }
+                // Update onclick attribute to reflect new status for next click
+                btn.setAttribute('onclick', `adminController.toggleSectionVisibility('${sectionId}', ${newStatus}, this)`);
+            }
+
+            const sectionRef = doc(db, 'verticals', this.currentVertical, 'sections', sectionId);
+            await updateDoc(sectionRef, {
+                isVisible: newStatus,
+                updatedAt: serverTimestamp()
+            });
+
+            // Update local state without full reload if possible, otherwise reload
+            const localSection = this.sections.find(s => s.id === sectionId);
+            if (localSection) localSection.isVisible = newStatus;
+
+            // Optional: Reload to be safe about other UI elements (like "Oculto" label)
+            this.loadSections();
+        } catch (error) {
+            console.error('Error toggling visibility:', error);
+            // Revert UI if needed or just alert
+            alert('Error al cambiar visibilidad');
+            this.loadSections(); // Revert to source of truth
+        }
     }
 
     async handleExportPPT(sectionId) {
