@@ -53,11 +53,21 @@ class PDFService {
         const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375752617_mapa_2n.png?alt=media&token=4b991682-1e43-4736-bf7e-e239cbe84d66';
         const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
 
-        // Ensure title starts with "SOLUCIONES"
-        let displayTitle = verticalName;
-        if (!displayTitle.startsWith('SOLUCIONES')) {
-            displayTitle = `SOLUCIONES ${displayTitle}`;
-        }
+        // Ensure title starts with "SOLUCIONES" and maps correctly
+        const mapTitle = (t) => {
+            const lower = t.toLowerCase();
+            if (lower.includes('bts')) return 'SOLUCIONES RESIDENCIAL BTS';
+            if (lower.includes('btr')) return 'SOLUCIONES RESIDENCIAL BTR';
+            if (lower.includes('office') || lower.includes('oficina')) return 'SOLUCIONES OFICINAS';
+            if (lower.includes('hotel')) return 'SOLUCIONES HOTELES';
+            if (lower.includes('retail')) return 'SOLUCIONES RETAIL';
+            if (lower.includes('security') || lower.includes('seguridad')) return 'SOLUCIONES SEGURIDAD';
+
+            // Fallback
+            return t.toUpperCase().startsWith('SOLUCIONES') ? t.toUpperCase() : `SOLUCIONES ${t.toUpperCase()}`;
+        };
+
+        const displayTitle = mapTitle(verticalName);
 
         // --- PAGE 1: PORTADA (Background Image + Title Overlay) ---
         content.innerHTML += `

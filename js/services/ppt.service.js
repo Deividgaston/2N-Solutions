@@ -79,10 +79,22 @@ class PptService {
 
         // Vertical Name Overlay (Centered, Clean)
         // User request: "quiero que lo pongas el titulo completo por ejemplo, soluciones BTS"
-        let displayTitle = title.toUpperCase();
-        if (!displayTitle.startsWith('SOLUCIONES')) {
-            displayTitle = `SOLUCIONES ${displayTitle}`;
-        }
+
+        // precise mapping based on known IDs
+        const mapTitle = (t) => {
+            const lower = t.toLowerCase();
+            if (lower.includes('bts')) return 'SOLUCIONES RESIDENCIAL BTS';
+            if (lower.includes('btr')) return 'SOLUCIONES RESIDENCIAL BTR';
+            if (lower.includes('office') || lower.includes('oficina')) return 'SOLUCIONES OFICINAS';
+            if (lower.includes('hotel')) return 'SOLUCIONES HOTELES';
+            if (lower.includes('retail')) return 'SOLUCIONES RETAIL';
+            if (lower.includes('security') || lower.includes('seguridad')) return 'SOLUCIONES SEGURIDAD';
+
+            // Fallback
+            return t.toUpperCase().startsWith('SOLUCIONES') ? t.toUpperCase() : `SOLUCIONES ${t.toUpperCase()}`;
+        };
+
+        const displayTitle = mapTitle(title);
 
         coverSlide.addText(displayTitle, {
             x: 0.5, y: 4.5, w: 9, h: 1,
