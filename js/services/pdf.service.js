@@ -539,7 +539,7 @@ class PDFService {
 
                     <!-- Image Section (Centered & Contained) -->
                     <div style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; background: #111; border-radius: 4px; overflow: hidden;">
-                         <img src="https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92" style="width: 100%; height: 100%; object-fit: cover;">
+                         <img src="assets/why_feature_grid.png" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
 
                 </div>
