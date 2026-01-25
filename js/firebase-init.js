@@ -30,7 +30,16 @@ setPersistence(auth, browserLocalPersistence).catch((err) => {
 // Firestore with offline persistence
 const db = getFirestore(app);
 enableIndexedDbPersistence(db).catch((err) => {
-    console.warn("Firestore persistence not available:", err.code || err);
+    if (err.code == 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a a time.
+        console.info("Firestore persistence disabled (multiple tabs open)");
+    } else if (err.code == 'unimplemented') {
+        // The current browser does not support all of the features required to enable persistence
+        console.warn("Firestore persistence not supported");
+    } else {
+        // Ignore "already started" errors or others non-critical
+        console.log("Firestore persistence status:", err.code);
+    }
 });
 
 // Storage
