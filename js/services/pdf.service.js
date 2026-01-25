@@ -21,7 +21,8 @@ class PDFService {
             return;
         }
 
-        // Title Mapping Logic
+        // --- 1. PREPARE DATA & ASSETS ---
+        // Title Mapping
         const verticalRaw = data.vertical || data.metadata?.heroTitle || '2N Solution';
         const mapTitle = (t) => {
             const lower = t.toLowerCase();
@@ -31,8 +32,6 @@ class PDFService {
             if (lower.includes('hotel')) return 'SOLUCIONES HOTELES';
             if (lower.includes('retail')) return 'SOLUCIONES RETAIL';
             if (lower.includes('security') || lower.includes('seguridad')) return 'SOLUCIONES SEGURIDAD';
-
-            // Fallback
             return t.toUpperCase().startsWith('SOLUCIONES') ? t.toUpperCase() : `SOLUCIONES ${t.toUpperCase()}`;
         };
         const verticalName = mapTitle(verticalRaw);
@@ -44,15 +43,21 @@ class PDFService {
         const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
 
 
+        // --- 2. SETUP CONTAINER ---
         // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
-        container.style.position = 'absolute';
-        container.style.top = '0';
-        container.style.left = '0';
+        container.style.position = 'relative'; // KEEP RELATIVE to ensure height calculation works
         container.style.width = '794px'; // A4 Portrait Width
+        container.style.minHeight = '1123px'; // A4 Portrait Height
         container.style.zIndex = '9998';
-        container.style.background = '#000';
+        container.style.display = 'block';
+        container.style.backgroundColor = '#1a1a1a';
+        container.style.color = '#fff';
+        container.style.fontFamily = "'Inter', sans-serif";
+
+        // Append to body early to load images
+        document.body.appendChild(container);
 
         // Curtain
         const curtain = document.createElement('div');
@@ -71,7 +76,7 @@ class PDFService {
         `;
         document.body.appendChild(curtain);
 
-        // 2N DARK THEME CSS
+        // --- 3. BUILD CONTENT ---
         container.innerHTML = `
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -87,6 +92,7 @@ class PDFService {
                     overflow: hidden; 
                     font-family: 'Inter', sans-serif;
                     page-break-after: always;
+                    box-sizing: border-box;
                 }
 
                 .cover-page {
@@ -103,13 +109,13 @@ class PDFService {
                 }
 
                 .cover-title {
-                    font-size: 54px;
+                    font-size: 54px; /* Slightly smaller to fit long titles */
                     font-weight: 800;
                     color: #0099FF;
                     text-transform: uppercase;
-                    line-height: 1;
+                    line-height: 1.1;
                     margin: 0;
-                    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+                    text-shadow: 0 4px 10px rgba(0,0,0,0.8);
                 }
 
                 .page-header {
@@ -125,13 +131,15 @@ class PDFService {
 
                 .page-content {
                     padding: 80px 60px 60px 60px;
+                    height: 100%;
+                    box-sizing: border-box;
                 }
 
                 .section-title {
-                    font-size: 36px;
+                    font-size: 32px;
                     font-weight: 800;
                     color: #fff;
-                    margin-bottom: 40px;
+                    margin-bottom: 30px;
                 }
 
                 .page-footer {
@@ -142,18 +150,12 @@ class PDFService {
                     font-size: 10px; color: #666;
                     display: flex; justify-content: space-between;
                 }
-                
-                /* Layouts */
-                .split-layout { display: flex; gap: 40px; height: 100%; }
-                .split-left { flex: 1; }
-                .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-                
+
                 .feature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 40px; }
                 .feature-card { background: #111; padding: 20px; border-radius: 8px; border: 1px solid #333; text-align: center; }
                 .feature-card h4 { color: white; margin: 10px 0 5px; font-size: 14px; }
                 .feature-card p { font-size: 11px; color: #999; margin: 0; }
                 .feature-icon { color: #0099FF; font-size: 24px; margin-bottom: 10px; }
-
             </style>
 
             <!-- PAGE 1: COVER -->
@@ -163,9 +165,7 @@ class PDFService {
                 </div>
             </div>
 
-            <!-- PAGE 2: VALOR / INNOVATION (Restored HTML) -->
-
-            <!-- PAGE 2: VALOR / INNOVATION (Restored HTML) -->
+            <!-- PAGE 2: INNOVATION (Text Layout with History Map as Texture BG) -->
             <div class="pdf-page">
                 <div class="page-header">
                     <span>PROPUESTA DE VALOR</span>
@@ -174,11 +174,14 @@ class PDFService {
                 <div class="page-content">
                     <h2 class="section-title">INNOVACIÓN EN NUESTRO ADN</h2>
                     
-                    <div style="font-size: 16px; line-height: 1.6; text-align: justify; margin-bottom: 40px;">
+                    <div style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; color: #ddd;">
                         <p>${this.companyInfo.innovation}</p>
                     </div>
 
-                    <div style="background-image: url('${historyUrl}'); height: 300px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 40px; opacity: 0.8;"></div>
+                    <!-- Image Block -->
+                    <div style="background-image: url('${historyUrl}'); height: 350px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; position: relative;">
+                        <div style="position: absolute; inset:0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));"></div>
+                    </div>
 
                     <div class="feature-grid">
                         <div class="feature-card">
@@ -213,7 +216,7 @@ class PDFService {
                 </div>
                 <div class="page-content">
                     <h2 class="section-title">${data.metadata.introTitle.toUpperCase()}</h2>
-                    <div style="font-size: 18px; line-height: 1.8; color: #ddd; white-space: pre-line;">
+                    <div style="font-size: 16px; line-height: 1.8; color: #ddd; white-space: pre-line;">
                         ${data.metadata.introText || ''}
                     </div>
                 </div>
@@ -231,53 +234,69 @@ class PDFService {
              <div class="pdf-page">
                 <div class="page-header"><span>RESUMEN</span><span>2N</span></div>
                 <div class="page-content" style="background-image: url('${why2nUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; height: 100%;">
-                    <!-- Implicitly uses the full image as user provided, but in portrait it might be small. 
-                         The user provided 'why_2n' is likely landscape.
-                         If I use 'contain', it will show fully.
-                         If I use 'cover', it cuts.
-                         I'll use 'contain' centered.
-                    -->
+                </div>
+                <div class="page-footer">
+                     <span>${verticalName}</span>
+                    <span>2N Solutions</span>
                 </div>
              </div>
         `;
 
-        document.body.appendChild(container);
-
-        // Preload images
+        // --- 4. PRELOAD & GENERATE ---
+        // Robust Preloader
         const images = Array.from(container.querySelectorAll('img'));
         const bgDivs = Array.from(container.querySelectorAll('div'));
-        const loadPromises = images.map(img => new Promise(r => { img.onload = r; img.onerror = r; }));
-        // Also wait for BG images
+        const loadPromises = images.map(img => new Promise(r => {
+            if (img.complete) r();
+            img.onload = r;
+            img.onerror = () => { console.warn('PDF Img Error', img.src); r(); };
+        }));
+
         bgDivs.forEach(div => {
             const bg = window.getComputedStyle(div).backgroundImage;
-            if (bg && bg !== 'none') {
+            if (bg && bg !== 'none' && bg.startsWith('url')) {
                 const url = bg.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 const img = new Image();
+                img.crossOrigin = "Anonymous"; // Try CORS
                 img.src = url;
-                loadPromises.push(new Promise(r => { img.onload = r; img.onerror = r; }));
+                loadPromises.push(new Promise(r => {
+                    img.onload = r;
+                    img.onerror = () => { console.warn('PDF BG Error', url); r(); };
+                }));
             }
         });
 
         await Promise.all(loadPromises);
-        // Extra safety buffer
-        await new Promise(r => setTimeout(r, 1000));
+        // Small buffer to ensure rendering matches
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         const opt = {
             margin: 0,
             filename: `2N_Dossier_${verticalName.replace(/\s+/g, '_')}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // RESTORED PORTRAIT
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                scrollY: 0,
+                // Critical dimensions to prevent 0 height issues
+                windowWidth: 794,
+                width: 794
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         try {
-            await html2pdf().set(opt).from(container).save();
-        } catch (err) {
-            console.error(err);
-            alert('Error generando PDF');
+            const worker = html2pdf().set(opt).from(container);
+            await worker.save();
+        } catch (error) {
+            console.error('PDF Generation error:', error);
+            alert(`Error al generar el PDF: ${error.message || error}`);
         } finally {
             document.body.removeChild(container);
-            document.body.removeChild(curtain);
+            if (document.body.contains(curtain)) {
+                document.body.removeChild(curtain);
+            }
         }
     }
 
@@ -289,17 +308,17 @@ class PDFService {
                     <span>SOLUCIÓN</span>
                 </div>
                 <div class="page-content">
-                    <h2 class="section-title">${section.title}</h2>
+                    <h2 class="section-title">${section.title || 'Detalle'}</h2>
                     
                     <div style="display: flex; flex-direction: column; gap: 30px;">
                         ${section.imageUrl ? `
-                            <div style="width: 100%; height: 350px; background: #111; display: flex; align-items: center; justify-content: center; border: 1px solid #333; overflow: hidden;">
+                            <div style="width: 100%; height: 350px; background: #111; display: flex; align-items: center; justify-content: center; border: 1px solid #333; overflow: hidden; border-radius: 4px;">
                                 <img src="${section.imageUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                             </div>
                         ` : ''}
                         
                         <div style="font-size: 14px; line-height: 1.6; color: #ccc;">
-                            ${section.text}
+                            ${section.text || ''}
                         </div>
                     </div>
                 </div>
