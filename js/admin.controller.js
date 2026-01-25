@@ -1417,29 +1417,13 @@ class AdminController {
         }
 
         // Handle Image Tab logic
-        const imgTab = document.querySelector('.tab-btn[data-tab="image"]'); // Default to image tab
-        if (imgTab) imgTab.click();
-
-        // Populate Image Preview if exists
-        const preview = document.getElementById('image-preview');
-        const previewImg = document.getElementById('preview-img');
-        const noImg = document.getElementById('no-image');
-
-        if (section.imageUrl) {
-            preview.classList.remove('hidden');
-            noImg.classList.add('hidden');
-
-            if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
-                previewImg.style.display = 'none';
-                // Video handling if needed, mainly just show preview exists
-            } else {
-                previewImg.style.display = 'block';
-                previewImg.src = section.imageUrl;
-            }
-        } else {
-            preview.classList.add('hidden');
-            noImg.classList.remove('hidden');
+        // Reset to Upload tab by default or maintain state if desired
+        if (document.querySelector('.tab-btn[data-tab="upload"]')) {
+            document.querySelector('.tab-btn[data-tab="upload"]').click();
         }
+
+        // Update the Live Preview
+        this.updatePreview();
 
         document.getElementById('section-modal').classList.add('active');
     }
