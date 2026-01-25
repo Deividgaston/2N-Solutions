@@ -1061,8 +1061,9 @@
 }
 
 .small-grid {
-    max-height: 200px;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    max-height: 400px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
 }
 
 /* Preview Styles (Mimics Frontend) */
