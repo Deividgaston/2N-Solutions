@@ -1399,8 +1399,16 @@ class AdminController {
         document.getElementById('section-title').value = section.title || '';
         document.getElementById('section-tags').value = section.tags ? section.tags.join(', ') : '';
         document.getElementById('section-text').value = section.text || '';
-        document.getElementById('section-layout').value = section.layout || 'left';
-        document.getElementById('section-text-align').value = section.textAlign || 'left';
+
+        // Radio Buttons (Layout)
+        const layoutVal = section.layout || 'left';
+        const layoutRadio = document.querySelector(`input[name="section-layout"][value="${layoutVal}"]`);
+        if (layoutRadio) layoutRadio.checked = true;
+
+        // Radio Buttons (Align)
+        const alignVal = section.textAlign || 'left';
+        const alignRadio = document.querySelector(`input[name="section-align"][value="${alignVal}"]`);
+        if (alignRadio) alignRadio.checked = true;
 
         // Handle Visibility
         const isVisibleCheck = document.getElementById('section-visible');
