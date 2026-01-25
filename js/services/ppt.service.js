@@ -174,33 +174,34 @@ class PptService {
         finalSlide.background = { color: '000000' };
 
         // Initialize base64 vars
-        const extractedMapUrl = getAssetUrl('assets/ppt_map_extracted.png');
-        const [recoveredMapBase64] = await Promise.all([this.imageUrlToBase64(extractedMapUrl)]);
+        const extractedMapUrl = getAssetUrl('assets/extracted_map.png');
+        const extractedMainImgUrl = getAssetUrl('assets/extracted_image9.png');
 
-        // Title
+        const [recoveredMapBase64, recoveredMainImgBase64] = await Promise.all([
+            this.imageUrlToBase64(extractedMapUrl),
+            this.imageUrlToBase64(extractedMainImgUrl)
+        ]);
+
+        // Title (XML: x=0.5, y=0.5)
         finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
 
-        // ADD MAP BACKGROUND (Recovered from PPT)
+        // ADD MAP BACKGROUND (Recovered from PPT Image4)
+        // User requested map. Even if not in slide4.xml, we add it as background.
         if (recoveredMapBase64) {
-            // Faint background map
-            finalSlide.addImage({ data: recoveredMapBase64, x: 5, y: 1, w: 7, h: 4, sizing: { type: 'contain' }, transparency: 80 });
+            finalSlide.addImage({ data: recoveredMapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' }, transparency: 85 });
         }
 
-        // Image LEFT
-        // XML image x=457200 (approx 0.5 inch), y=1097280 (approx 1.2 inch)
-        // Using the EXACT image from the User's PPT (hosted on Firebase)
-        const securityImgUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2FIP%20STYLE%2F1768729924517_9157101_IP-Style_Office_List-Companies.jpg?alt=media&token=8cb80545-c394-497e-9104-3d04844b6c5d';
-        const securityImgBase64 = await this.imageUrlToBase64(securityImgUrl);
-
-        if (securityImgBase64) {
-            finalSlide.addImage({ data: securityImgBase64, x: 0.5, y: 1.2, w: 5.5, h: 3.8, sizing: { type: 'cover' } });
+        // Image LEFT (XML: x=457200 EMU = 0.5", y=1097280 EMU = 1.2", w=6.0", h=4.2")
+        // Using extracted_image9.png which is the exact file from the PPT
+        if (recoveredMainImgBase64) {
+            finalSlide.addImage({ data: recoveredMainImgBase64, x: 0.5, y: 1.2, w: 6.0, h: 4.2, sizing: { type: 'contain' } });
         } else if (innovationBase64) {
             // Fallback
-            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 5.5, h: 3.8, sizing: { type: 'cover' } });
+            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 6.0, h: 4.2, sizing: { type: 'cover' } });
         }
 
-        // Text RIGHT
-        // XML text x=6217920 (approx 6.8 inch)
+        // Text RIGHT (XML: x=6217920 EMU = 6.8", y=1097280 EMU = 1.2", w=2747404 EMU = 3.0")
+        // The text box is NARROW (3 inches). Layout: Image (6") + Gap (0.3") + Text (3")
         finalSlide.addText(
             'La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.\n\n' +
             '• Cifrado de extremo a extremo\n' +
@@ -208,7 +209,7 @@ class PptService {
             '• Protección contra ataques\n' +
             '• Firmware seguro y actualizaciones periódicas\n' +
             '• Cumplimiento con normativas',
-            { x: 6.8, y: 1.2, w: 6.2, h: 4.5, fontSize: 13, color: 'CCCCCC', lineSpacing: 22, valign: 'top' }
+            { x: 6.8, y: 1.2, w: 3.0, h: 4.2, fontSize: 11, color: 'CCCCCC', lineSpacing: 18, valign: 'top' }
         );
 
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();

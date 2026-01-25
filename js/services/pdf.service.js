@@ -511,41 +511,41 @@ class PDFService {
                     <span class="page-header-text">VALOR DIFERENCIAL</span>
                 </div>
                 
-                <div class="page-content" style="justify-content: flex-start; padding-top: 60px;">
+                <div class="page-content" style="justify-content: flex-start; padding-top: 60px; background-image: url('assets/extracted_map.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.85);">
                     <h2 class="section-title">QUE APORTA 2N</h2>
                     
-                    <div style="display: flex; gap: 40px; align-items: flex-start;">
-                         <!-- Image Left (Matches PPT XML coordinates) -->
-                         <div style="flex: 0 0 45%;">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2FIP%20STYLE%2F1768729924517_9157101_IP-Style_Office_List-Companies.jpg?alt=media&token=8cb80545-c394-497e-9104-3d04844b6c5d" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                         <!-- Image Left (Wide 60%) Matches PPT XML ratio (6" vs 3") -->
+                         <div style="flex: 0 0 60%;">
+                            <img src="assets/extracted_image9.png" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
                          </div>
 
-                         <!-- Content Right -->
+                         <!-- Content Right (Narrow 35%) -->
                          <div style="flex: 1;">
-                            <p style="font-size: 14px; line-height: 1.6; color: #ccc; margin-bottom: 25px; text-align: justify;">
+                            <p style="font-size: 11px; line-height: 1.5; color: #ccc; margin-bottom: 20px; text-align: justify;">
                                 La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.
                             </p>
 
-                            <div style="margin-top: 0px; display: flex; flex-direction: column; gap: 12px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
-                                    <span style="color: #eee; font-size: 14px;"><strong>Cifrado de extremo a extremo</strong></span>
+                            <div style="margin-top: 0px; display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; align-items: start; gap: 8px;">
+                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
+                                    <span style="color: #eee; font-size: 11px;"><strong>Cifrado de extremo a extremo</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
-                                    <span style="color: #eee; font-size: 14px;"><strong>Autenticación segura</strong></span>
+                                <div style="display: flex; align-items: start; gap: 8px;">
+                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
+                                    <span style="color: #eee; font-size: 11px;"><strong>Autenticación segura</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
-                                    <span style="color: #eee; font-size: 14px;"><strong>Protección contra ataques</strong></span>
+                                <div style="display: flex; align-items: start; gap: 8px;">
+                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
+                                    <span style="color: #eee; font-size: 11px;"><strong>Protección contra ataques</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
-                                    <span style="color: #eee; font-size: 14px;"><strong>Firmware seguro y actualizaciones periódicas</strong></span>
+                                <div style="display: flex; align-items: start; gap: 8px;">
+                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
+                                    <span style="color: #eee; font-size: 11px;"><strong>Firmware seguro y actualizaciones periódicas</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
-                                    <span style="color: #eee; font-size: 14px;"><strong>Cumplimiento con normativas</strong></span>
+                                <div style="display: flex; align-items: start; gap: 8px;">
+                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
+                                    <span style="color: #eee; font-size: 11px;"><strong>Cumplimiento con normativas</strong></span>
                                 </div>
                             </div>
                          </div>
