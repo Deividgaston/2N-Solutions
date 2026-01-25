@@ -644,12 +644,12 @@ class PDFService {
             html2canvas: {
                 scale: 2,
                 logging: true,
-                backgroundColor: '#000000',
+                backgroundColor: '#000000', // FIXED: Force black to hide bottom white line artifact
                 useCORS: true,
                 allowTaint: false,
                 scrollY: 0,
                 x: 0,
-                windowWidth: 800, // Small buffer
+                windowWidth: 800,
                 windowHeight: 1123
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
