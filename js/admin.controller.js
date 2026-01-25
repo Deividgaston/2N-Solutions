@@ -518,11 +518,15 @@ class AdminController {
                 heroImagePath = `${this.currentMediaPath}/${fileName}`;
 
                 // Compress (Hero: 1920px, 0.8 quality)
-                const compressedBlob = await compressImage(file, 1920, 0.8);
+                const compressedBlob = await this.compressImage(file, 1920, 0.8);
 
                 const storageRef = ref(storage, heroImagePath);
                 const uploadTask = await uploadBytesResumable(storageRef, compressedBlob);
                 heroImageUrl = await getDownloadURL(uploadTask.ref);
+            } else if (this.pendingHeroImage) {
+                // USER PICKED FROM LIBRARY
+                heroImageUrl = this.pendingHeroImage.url;
+                heroImagePath = this.pendingHeroImage.path;
             }
 
             const data = {
