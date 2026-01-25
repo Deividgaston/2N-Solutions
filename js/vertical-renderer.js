@@ -19,19 +19,35 @@ class VerticalRenderer {
     }
 
     async init() {
+        // Visual Debugging
+        if (this.container) {
+            this.container.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;" class="debug-loader"><i class="fa-solid fa-spinner fa-spin"></i> Cargando contenidos dinámicos...</div>';
+        }
+
         try {
+            console.log('VerticalRenderer: Fetching for', this.verticalId);
+
             // Parallel fetch: Sections + Intro Meta
             const [sections, meta] = await Promise.all([
                 contentService.getSections(this.verticalId),
                 contentService.getVerticalMeta(this.verticalId)
             ]);
 
+            console.log('VerticalRenderer: Data received', { sections: sections?.length, meta });
+
+            // Clear loader
+            if (this.container) this.container.innerHTML = '';
+
             this.renderIntro(meta);
             this.updateSEO(meta);
             this.renderSections(sections);
             this.initScrollAnimations();
+
         } catch (error) {
             console.error('Error loading content:', error);
+            if (this.container) {
+                this.container.innerHTML = `<div style="padding: 20px; color: #ff4444; border: 1px solid #ff4444; border-radius: 8px;">Error cargando contenido: ${error.message}<br>Intenta recargar la página.</div>`;
+            }
         }
     }
 
@@ -139,6 +155,23 @@ class VerticalRenderer {
 
 
 
+
+    updateSEO(meta) {
+        if (!meta) return;
+
+        if (meta.introTitle) {
+            document.title = `${meta.introTitle} | 2N Solutions`;
+        }
+
+        if (meta.introText) {
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                // Truncate to ~160 chars for SEO
+                metaDesc.content = meta.introText.substring(0, 160) + (meta.introText.length > 160 ? '...' : '');
+            }
+        }
+    }
+
     async checkAdminVisibility() {
         // Simple check using firebase auth directly
         // We need to wait for auth state
@@ -169,9 +202,12 @@ class VerticalRenderer {
     renderSections(sections) {
         if (!sections || sections.length === 0) return;
 
+        // Filter hidden sections (isVisible !== false to support legacy data which is undefined)
+        const visibleSections = sections.filter(s => s.isVisible !== false);
+
         this.container.innerHTML = '';
 
-        sections.forEach(section => {
+        visibleSections.forEach(section => {
             const sectionEl = document.createElement('div');
             // Determine layout class (default to left if missing)
             const layoutClass = `layout-${section.layout || 'left'}`;

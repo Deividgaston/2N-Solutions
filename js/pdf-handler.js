@@ -61,7 +61,9 @@ class ExportHandler {
         const benefits = Array.from(document.querySelectorAll('.benefits-list li')).map(li => li.textContent.trim());
 
         // 2. Fetch dynamic content
-        const dynamicSections = await contentService.getSections(this.verticalId);
+        const allSections = await contentService.getSections(this.verticalId);
+        // Filter out hidden sections (isVisible !== false)
+        const dynamicSections = allSections.filter(s => s.isVisible !== false);
 
         return {
             verticalLabel: this.verticalLabel,

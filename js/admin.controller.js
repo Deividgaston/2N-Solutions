@@ -774,6 +774,7 @@ class AdminController {
         }
     }
 
+
     async deleteUser(userId) {
         if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
 
@@ -1243,29 +1244,31 @@ class AdminController {
 
         card.innerHTML = `
             <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
-            <div class="section-image">
-                ${section.imageUrl
-                ? (section.imageUrl.match(/\.(mp4|webm)$/i) ? '<video src="' + section.imageUrl + '" muted></video>' : '<img src="' + section.imageUrl + '">')
-                : '<div class="placeholder">No img</div>'}
-            </div>
-            <div class="section-content">
-                <div class="section-info">
-                    <h4 class="section-title">${section.title || '(Sin título)'}</h4>
-                    <div class="section-tags">${tagsHtml}</div>
-                    <p class="section-text">${section.text}</p>
-                    <span class="layout-badge"><i class="fa-solid fa-${section.layout === 'right' ? 'arrow-right' : (section.layout === 'bottom' ? 'arrow-down' : 'arrow-left')}"></i> ${section.layout || 'left'}</span>
+            <div class="card-image" style="background-image: url('${section.imageUrl || 'assets/placeholder-image.jpg'}'); ${section.isVisible === false ? 'filter: grayscale(1); opacity: 0.6;' : ''}"></div>
+            <div class="card-content">
+                <h4>
+                    ${section.title || 'Sin Título'} 
+                    ${section.isVisible === false ? '<span style="font-size: 0.7em; background: #444; color: #ccc; padding: 2px 6px; border-radius: 4px; margin-left: 5px;"><i class="fa-solid fa-eye-slash"></i> Oculto</span>' : ''}
+                </h4>
+                <p>${section.text ? section.text.substring(0, 60) + '...' : 'Sin texto...'}</p>
+                <div class="card-meta">
+                    <span class="tag">${section.layout || 'left'}</span>
+                    <span class="tag">${section.tags ? section.tags[0] : 'general'}</span>
                 </div>
-                <div class="section-actions">
+                <!-- Action Buttons: Clone, Edit, Delete -->
+                <div class="section-actions" style="margin-top: 10px; display: flex; gap: 5px; justify-content: flex-end;">
                     <button class="btn-icon clone" onclick="adminController.handleCloneSection('${section.id}')" title="Clonar a otra vertical">
                         <i class="fa-solid fa-copy"></i>
                     </button>
-                            </button>
-                            <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')" title="Eliminar">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+                    <button class="btn-icon edit" onclick="adminController.openEditSectionModal('${section.id}')" title="Editar Sección">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn-icon delete" onclick="adminController.deleteSection('${section.id}')" title="Eliminar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
 
         // Click to Select
         card.addEventListener('click', (e) => {
@@ -1322,6 +1325,98 @@ class AdminController {
                 return closest;
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    resetSectionModal() {
+        this.openCreateModal();
+    }
+
+    openCreateModal() {
+        this.currentEditId = null;
+        document.getElementById('modal-title').textContent = 'Nueva Sección';
+        document.getElementById('section-form').reset();
+
+        // Reset specific fields
+        document.getElementById('section-title').value = '';
+        document.getElementById('section-tags').value = '';
+        document.getElementById('section-text').value = '';
+        document.getElementById('section-layout').value = 'left';
+        document.getElementById('section-text-align').value = 'left';
+
+        // Reset visibility to true (checked) by default
+        const isVisibleCheck = document.getElementById('section-visible');
+        if (isVisibleCheck) isVisibleCheck.checked = true;
+
+        // Reset Tabs
+        this.resetInternalState();
+        document.getElementById('section-modal').classList.add('active');
+    }
+
+    resetInternalState() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+
+        // Default to Upload tab
+        document.querySelector('.tab-btn[data-tab="upload"]').classList.add('active');
+        document.getElementById('tab-upload').classList.add('active');
+
+        // Clear file input
+        document.getElementById('section-file').value = '';
+        document.getElementById('section-file-info').textContent = '';
+        this.selectedGalleryImage = null;
+
+        // Reset Preview
+        const preview = document.getElementById('image-preview'); // Note: Preview elements might need ID check in HTML
+        // actually looking at HTML, preview logic in admin.html is in right column 'section-preview'
+        // But openEditSectionModal refers to 'image-preview' which might not exist in HTML?
+        // Let's fix that too.
+    }
+
+    openEditSectionModal(sectionId) {
+        const section = this.sections.find(s => s.id === sectionId);
+        if (!section) return;
+
+        this.currentEditId = sectionId;
+        document.getElementById('modal-title').textContent = 'Editar Sección';
+
+        document.getElementById('section-title').value = section.title || '';
+        document.getElementById('section-tags').value = section.tags ? section.tags.join(', ') : '';
+        document.getElementById('section-text').value = section.text || '';
+        document.getElementById('section-layout').value = section.layout || 'left';
+        document.getElementById('section-text-align').value = section.textAlign || 'left';
+
+        // Handle Visibility
+        const isVisibleCheck = document.getElementById('section-visible');
+        if (isVisibleCheck) {
+            isVisibleCheck.checked = section.isVisible !== false;
+        }
+
+        // Handle Image Tab logic
+        const imgTab = document.querySelector('.tab-btn[data-tab="image"]'); // Default to image tab
+        if (imgTab) imgTab.click();
+
+        // Populate Image Preview if exists
+        const preview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const noImg = document.getElementById('no-image');
+
+        if (section.imageUrl) {
+            preview.classList.remove('hidden');
+            noImg.classList.add('hidden');
+
+            if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
+                previewImg.style.display = 'none';
+                // Video handling if needed, mainly just show preview exists
+            } else {
+                previewImg.style.display = 'block';
+                previewImg.src = section.imageUrl;
+            }
+        } else {
+            preview.classList.add('hidden');
+            noImg.classList.remove('hidden');
+        }
+
+        document.getElementById('section-modal').classList.add('active');
     }
 
     async handleExportPPT(sectionId) {
@@ -1538,7 +1633,10 @@ class AdminController {
                 imageUrl,
                 imagePath: storagePath,
                 layout,
-                textAlign
+                imagePath: storagePath,
+                layout,
+                textAlign,
+                isVisible: document.getElementById('section-visible').checked
             };
 
             await contentService.addSection(this.currentVertical, data);

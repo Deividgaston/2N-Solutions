@@ -36,19 +36,52 @@
             <button id="download-dossier-btn" class="btn-cta" style="margin-top: 1.5rem;">
                 <i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF
             </button>
-            <button id="download-ppt-btn" class="btn-cta"
-                style="margin-top: 1.5rem; background-color: #D24726; margin-left: 10px;">
-                <i class="fa-solid fa-file-powerpoint"></i> Descargar PPT
-            </button>
+        </div>
+    </section>
+    <section class="solution-content">
+        <div class="content-grid" style="grid-template-columns: 1fr;">
+            <div class="content-main">
+                <h2>Control de acceso para infraestructuras críticas</h2>
+                <div id="intro-text-container">
+                    <p>La seguridad física es la primera línea de defensa. 2N ofrece soluciones robustas que integran
+                        control de acceso, videovigilancia y comunicación en tiempo real.</p>
+                    <p>Protege activos sensibles y garantiza la seguridad del personal con tecnología certificada para
+                        los entornos más exigentes.</p>
+                </div>
+
+                <h3>Beneficios en seguridad</h3>
+                <ul class="benefits-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Biometría avanzada:</strong> Acceso por huella o
+                        reconocimiento facial</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Resistencia extrema:</strong> Dispositivos con
+                        certificación IP69K e IK10</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Ciberseguridad:</strong> Protocolos HTTPS, 802.1x y
+                        encriptación TLS</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Integración VMS:</strong> Milestone, Genetec, Axis
+                        Camera Station</li>
+                </ul>
+
+                <div id="dynamic-sections-container" class="dynamic-sections-container">
+                    <!-- Dynamic sections from private area will be injected here -->
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- ... (omitted) ... -->
+    <footer class="footer">
+        <div class="footer-left">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://www.2n.com" target="_blank">2N.com</a>
+            <a href="login.html">Acceso prescriptores</a>
+        </div>
+    </footer>
 
     <script src="js/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script type="module" src="js/firebase-init.js"></script>
-    <script type="module" src="js/vertical-renderer.js"></script>
+    <script type="module" src="js/vertical-renderer.js?v=2.0"></script>
     <script type="module" src="js/pdf-handler.js"></script>
     <script>
         window.addEventListener('scroll', () => {
