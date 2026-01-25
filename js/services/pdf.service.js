@@ -526,22 +526,25 @@ class PDFService {
                     <span class="page-header-text">RESUMEN</span>
                 </div>
                 
-                <!-- Background: Why 2N Image from Firebase -->
-                <div class="page-content" style="padding: 0; position: relative; background-image: url('https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92'); background-size: cover; background-position: center;">
+                <!-- Standard Page Content with Margins -->
+                <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; gap: 40px;">
                     
-                    <!-- Overlay Gradient to ensure text readability -->
-                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.1) 100%);"></div>
-
-                    <!-- Title Content -->
-                    <div style="position: absolute; bottom: 80px; left: 60px; right: 60px; z-index: 10;">
-                        <h2 style="font-size: 42px; line-height: 1.1; margin-bottom: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.8); font-weight: 800;">
-                            <span style="color: #3b82f6; display: block; margin-bottom: 10px;">Por qué 2N:</span>
+                    <!-- Title Section -->
+                    <div style="text-align: left;">
+                        <h2 style="font-size: 38px; line-height: 1.2; font-weight: 800; margin: 0;">
+                            <span style="color: #3b82f6; display: block; margin-bottom: 5px;">Por qué 2N:</span>
                             <span style="color: #ffffff;">La diferencia que eleva tu proyecto</span>
                         </h2>
                     </div>
+
+                    <!-- Image Section (Centered & Contained) -->
+                    <div style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; background: #111; border-radius: 4px; overflow: hidden;">
+                         <img src="https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+
                 </div>
 
-                <div class="page-footer" style="z-index: 20;">
+                <div class="page-footer">
                     <span>${verticalName}</span>
                     <span>2N Solutions</span>
                 </div>
