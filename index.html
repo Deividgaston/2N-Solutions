@@ -318,7 +318,8 @@
 
         .solutions-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 cols for better layout on desktop, or repeat(auto-fit, minmax(200px, 1fr)) */
             gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
@@ -738,6 +739,12 @@
                 <span class="solution-icon">🏨</span>
                 <h3 data-i18n="sol_hotel_title">Hoteles</h3>
                 <p data-i18n="sol_hotel_desc">Hospitality y resorts.</p>
+                <i class="fa-solid fa-arrow-right solution-arrow"></i>
+            </a>
+            <a href="solucion-retail.html" class="solution-card">
+                <span class="solution-icon">🛍️</span>
+                <h3 data-i18n="sol_retail_title">Retail</h3>
+                <p data-i18n="sol_retail_desc">Centros comerciales y espacios comerciales.</p>
                 <i class="fa-solid fa-arrow-right solution-arrow"></i>
             </a>
             <a href="solucion-seguridad.html" class="solution-card">

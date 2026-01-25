@@ -573,6 +573,7 @@ class AdminController {
 
         try {
             const title = document.getElementById('intro-title').value.trim();
+            const subtitle = document.getElementById('intro-subtitle').value.trim();
             const text = document.getElementById('intro-text').value.trim();
 
             // Collect benefits
@@ -581,6 +582,7 @@ class AdminController {
 
             await contentService.updateVerticalMeta(this.currentVertical, {
                 introTitle: title,
+                introSubtitle: subtitle,
                 introText: text,
                 benefits: benefits
             });
@@ -1154,6 +1156,81 @@ class AdminController {
         }
     }
 
+    async _loadVerticalMetadata() {
+        try {
+            const meta = await contentService.getVerticalMeta(this.currentVertical);
+
+            // Helper to safe set value
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || '';
+            };
+
+            // Helper to check radio
+            const checkRadio = (name, val) => {
+                const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                if (el) el.checked = true;
+            };
+
+            if (meta) {
+                // Intro Fields
+                setVal('intro-title', meta.introTitle);
+                setVal('intro-subtitle', meta.introSubtitle);
+                setVal('intro-text', meta.introText);
+
+                // Benefits
+                const benefitsContainer = document.getElementById('benefits-container');
+                if (benefitsContainer) {
+                    benefitsContainer.innerHTML = '';
+                    if (meta.benefits && Array.isArray(meta.benefits)) {
+                        meta.benefits.forEach(b => this.addBenefitInput(b));
+                    }
+                    if (!meta.benefits || meta.benefits.length === 0) {
+                        this.addBenefitInput(); // Add one empty by default
+                    }
+                }
+
+                // Hero Fields
+                setVal('hero-title', meta.heroTitle);
+                setVal('hero-subtitle', meta.heroSubtitle);
+                setVal('hero-badge', meta.badgeText);
+                checkRadio('hero-color', meta.badgeColor || 'blue');
+
+                // Hero Preview logic
+                this.updateHeroPreview(meta.heroImageUrl, meta.heroPosX || 50, meta.heroPosY || 50);
+
+                // Update Badge Preview Class
+                const badge = document.getElementById('preview-badge');
+                if (badge) badge.className = 'hero-preview-badge ' + (meta.badgeColor || 'blue');
+                if (badge) badge.textContent = meta.badgeText || 'Badge';
+
+                // Update text previews
+                const previewTitle = document.getElementById('preview-title');
+                if (previewTitle) previewTitle.textContent = meta.heroTitle || 'Título Héroe';
+
+                const previewSubtitle = document.getElementById('preview-subtitle');
+                if (previewSubtitle) previewSubtitle.textContent = meta.heroSubtitle || 'Subtítulo o Lead';
+
+
+            } else {
+                // Reset fields if no meta exists
+                setVal('intro-title', '');
+                setVal('intro-text', '');
+                document.getElementById('benefits-container').innerHTML = '';
+                this.addBenefitInput();
+
+                setVal('hero-title', '');
+                setVal('hero-subtitle', '');
+                setVal('hero-badge', '');
+                checkRadio('hero-color', 'blue');
+                this.updateHeroPreview(null, 50, 50);
+            }
+
+        } catch (e) {
+            console.error("Error loading vertical metadata", e);
+        }
+    }
+
     createSectionCard(section) {
         const card = document.createElement('div');
         card.className = `section-card layout-${section.layout || 'left'}`;
@@ -1226,364 +1303,350 @@ class AdminController {
             // For now, let's just log it. Real persistence happens in 'drop' or we can trigger a batch update here.
             // Actually best practice is to update during drop or dragend.
 
-            await Promise.all(newOrder.map((id, idx) =>
-                contentService.updateSectionOrder(this.currentVertical, id, idx)
-            ));
+            // The actual order update is handled by the 'drop' event listener on the container.
         });
 
-        list.appendChild(card);
-    });
-
-            // List Drag Over Event
-            list.addEventListener('dragover', (e) => {
-    e.preventDefault(); // Allow drop
-    const afterElement = this.getDragAfterElement(list, e.clientY);
-    const draggable = document.querySelector('.dragging');
-    if (afterElement == null) {
-        list.appendChild(draggable);
-    } else {
-        list.insertBefore(draggable, afterElement);
-    }
-});
-
-        } catch (error) {
-    console.error('Error loading sections:', error);
-    list.innerHTML = '<p class="text-center error">Error al cargar secciones</p>';
-}
+        return card;
     }
 
-// Helper for Drag and Drop
-getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
+    // Helper for Drag and Drop
+    getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
 
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-        } else {
-            return closest;
-        }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
 
     async handleExportPPT(sectionId) {
-    if (!confirm('¿Generar slide PPT para esta sección?')) return;
+        if (!confirm('¿Generar slide PPT para esta sección?')) return;
 
-    try {
-        // Find section data
-        // Path: verticals/{verticalId}/sections/{sectionId}
-        const sectionRef = doc(db, 'verticals', this.currentVertical, 'sections', sectionId);
-        const sectionDoc = await getDoc(sectionRef);
+        try {
+            // Find section data
+            // Path: verticals/{verticalId}/sections/{sectionId}
+            const sectionRef = doc(db, 'verticals', this.currentVertical, 'sections', sectionId);
+            const sectionDoc = await getDoc(sectionRef);
 
-        if (!sectionDoc.exists()) {
-            alert('Error: La sección no se encuentra en la base de datos.');
+            if (!sectionDoc.exists()) {
+                alert('Error: La sección no se encuentra en la base de datos.');
+                return;
+            }
+
+            const sectionData = sectionDoc.data();
+
+            // Show loading state?
+            // pptService calls PptxGenJS which is usually fast for 1 slide.
+
+            await pptService.exportSection(sectionData);
+
+        } catch (error) {
+            console.error('Error exporting PPT:', error);
+            alert('Error al generar PPT');
+        }
+    }
+
+    async handleCloneSection(sectionId) {
+        const verticals = [
+            { id: 'bts', name: 'Residencial BTS' },
+            { id: 'btr', name: 'Residencial BTR' },
+            { id: 'office', name: 'Oficinas' },
+            { id: 'hotel', name: 'Hoteles' },
+            { id: 'retail', name: 'Retail' },
+            { id: 'security', name: 'Seguridad' } // Adding security from context
+        ].filter(v => v.id !== this.currentVertical);
+
+        const target = prompt(
+            `Escribe el ID de la vertical destino(o varias separadas por coma): \n\nOpciones: ${verticals.map(v => v.id).join(', ')} `
+        );
+
+        if (!target) return;
+
+        const targets = target.split(',').map(t => t.trim().toLowerCase());
+        const validTargets = verticals.map(v => v.id);
+        const finalTargets = targets.filter(t => validTargets.includes(t));
+
+        if (finalTargets.length === 0) {
+            alert('Ninguna vertical válida seleccionada.');
             return;
         }
 
-        const sectionData = sectionDoc.data();
-
-        // Show loading state?
-        // pptService calls PptxGenJS which is usually fast for 1 slide.
-
-        await pptService.exportSection(sectionData);
-
-    } catch (error) {
-        console.error('Error exporting PPT:', error);
-        alert('Error al generar PPT');
+        try {
+            await contentService.cloneSection(this.currentVertical, sectionId, finalTargets);
+            alert(`Sección clonada exitosamente a: ${finalTargets.join(', ')} `);
+        } catch (e) {
+            alert('Error al clonar: ' + e.message);
+        }
     }
-}
-
-    async handleCloneSection(sectionId) {
-    const verticals = [
-        { id: 'bts', name: 'Residencial BTS' },
-        { id: 'btr', name: 'Residencial BTR' },
-        { id: 'office', name: 'Oficinas' },
-        { id: 'hotel', name: 'Hoteles' },
-        { id: 'retail', name: 'Retail' },
-        { id: 'security', name: 'Seguridad' } // Adding security from context
-    ].filter(v => v.id !== this.currentVertical);
-
-    const target = prompt(
-        `Escribe el ID de la vertical destino(o varias separadas por coma): \n\nOpciones: ${verticals.map(v => v.id).join(', ')} `
-    );
-
-    if (!target) return;
-
-    const targets = target.split(',').map(t => t.trim().toLowerCase());
-    const validTargets = verticals.map(v => v.id);
-    const finalTargets = targets.filter(t => validTargets.includes(t));
-
-    if (finalTargets.length === 0) {
-        alert('Ninguna vertical válida seleccionada.');
-        return;
-    }
-
-    try {
-        await contentService.cloneSection(this.currentVertical, sectionId, finalTargets);
-        alert(`Sección clonada exitosamente a: ${finalTargets.join(', ')} `);
-    } catch (e) {
-        alert('Error al clonar: ' + e.message);
-    }
-}
 
     async loadMultimediaGallery() {
-    this.navigateMultimedia(this.currentMediaPath);
-}
+        this.navigateMultimedia(this.currentMediaPath);
+    }
 
     async navigateMultimedia(path) {
-    this.currentMediaPath = path;
-    const grid = document.getElementById('multimedia-grid');
-    grid.innerHTML = '<div class="loader">Loading...</div>';
+        this.currentMediaPath = path;
+        const grid = document.getElementById('multimedia-grid');
+        grid.innerHTML = '<div class="loader">Loading...</div>';
 
-    // Update breadcrumb (simple version)
-    // You could add a visible breadcrumb element here if the UI supports it
+        // Update breadcrumb (simple version)
+        // You could add a visible breadcrumb element here if the UI supports it
 
-    try {
-        const { folders, files } = await contentService.listMultimediaContents(path);
+        try {
+            const { folders, files } = await contentService.listMultimediaContents(path);
 
-        grid.innerHTML = '';
+            grid.innerHTML = '';
 
-        // "Up" button if not at root
-        if (path !== 'multimedia') {
-            const upItem = document.createElement('div');
-            upItem.className = 'gallery-folder up-folder';
-            upItem.innerHTML = `
+            // "Up" button if not at root
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'gallery-folder up-folder';
+                upItem.innerHTML = `
                     < div class="folder-icon" > <i class="fa-solid fa-arrow-turn-up"></i></div >
                         <div class="folder-name">..</div>
                 `;
-            upItem.addEventListener('click', () => {
-                const parts = path.split('/');
-                parts.pop();
-                this.navigateMultimedia(parts.join('/'));
-            });
-            grid.appendChild(upItem);
-        }
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.navigateMultimedia(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
 
-        // Render Folders
-        if (folders.length > 0) {
-            folders.forEach(folder => {
-                const item = document.createElement('div');
-                item.className = 'gallery-folder';
-                item.innerHTML = `
+            // Render Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-folder';
+                    item.innerHTML = `
                     < div class="folder-icon" > <i class="fa-solid fa-folder"></i></div >
                         <div class="folder-name">${folder.name}</div>
                 `;
-                item.addEventListener('click', () => {
-                    this.navigateMultimedia(folder.fullPath);
+                    item.addEventListener('click', () => {
+                        this.navigateMultimedia(folder.fullPath);
+                    });
+                    grid.appendChild(item);
                 });
-                grid.appendChild(item);
-            });
-        }
+            }
 
-        // Render Files
-        if (files.length > 0) {
-            files.forEach(img => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.innerHTML = `< img src = "${img.url}" loading = "lazy" title = "${img.name}" > `;
+            // Render Files
+            if (files.length > 0) {
+                files.forEach(img => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `< img src = "${img.url}" loading = "lazy" title = "${img.name}" > `;
 
-                item.addEventListener('click', () => {
-                    document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-                    this.selectedGalleryImage = img.url;
-                    this.updatePreview(); // Update preview when gallery item selected
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        this.selectedGalleryImage = img.url;
+                        this.updatePreview(); // Update preview when gallery item selected
+                    });
+                    grid.appendChild(item);
                 });
-                grid.appendChild(item);
-            });
-        }
+            }
 
-        if (folders.length === 0 && files.length === 0) {
-            grid.innerHTML += '<p style="width:100%">Carpeta vacía</p>';
-        }
+            if (folders.length === 0 && files.length === 0) {
+                grid.innerHTML += '<p style="width:100%">Carpeta vacía</p>';
+            }
 
-    } catch (e) {
-        console.error(e);
-        grid.innerHTML = `< p class="error" > Error cargando galería: ${e.message}</p > `;
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = `< p class="error" > Error cargando galería: ${e.message}</p > `;
+        }
     }
-}
 
-resetSectionModal() {
-    document.getElementById('section-form').reset();
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector('[data-tab="upload"]').classList.add('active');
-    document.getElementById('tab-upload').classList.add('active');
-    document.getElementById('section-file-info').textContent = '';
-    this.selectedGalleryImage = null;
-    this.updatePreview();
-}
+    resetSectionModal() {
+        document.getElementById('section-form').reset();
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.image-tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-tab="upload"]').classList.add('active');
+        document.getElementById('tab-upload').classList.add('active');
+        document.getElementById('section-file-info').textContent = '';
+        this.selectedGalleryImage = null;
+        this.updatePreview();
+    }
 
     async handleSaveSection(e) {
-    e.preventDefault();
-    console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
+        e.preventDefault();
+        console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
 
-    // Determine submit button based on event type
-    let submitBtn;
-    if (e.target.tagName === 'BUTTON') {
-        submitBtn = e.target;
-    } else {
-        // It was a form submit
-        submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
-    }
-
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Guardando...';
-
-    try {
-        const title = document.getElementById('section-title').value.trim();
-        const tagsStr = document.getElementById('section-tags').value.trim();
-        const text = document.getElementById('section-text').value;
-        const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
-        const textAlign = document.querySelector('input[name="section-align"]:checked')?.value || 'left';
-        const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-
-        // Validate tags
-        if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
-        const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
-
-        let imageUrl = null;
-        let storagePath = null;
-
-        // ... (image upload logic remains) ...
-        if (activeTab === 'upload') {
-            const fileInput = document.getElementById('section-file');
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-
-                const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
-                if (!validTypes.includes(file.type)) {
-                    throw new Error('Formato no soportado. Usa JPG, PNG, WEBP o MP4.');
-                }
-
-                const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')} `;
-                storagePath = `${this.currentMediaPath}/${fileName}`;
-
-                // If Image, Compress. If Video, Upload direct.
-                let uploadData = file;
-                if (file.type.startsWith('image/')) {
-                    uploadData = await compressImage(file, 1200, 0.75);
-                }
-
-                const storageRef = ref(storage, storagePath);
-                const uploadTask = await uploadBytesResumable(storageRef, uploadData);
-                imageUrl = await getDownloadURL(uploadTask.ref);
-            }
-        } else if (this.selectedGalleryImage) {
-            imageUrl = this.selectedGalleryImage;
+        // Determine submit button based on event type
+        let submitBtn;
+        if (e.target.tagName === 'BUTTON') {
+            submitBtn = e.target;
+        } else {
+            // It was a form submit
+            submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
         }
 
-        const data = {
-            title,
-            tags,
-            text,
-            imageUrl,
-            imagePath: storagePath,
-            layout,
-            textAlign
-        };
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
 
-        await contentService.addSection(this.currentVertical, data);
+        try {
+            const title = document.getElementById('section-title').value.trim();
+            const tagsStr = document.getElementById('section-tags').value.trim();
+            const text = document.getElementById('section-text').value;
+            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+            const textAlign = document.querySelector('input[name="section-align"]:checked')?.value || 'left';
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
 
-        document.getElementById('section-modal').classList.remove('active');
-        this.loadSections();
-        this.loadMultimediaGallery();
+            // Validate tags
+            if (!tagsStr) throw new Error('Las etiquetas son obligatorias');
+            const tags = tagsStr.split(',').map(t => t.trim()).filter(t => t.length > 0);
 
-    } catch (error) {
-        alert(error.message);
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+            let imageUrl = null;
+            let storagePath = null;
+
+            // ... (image upload logic remains) ...
+            if (activeTab === 'upload') {
+                const fileInput = document.getElementById('section-file');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+
+                    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
+                    if (!validTypes.includes(file.type)) {
+                        throw new Error('Formato no soportado. Usa JPG, PNG, WEBP o MP4.');
+                    }
+
+                    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')} `;
+                    storagePath = `${this.currentMediaPath}/${fileName}`;
+
+                    // If Image, Compress. If Video, Upload direct.
+                    let uploadData = file;
+                    if (file.type.startsWith('image/')) {
+                        uploadData = await compressImage(file, 1200, 0.75);
+                    }
+
+                    const storageRef = ref(storage, storagePath);
+                    const uploadTask = await uploadBytesResumable(storageRef, uploadData);
+                    imageUrl = await getDownloadURL(uploadTask.ref);
+                }
+            } else if (this.selectedGalleryImage) {
+                imageUrl = this.selectedGalleryImage;
+            }
+
+            const data = {
+                title,
+                tags,
+                text,
+                imageUrl,
+                imagePath: storagePath,
+                layout,
+                textAlign
+            };
+
+            await contentService.addSection(this.currentVertical, data);
+
+            document.getElementById('section-modal').classList.remove('active');
+            this.loadSections();
+            this.loadMultimediaGallery();
+
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     }
-}
 
     async deleteSection(sectionId) {
-    if (!confirm('¿Eliminar esta sección?')) return;
+        if (!confirm('¿Eliminar esta sección?')) return;
 
-    try {
-        await contentService.deleteSection(this.currentVertical, sectionId);
-        this.loadSections();
-    } catch (e) {
-        alert('Error al eliminar: ' + e.message);
+        try {
+            await contentService.deleteSection(this.currentVertical, sectionId);
+            this.loadSections();
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message);
+        }
     }
-}
 
-// ============================
-// ASSET PICKER
-// ============================
-openAssetPicker(mode) {
-    this.pickerMode = mode; // 'hero' or other
-    this.pickerCurrentPath = this.currentMediaPath || 'multimedia';
-    document.getElementById('asset-picker-modal').classList.add('active');
-    this.loadPickerAssets(this.pickerCurrentPath);
-}
+    // ============================
+    // ASSET PICKER
+    // ============================
+    openAssetPicker(mode) {
+        this.pickerMode = mode; // 'hero' or other
+        this.pickerCurrentPath = this.currentMediaPath || 'multimedia';
+        document.getElementById('asset-picker-modal').classList.add('active');
+        this.loadPickerAssets(this.pickerCurrentPath);
+    }
 
     async loadPickerAssets(path) {
-    const grid = document.getElementById('picker-grid');
-    grid.innerHTML = '<div class="loader">Cargando...</div>';
+        const grid = document.getElementById('picker-grid');
+        grid.innerHTML = '<div class="loader">Cargando...</div>';
 
-    try {
-        const { folders, files } = await contentService.listMultimediaContents(path);
-        grid.innerHTML = '';
+        try {
+            const { folders, files } = await contentService.listMultimediaContents(path);
+            grid.innerHTML = '';
 
-        // Up Button
-        if (path !== 'multimedia') {
-            const upItem = document.createElement('div');
-            upItem.className = 'asset-card gallery-folder up-folder';
-            upItem.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div><div class="folder-name">..</div>`;
-            upItem.addEventListener('click', () => {
-                const parts = path.split('/');
-                parts.pop();
-                this.loadPickerAssets(parts.join('/'));
-            });
-            grid.appendChild(upItem);
-        }
+            // Up Button
+            if (path !== 'multimedia') {
+                const upItem = document.createElement('div');
+                upItem.className = 'asset-card gallery-folder up-folder';
+                upItem.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-arrow-turn-up"></i></div><div class="folder-name">..</div>`;
+                upItem.addEventListener('click', () => {
+                    const parts = path.split('/');
+                    parts.pop();
+                    this.loadPickerAssets(parts.join('/'));
+                });
+                grid.appendChild(upItem);
+            }
 
-        // Folders
-        if (folders.length > 0) {
-            folders.forEach(folder => {
-                const item = document.createElement('div');
-                item.className = 'asset-card gallery-folder';
-                item.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-folder"></i></div><div class="folder-name">${folder.name}</div>`;
-                item.addEventListener('click', () => this.loadPickerAssets(folder.fullPath));
-                grid.appendChild(item);
-            });
-        }
+            // Folders
+            if (folders.length > 0) {
+                folders.forEach(folder => {
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-folder';
+                    item.innerHTML = `<div class="folder-icon"><i class="fa-solid fa-folder"></i></div><div class="folder-name">${folder.name}</div>`;
+                    item.addEventListener('click', () => this.loadPickerAssets(folder.fullPath));
+                    grid.appendChild(item);
+                });
+            }
 
-        // Files (Images only for now if Hero)
-        if (files.length > 0) {
-            files.forEach(file => {
-                // Filter images
-                if (!file.contentType || !file.contentType.startsWith('image/')) return;
+            // Files (Images only for now if Hero)
+            if (files.length > 0) {
+                files.forEach(file => {
+                    // Filter images by extension since contentType is not available without extra fetch
+                    const isImage = file.name.match(/\.(jpg|jpeg|png|webp|gif)$/i);
+                    const isVideo = file.name.match(/\.(mp4|webm)$/i);
 
-                const item = document.createElement('div');
-                item.className = 'asset-card gallery-image';
-                item.innerHTML = `
-                        <div class="image-preview" style="background-image: url('${file.url}'); height: 120px;"></div>
+                    // If mode is 'hero', only show images
+                    if (this.pickerMode === 'hero' && !isImage) return;
+
+                    const item = document.createElement('div');
+                    item.className = 'asset-card gallery-image';
+                    item.innerHTML = `
+                        <div class="image-preview" style="background-image: url('${file.url}'); height: 120px;">
+                            ${isVideo ? '<i class="fa-solid fa-video" style="position:absolute;top:5px;right:5px;color:white;text-shadow:0 0 3px black"></i>' : ''}
+                        </div>
                         <div class="file-name">${file.name}</div>
                     `;
-                item.addEventListener('click', () => this.handleAssetSelected(file));
-                grid.appendChild(item);
-            });
+                    item.addEventListener('click', () => this.handleAssetSelected(file));
+                    grid.appendChild(item);
+                });
+            }
+
+        } catch (error) {
+            console.error(error);
+            grid.innerHTML = '<div class="error">Error al cargar librería</div>';
         }
-
-    } catch (error) {
-        console.error(error);
-        grid.innerHTML = '<div class="error">Error al cargar librería</div>';
     }
-}
 
-handleAssetSelected(file) {
-    if (this.pickerMode === 'hero') {
-        this.pendingHeroImage = { url: file.url, path: file.fullPath };
-        this.updateHeroPreview(file.url);
-        document.getElementById('hero-file-info').textContent = "Seleccionado: " + file.name;
-        // Clear file input so it doesn't override
-        document.getElementById('hero-file').value = '';
+    handleAssetSelected(file) {
+        if (this.pickerMode === 'hero') {
+            this.pendingHeroImage = { url: file.url, path: file.fullPath };
+            this.updateHeroPreview(file.url);
+            document.getElementById('hero-file-info').textContent = "Seleccionado: " + file.name;
+            // Clear file input so it doesn't override
+            document.getElementById('hero-file').value = '';
+        }
+        document.getElementById('asset-picker-modal').classList.remove('active');
     }
-    document.getElementById('asset-picker-modal').classList.remove('active');
-}
 }
 
 // Crear instancia única y exponer globalmente

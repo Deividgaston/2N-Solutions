@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail | 2N Solutions</title>
+    <meta name="description"
+        content="Soluciones 2N para centros comerciales y retail. Seguridad, análisis y gestión de accesos.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/solutions.css">
+</head>
+
+<body data-vertical="retail">
+
+    <nav class="navbar" id="navbar">
+        <a href="/" class="logo"><img src="assets/2N_Logo_RGB_White.png" alt="2N"></a>
+        <ul class="nav-links">
+            <li><a href="/#solutions">Soluciones</a></li>
+            <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
+        </ul>
+        <a href="login.html" class="btn-cta">Área Prescriptores</a>
+    </nav>
+
+    <section class="solution-hero">
+        <div class="solution-hero-bg"></div>
+        <div class="solution-hero-content">
+            <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+            <span class="solution-badge">🛍️ Retail</span>
+            <h1>Retail</h1>
+            <p class="solution-subtitle">Centros comerciales y espacios comerciales. Seguridad de activos, eficiencia
+                operativa y experiencia de cliente fluida.</p>
+            <button id="download-dossier-btn" class="btn-cta" style="margin-top: 1.5rem;">
+                <i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF
+            </button>
+        </div>
+    </section>
+
+    <section class="solution-content">
+        <div class="content-grid" style="grid-template-columns: 1fr;">
+            <div class="content-main">
+                <h2>Seguridad inteligente para el retail</h2>
+                <p>El sector retail demanda soluciones que protejan los activos sin entorpecer la experiencia de compra.
+                    2N ofrece control de accesos que se integra con sistemas de videovigilancia y gestión de almacenes.
+                </p>
+
+                <p>Optimiza la gestión de empleados y proveedores, asegurando que solo el personal autorizado acceda a
+                    áreas sensibles.</p>
+
+                <h3>Beneficios para el gestor</h3>
+                <ul class="benefits-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Protección de activos:</strong> Control estricto de
+                        almacenes y oficinas</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Gestión de proveedores:</strong> Accesos temporales
+                        para entregas</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Eficiencia operativa:</strong> Apertura remota y
+                        gestión centralizada</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Integración CCTV:</strong> Vinculación de eventos de
+                        acceso con vídeo</li>
+                </ul>
+
+                <div id="dynamic-sections-container" class="dynamic-sections-container">
+                    <!-- Dynamic sections from private area will be injected here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-left">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+        </div>
+        <div class="footer-links">
+            <a href="https://www.2n.com" target="_blank">2N.com</a>
+            <a href="login.html">Acceso prescriptores</a>
+        </div>
+    </footer>
+
+    <script src="js/html2pdf.bundle.min.js"></script>
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/vertical-renderer.js"></script>
+    <script type="module" src="js/pdf-handler.js"></script>
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+
+</html>

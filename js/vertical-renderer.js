@@ -46,6 +46,25 @@ class VerticalRenderer {
             if (titleEl) titleEl.textContent = meta.introTitle;
         }
 
+        // Subtitle
+        if (meta.introSubtitle) {
+            const titleEl = document.querySelector('.content-main h2');
+            if (titleEl) {
+                let subtitleEl = document.querySelector('.intro-subtitle');
+                if (!subtitleEl) {
+                    subtitleEl = document.createElement('h3');
+                    subtitleEl.className = 'intro-subtitle'; // You might want to style this in CSS
+                    subtitleEl.style.fontSize = '1.25rem';
+                    subtitleEl.style.fontWeight = '400';
+                    subtitleEl.style.color = 'var(--text-secondary)';
+                    subtitleEl.style.marginTop = '-10px';
+                    subtitleEl.style.marginBottom = '20px';
+                    titleEl.parentNode.insertBefore(subtitleEl, titleEl.nextSibling);
+                }
+                subtitleEl.textContent = meta.introSubtitle;
+            }
+        }
+
         // Text (Description)
         if (meta.introText) {
             const introContainer = document.getElementById('intro-text-container');
