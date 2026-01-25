@@ -76,7 +76,6 @@ class PptService {
         masterOpts.objects.push({ text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } });
 
         if (logoBase64) {
-            // Footer Logo: strictly contained
             masterOpts.objects.push({ image: { data: logoBase64, x: '90%', y: '92%', w: 1, h: 0.4, sizing: { type: 'contain' } } });
         }
 
@@ -89,12 +88,11 @@ class PptService {
 
         if (heroBase64) {
             coverSlide.addImage({ data: heroBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-            coverSlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
+            coverSlide.addShape('rect', { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
         }
 
-        // Feature: Giant White Logo (Proportional)
+        // Giant Logo (Proportional)
         if (logoBase64) {
-            // Centered, proportionate
             coverSlide.addImage({ data: logoBase64, x: 3.5, y: 2, w: 6.3, h: 2, sizing: { type: 'contain' } });
         }
 
@@ -103,7 +101,7 @@ class PptService {
             fontSize: 32, color: 'FFFFFF', bold: true, align: 'center', fontFace: 'Arial Black', shadow: { type: 'outer', color: '000000', blur: 10 }
         });
 
-        // --- 3. INNOVATION SLIDE (Text Fixed) ---
+        // --- 3. INNOVATION SLIDE ---
         const aboutSlide = pptx.addSlide();
         aboutSlide.masterName = 'MASTER_DARK';
         aboutSlide.background = { color: '000000' };
@@ -112,35 +110,31 @@ class PptService {
 
         if (innovationBase64) {
             aboutSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 4.5, h: 3.5, sizing: { type: 'cover' } });
-            aboutSlide.addShape(pptx.ShapeType.rect, { x: 0.5, y: 1.2, w: 4.5, h: 3.5, fill: { type: 'none' }, line: { color: '333333' } });
+            aboutSlide.addShape('rect', { x: 0.5, y: 1.2, w: 4.5, h: 3.5, fill: { type: 'none' }, line: { color: '333333' } });
         }
 
-        // Text fixed (smaller font or wider box)
         aboutSlide.addText(
             '2N es el líder mundial en sistemas de control de acceso e intercomunicadores IP. Desde 1991, hemos liderado la innovación en el sector.\n\n' +
             'Como parte de Axis Communications (Grupo Canon), nuestros productos establecen los estándares de seguridad y diseño en la industria.',
             { x: 5.2, y: 1.2, w: 7.5, h: 4, fontSize: 14, color: 'EEEEEE', align: 'left', lineSpacing: 24, valign: 'top' }
         );
 
-        // --- 4. TIMELINE + MAP SLIDE (New Request) ---
+        // --- 4. TIMELINE + MAP SLIDE ---
         const timeSlide = pptx.addSlide();
         timeSlide.masterName = 'MASTER_DARK';
         timeSlide.background = { color: '000000' };
 
-        // Map as BG
         if (mapBase64) {
             timeSlide.addImage({ data: mapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-            // Darker overlay so white timeline pops
-            timeSlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 60 });
-        } else {
-            timeSlide.addText("Map Missing", { x: 0, y: 0, color: 'red' });
+            timeSlide.addShape('rect', { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 60 });
         }
 
         timeSlide.addText('NUESTRA HISTORIA Y ALCANCE', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
 
         // Timeline Visualization
         // Horizontal Line
-        timeSlide.addShape(pptx.ShapeType.line, { x: 1, y: 4, w: 11, h: 0, line: { color: COLOR_ACCENT, width: 3 } });
+        // USE STRING LITERALS FOR SHAPES!
+        timeSlide.addShape('line', { x: 1, y: 4, w: 11, h: 0, line: { color: COLOR_ACCENT, width: 3 } });
 
         const events = [
             { year: '1991', title: 'Fundación', desc: 'Praga, CZ' },
@@ -151,13 +145,11 @@ class PptService {
 
         let xPos = 1;
         events.forEach(ev => {
-            // Dot
-            timeSlide.addShape(pptx.ShapeType.oval, { x: xPos, y: 3.85, w: 0.3, h: 0.3, fill: COLOR_ACCENT, line: { color: 'FFFFFF', width: 2 } });
-            // Year (Top)
+            // Dot (oval/ellipse)
+            timeSlide.addShape('ellipse', { x: xPos, y: 3.85, w: 0.3, h: 0.3, fill: COLOR_ACCENT, line: { color: 'FFFFFF', width: 2 } });
+            // Labels
             timeSlide.addText(ev.year, { x: xPos - 0.5, y: 3.3, w: 1.5, fontSize: 16, color: 'FFFFFF', bold: true, align: 'center' });
-            // Title (Bottom)
             timeSlide.addText(ev.title, { x: xPos - 0.5, y: 4.3, w: 1.5, fontSize: 12, color: 'CCCCCC', bold: true, align: 'center' });
-            // Desc
             timeSlide.addText(ev.desc, { x: xPos - 0.5, y: 4.6, w: 1.5, fontSize: 10, color: 'AAAAAA', align: 'center' });
 
             xPos += 3;
@@ -177,7 +169,7 @@ class PptService {
         });
 
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_Timeline_v6.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_v15_Fixed.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
@@ -191,7 +183,7 @@ class PptService {
                 x: 0.5, y: 0.5, w: '90%',
                 fontSize: 20, color: 'FFFFFF', bold: true, fontFace: 'Arial Black'
             });
-            slide.addShape(pptx.ShapeType.line, { x: 0.5, y: 0.9, w: 10, h: 0, line: { color: '333333', width: 1 } });
+            slide.addShape('line', { x: 0.5, y: 0.9, w: 10, h: 0, line: { color: '333333', width: 1 } });
         }
 
         let imgX = 0.5, imgY = 1.2, imgW = 6, imgH = 4.2;
@@ -203,7 +195,7 @@ class PptService {
         }
 
         if (section.imageUrl) {
-            slide.addShape(pptx.ShapeType.rect, { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: '111111', line: { color: '333333' } });
+            slide.addShape('rect', { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: '111111', line: { color: '333333' } });
             if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
                 slide.addText("VIDEO (WEB)", { x: imgX, y: imgY, w: imgW, h: imgH, fill: '111111', align: 'center', color: '666666' });
             } else {
