@@ -1160,7 +1160,51 @@ class AdminController {
 
     async _loadVerticalMetadata() {
         try {
-            const meta = await contentService.getVerticalMeta(this.currentVertical);
+            let meta = await contentService.getVerticalMeta(this.currentVertical);
+
+            // Default Content Dictionary (Fallback if DB is empty)
+            const defaultContent = {
+                bts: {
+                    introTitle: "El reto del promotor BTS",
+                    introText: "En el mercado residencial actual, la diferenciación es clave. Los compradores buscan viviendas que ofrezcan más que cuatro paredes: buscan tecnología, seguridad y confort.\n\n2N ayuda a los promotores a crear promociones premium que se venden más rápido y a mejor precio, gracias a soluciones de acceso inteligente que los compradores valoran.",
+                    benefits: ["Diferenciación competitiva: Destaca tu promoción con tecnología puntera", "Mayor valor percibido: Justifica un precio premium con funcionalidades premiadas", "Reducción de incidencias post-venta: Menos llamadas por llaves perdidas o averías", "Comunicación con el comprador: App My2N como canal directo"]
+                },
+                btr: {
+                    introTitle: "El reto del promotor BTR",
+                    introText: "En el mercado residencial actual, la diferenciación es clave. Los inquilinos buscan viviendas que ofrezcan más que cuatro paredes: buscan tecnología, seguridad y confort.\n\n2N ayuda a los promotores a crear promociones premium que se alquilan más rápido y a mejor precio, gracias a soluciones de acceso inteligente que los inquilinos valoran.",
+                    benefits: ["Diferenciación competitiva: Destaca tu promoción con tecnología puntera", "Mayor valor percibido: Justifica un precio premium con funcionalidades premiadas", "Reducción de incidencias post-venta: Menos llamadas por llaves perdidas o averías", "Comunicación con el inquilino: App My2N como canal directo"]
+                },
+                office: {
+                    introTitle: "Control de acceso para el workplace moderno",
+                    introText: "Los edificios de oficinas actuales requieren soluciones flexibles que se adapten a múltiples inquilinos, espacios compartidos y modelos de trabajo híbrido.\n\n2N ofrece soluciones de control de acceso que combinan seguridad empresarial con facilidad de uso, permitiendo gestionar desde un único punto todos los accesos del edificio.",
+                    benefits: ["Multi-tenancy: Gestión independiente para cada inquilino", "Acceso móvil: Credenciales en smartphone, sin tarjetas físicas", "Integración con BMS: Conecta con sistemas de gestión de edificios", "Reporting: Informes de ocupación y trazabilidad de accesos"]
+                },
+                hotel: {
+                    introTitle: "Experiencia de huésped sin fricciones",
+                    introText: "Los huéspedes modernos esperan experiencias digitales fluidas desde la reserva hasta el check-out. 2N permite eliminar colas, reducir puntos de contacto y ofrecer una estancia más cómoda.\n\nNuestras soluciones se integran con los principales PMS del mercado para automatizar el acceso a habitaciones, áreas comunes y servicios.",
+                    benefits: ["Check-in digital: El huésped accede con su móvil desde el primer momento", "Integración PMS: Oracle Hospitality, Mews, Opera y más", "Reducción de costes: Menos personal en recepción, menos tarjetas perdidas", "Seguridad: Control de accesos a plantas y zonas restringidas"]
+                },
+                retail: {
+                    introTitle: "Seguridad inteligente para el retail",
+                    introText: "El sector retail demanda soluciones que protejan los activos sin entorpecer la experiencia de compra. 2N ofrece control de accesos que se integra con sistemas de videovigilancia y gestión de almacenes.\n\nOptimiza la gestión de empleados y proveedores, asegurando que solo el personal autorizado acceda a áreas sensibles.",
+                    benefits: ["Protección de activos: Control estricto de almacenes y oficinas", "Gestión de proveedores: Accesos temporales para entregas", "Eficiencia operativa: Apertura remota y gestión centralizada", "Integración CCTV: Vinculación de eventos de acceso con vídeo"]
+                },
+                security: {
+                    introTitle: "Control de acceso para infraestructuras críticas",
+                    introText: "La seguridad física es la primera línea de defensa. 2N ofrece soluciones robustas que integran control de acceso, videovigilancia y comunicación en tiempo real.\n\nProtege activos sensibles y garantiza la seguridad del personal con tecnología certificada para los entornos más exigentes.",
+                    benefits: ["Biometría avanzada: Acceso por huella o reconocimiento facial", "Resistencia extrema: Dispositivos con certificación IP69K e IK10", "Ciberseguridad: Protocolos HTTPS, 802.1x y encriptación TLS", "Integración VMS: Milestone, Genetec, Axis Camera Station"]
+                }
+            };
+
+            // Use defaults if meta is missing specific fields
+            if (!meta) meta = {};
+            const defaults = defaultContent[this.currentVertical];
+
+            if (defaults) {
+                if (!meta.introTitle) meta.introTitle = defaults.introTitle;
+                if (!meta.introText) meta.introText = defaults.introText;
+                if (!meta.benefits || meta.benefits.length === 0) meta.benefits = defaults.benefits;
+            }
 
             // Helper to safe set value
             const setVal = (id, val) => {
@@ -1174,59 +1218,43 @@ class AdminController {
                 if (el) el.checked = true;
             };
 
-            if (meta) {
-                // Intro Fields
-                setVal('intro-title', meta.introTitle);
-                setVal('intro-subtitle', meta.introSubtitle);
-                setVal('intro-text', meta.introText);
+            // Intro Fields
+            setVal('intro-title', meta.introTitle);
+            setVal('intro-subtitle', meta.introSubtitle);
+            setVal('intro-text', meta.introText);
 
-                // Benefits
-                const benefitsContainer = document.getElementById('benefits-container');
-                if (benefitsContainer) {
-                    benefitsContainer.innerHTML = '';
-                    if (meta.benefits && Array.isArray(meta.benefits)) {
-                        meta.benefits.forEach(b => this.addBenefitInput(b));
-                    }
-                    if (!meta.benefits || meta.benefits.length === 0) {
-                        this.addBenefitInput(); // Add one empty by default
-                    }
+            // Benefits
+            const benefitsContainer = document.getElementById('benefits-container');
+            if (benefitsContainer) {
+                benefitsContainer.innerHTML = '';
+                if (meta.benefits && Array.isArray(meta.benefits)) {
+                    meta.benefits.forEach(b => this.addBenefitInput(b));
                 }
-
-                // Hero Fields
-                setVal('hero-title', meta.heroTitle);
-                setVal('hero-subtitle', meta.heroSubtitle);
-                setVal('hero-badge', meta.badgeText);
-                checkRadio('hero-color', meta.badgeColor || 'blue');
-
-                // Hero Preview logic
-                this.updateHeroPreview(meta.heroImageUrl, meta.heroPosX || 50, meta.heroPosY || 50);
-
-                // Update Badge Preview Class
-                const badge = document.getElementById('preview-badge');
-                if (badge) badge.className = 'hero-preview-badge ' + (meta.badgeColor || 'blue');
-                if (badge) badge.textContent = meta.badgeText || 'Badge';
-
-                // Update text previews
-                const previewTitle = document.getElementById('preview-title');
-                if (previewTitle) previewTitle.textContent = meta.heroTitle || 'Título Héroe';
-
-                const previewSubtitle = document.getElementById('preview-subtitle');
-                if (previewSubtitle) previewSubtitle.textContent = meta.heroSubtitle || 'Subtítulo o Lead';
-
-
-            } else {
-                // Reset fields if no meta exists
-                setVal('intro-title', '');
-                setVal('intro-text', '');
-                document.getElementById('benefits-container').innerHTML = '';
-                this.addBenefitInput();
-
-                setVal('hero-title', '');
-                setVal('hero-subtitle', '');
-                setVal('hero-badge', '');
-                checkRadio('hero-color', 'blue');
-                this.updateHeroPreview(null, 50, 50);
+                if (!meta.benefits || meta.benefits.length === 0) {
+                    this.addBenefitInput(); // Add one empty by default
+                }
             }
+
+            // Hero Fields
+            setVal('hero-title', meta.heroTitle);
+            setVal('hero-subtitle', meta.heroSubtitle);
+            setVal('hero-badge', meta.badgeText);
+            checkRadio('hero-color', meta.badgeColor || 'blue');
+
+            // Hero Preview logic
+            this.updateHeroPreview(meta.heroImageUrl, meta.heroPosX || 50, meta.heroPosY || 50);
+
+            // Update Badge Preview Class
+            const badge = document.getElementById('preview-badge');
+            if (badge) badge.className = 'hero-preview-badge ' + (meta.badgeColor || 'blue');
+            if (badge) badge.textContent = meta.badgeText || 'Badge';
+
+            // Update text previews
+            const previewTitle = document.getElementById('preview-title');
+            if (previewTitle) previewTitle.textContent = meta.heroTitle || 'Título Héroe';
+
+            const previewSubtitle = document.getElementById('preview-subtitle');
+            if (previewSubtitle) previewSubtitle.textContent = meta.heroSubtitle || 'Subtítulo o Lead';
 
         } catch (e) {
             console.error("Error loading vertical metadata", e);
