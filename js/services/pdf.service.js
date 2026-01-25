@@ -21,7 +21,7 @@ class PDFService {
             return;
         }
 
-        // --- 1. PREPARE DATA & ASSETS ---
+        // --- 1. PREPARE DATA ---
         // Title Mapping
         const verticalRaw = data.vertical || data.metadata?.heroTitle || '2N Solution';
         const mapTitle = (t) => {
@@ -36,27 +36,23 @@ class PDFService {
         };
         const verticalName = mapTitle(verticalRaw);
 
-        // Firebase Assets
+        // Assets
         const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753951_Portada.png?alt=media&token=2566ea37-c62e-4a62-a078-445ee34504c8';
-        const innovationUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375754501_sobre_2n.png?alt=media&token=1b45b35a-1adf-4faa-bb2a-b64ea02d1a0e';
-        const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375752617_mapa_2n.png?alt=media&token=4b991682-1e43-4736-bf7e-e239cbe84d66';
         const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
 
+        // Local Asset for "The Building" (Restored from previous version)
+        const buildingImgPath = 'assets/extracted_image9.png';
 
         // --- 2. SETUP CONTAINER ---
-        // Create a hidden but present container for PDF generation
         const container = document.createElement('div');
         container.id = 'pdf-generation-container';
-        container.style.position = 'relative'; // KEEP RELATIVE to ensure height calculation works
-        container.style.width = '794px'; // A4 Portrait Width
-        container.style.minHeight = '1123px'; // A4 Portrait Height
+        container.style.position = 'relative';
+        container.style.width = '794px';
+        container.style.minHeight = '1123px';
         container.style.zIndex = '9998';
-        container.style.display = 'block';
-        container.style.backgroundColor = '#1a1a1a';
+        container.style.background = '#000';
         container.style.color = '#fff';
         container.style.fontFamily = "'Inter', sans-serif";
-
-        // Append to body early to load images
         document.body.appendChild(container);
 
         // Curtain
@@ -81,7 +77,7 @@ class PDFService {
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
                 
-                :root { --2n-blue: #0099FF; --2n-bg: #000; --text-body: #ccc; }
+                :root { --2n-blue: #0099FF; }
 
                 .pdf-page {
                     width: 794px;
@@ -109,7 +105,7 @@ class PDFService {
                 }
 
                 .cover-title {
-                    font-size: 54px; /* Slightly smaller to fit long titles */
+                    font-size: 54px;
                     font-weight: 800;
                     color: #0099FF;
                     text-transform: uppercase;
@@ -151,11 +147,23 @@ class PDFService {
                     display: flex; justify-content: space-between;
                 }
 
-                .feature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 40px; }
-                .feature-card { background: #111; padding: 20px; border-radius: 8px; border: 1px solid #333; text-align: center; }
-                .feature-card h4 { color: white; margin: 10px 0 5px; font-size: 14px; }
-                .feature-card p { font-size: 11px; color: #999; margin: 0; }
-                .feature-icon { color: #0099FF; font-size: 24px; margin-bottom: 10px; }
+                /* Split Layout for Innovation Page */
+                .split-layout { display: flex; gap: 40px; height: 100%; margin-top: 20px; }
+                .split-left { flex: 0 0 50%; } /* Image Side */
+                .split-right { flex: 1; display: flex; flex-direction: column; }
+
+                .building-img {
+                    width: 100%;
+                    height: auto;
+                    border-radius: 4px;
+                    border: 1px solid #333;
+                    filter: grayscale(20%);
+                }
+
+                .feature-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 40px; }
+                .feature-item { display: flex; align-items: start; gap: 15px; }
+                .feature-marker { color: #0099FF; font-size: 18px; line-height: 1; }
+                .feature-text { font-size: 12px; color: #ccc; }
             </style>
 
             <!-- PAGE 1: COVER -->
@@ -165,7 +173,7 @@ class PDFService {
                 </div>
             </div>
 
-            <!-- PAGE 2: INNOVATION (Text Layout with History Map as Texture BG) -->
+            <!-- PAGE 2: INNOVATION (Restored "Building" Layout) -->
             <div class="pdf-page">
                 <div class="page-header">
                     <span>PROPUESTA DE VALOR</span>
@@ -174,30 +182,36 @@ class PDFService {
                 <div class="page-content">
                     <h2 class="section-title">INNOVACIÓN EN NUESTRO ADN</h2>
                     
-                    <div style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; color: #ddd;">
-                        <p>${this.companyInfo.innovation}</p>
-                    </div>
-
-                    <!-- Image Block -->
-                    <div style="background-image: url('${historyUrl}'); height: 350px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 40px; border: 1px solid #333; position: relative;">
-                        <div style="position: absolute; inset:0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));"></div>
-                    </div>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon">★</div>
-                            <h4>Calidad Premium</h4>
-                            <p>Diseño y fabricación europea.</p>
+                    <div class="split-layout">
+                        <!-- Left: The Building Image -->
+                        <div class="split-left">
+                            <img src="${buildingImgPath}" class="building-img" alt="2N Building">
                         </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">💡</div>
-                            <h4>I+D Constante</h4>
-                            <p>14% de inversión en desarrollo.</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🌍</div>
-                            <h4>Soporte Global</h4>
-                            <p>Presencia en +100 países.</p>
+
+                        <!-- Right: Text Content -->
+                        <div class="split-right">
+                             <div style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 30px; color: #ddd;">
+                                <p>${this.companyInfo.innovation}</p>
+                            </div>
+
+                            <div class="feature-grid">
+                                <div class="feature-item">
+                                    <span class="feature-marker">●</span>
+                                    <div class="feature-text"><strong>Calidad Premium</strong><br>Diseño y fabricación europea bajo estándares ISO.</div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-marker">●</span>
+                                    <div class="feature-text"><strong>Ciberseguridad</strong><br>Protección avanzada de datos y comunicaciones.</div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-marker">●</span>
+                                    <div class="feature-text"><strong>Integración Abierta</strong><br>Compatible con las principales plataformas del mercado.</div>
+                                </div>
+                                 <div class="feature-item">
+                                    <span class="feature-marker">●</span>
+                                    <div class="feature-text"><strong>Fiabilidad</strong><br>Productos robustos con garantía extendida.</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -243,7 +257,6 @@ class PDFService {
         `;
 
         // --- 4. PRELOAD & GENERATE ---
-        // Robust Preloader
         const images = Array.from(container.querySelectorAll('img'));
         const bgDivs = Array.from(container.querySelectorAll('div'));
         const loadPromises = images.map(img => new Promise(r => {
@@ -257,7 +270,7 @@ class PDFService {
             if (bg && bg !== 'none' && bg.startsWith('url')) {
                 const url = bg.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 const img = new Image();
-                img.crossOrigin = "Anonymous"; // Try CORS
+                img.crossOrigin = "Anonymous";
                 img.src = url;
                 loadPromises.push(new Promise(r => {
                     img.onload = r;
@@ -267,7 +280,6 @@ class PDFService {
         });
 
         await Promise.all(loadPromises);
-        // Small buffer to ensure rendering matches
         await new Promise(resolve => setTimeout(resolve, 800));
 
         const opt = {
@@ -277,9 +289,8 @@ class PDFService {
             html2canvas: {
                 scale: 2,
                 useCORS: true,
-                allowTaint: true,
+                allowTaint: false, // INVALID FOR PDF EXPORT - MUST BE FALSE
                 scrollY: 0,
-                // Critical dimensions to prevent 0 height issues
                 windowWidth: 794,
                 width: 794
             },
