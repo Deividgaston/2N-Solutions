@@ -537,9 +537,61 @@ class PDFService {
                         </h2>
                     </div>
 
-                    <!-- Image Section (Centered & Contained) -->
-                    <div style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; background: #111; border-radius: 4px; overflow: hidden; padding: 20px;">
-                         <img src="assets/why_feature_grid.png" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block;">
+                    <!-- Grid Section (Native HTML for perfect sharpness) -->
+                    <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 10px;">
+                        <!-- Card 1: Design -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Diseño Red Dot Award</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Estética premium que eleva la percepción de valor de cualquier entrada. Materiales nobles, acabados impecables.</p>
+                        </div>
+                        
+                        <!-- Card 2: Security -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Seguridad sin compromisos</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Encriptación end-to-end, autenticación multi-factor y cumplimiento total GDPR.</p>
+                        </div>
+
+                        <!-- Card 3: Mobile -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Acceso móvil nativo</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">WaveKey permite abrir puertas con el smartphone via Bluetooth de forma rápida y fiable.</p>
+                        </div>
+
+                        <!-- Card 4: Integration -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Integración total</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Protocolos estándar (SIP, ONVIF) y APIs abiertas para conectar con domótica y seguridad.</p>
+                        </div>
+
+                        <!-- Card 5: Cloud -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Gestión cloud con My2N</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Administra y configura todos los dispositivos de forma remota desde cualquier lugar.</p>
+                        </div>
+
+                        <!-- Card 6: ROI -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">ROI demostrable</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Reduce costes de instalación y mantenimiento, aumenta el valor percibido del inmueble.</p>
+                        </div>
                     </div>
 
                 </div>
