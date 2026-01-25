@@ -538,8 +538,8 @@ class PDFService {
                     </div>
 
                     <!-- Image Section (Centered & Contained) -->
-                    <div style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; background: #111; border-radius: 4px; overflow: hidden;">
-                         <img src="assets/why_feature_grid.png" style="width: 100%; height: 100%; object-fit: contain;">
+                    <div style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; background: #111; border-radius: 4px; overflow: hidden; padding: 20px;">
+                         <img src="assets/why_feature_grid.png" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block;">
                     </div>
 
                 </div>
