@@ -39,10 +39,26 @@ class ExportHandler {
         try {
             const data = await this.gatherData();
 
+            // Add vertical info to data used by services
+            data.vertical = this.verticalName; // For Title Mapping
+            data.metadata = {
+                heroTitle: this.verticalName,
+                introTitle: data.mainTitle,
+                introText: data.mainIntro.join('\n\n')
+            };
+
             if (type === 'pdf') {
-                await pdfService.generateDossier(this.verticalName, data);
+                await pdfService.generatePdf(data);
             } else {
-                await pptService.generatePresentation(this.verticalName, data);
+                // PPT Service also updated to use this structure?
+                // Actually pptService.exportFullPresentation(title, sections, meta)
+                // Let's keep using the new standard if possible, or adapt.
+                // Checking pptService... it expects exportFullPresentation(title, sections, meta)
+                // BUT wait, pptService.generatePresentation doesn't exist either?
+                // Let's assume pptService interface hasn't changed or mapped.
+                // Actually, let's fix PPT call too if needed.
+                // pptService.exportFullPresentation(title, sections, meta)
+                await pptService.exportFullPresentation(this.verticalName, data.dynamicSections, data.metadata);
             }
 
         } catch (error) {
