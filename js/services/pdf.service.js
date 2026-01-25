@@ -511,7 +511,7 @@ class PDFService {
                     <span class="page-header-text">VALOR DIFERENCIAL</span>
                 </div>
                 
-                <div class="page-content" style="justify-content: flex-start; padding-top: 60px; background-image: url('assets/extracted_map.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.85);">
+                <div class="page-content" style="justify-content: flex-start; padding-top: 60px; background-image: url('assets/extracted_map.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.4);">
                     <h2 class="section-title">QUE APORTA 2N</h2>
                     
                     <div style="display: flex; gap: 30px; align-items: flex-start;">

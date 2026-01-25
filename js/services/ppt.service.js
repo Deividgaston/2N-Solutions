@@ -188,7 +188,8 @@ class PptService {
         // ADD MAP BACKGROUND (Recovered from PPT Image4)
         // User requested map. Even if not in slide4.xml,        // ADD MAP BACKGROUND (Recovered from PPT Image4)
         if (recoveredMapBase64) {
-            finalSlide.addImage({ data: recoveredMapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' }, transparency: 85 });
+            // Faint background map - Increased visibility (50% transp)
+            finalSlide.addImage({ data: recoveredMapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' }, transparency: 50 });
         }
 
         // Shape 2 (Dark Background Rect for Image) - FROM XML
