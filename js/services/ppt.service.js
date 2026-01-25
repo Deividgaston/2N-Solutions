@@ -14,6 +14,25 @@ class PptService {
     }
 
     /**
+     * Helper to convert URL to Base64
+     */
+    async imageUrlToBase64(url) {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result); // This includes data:image/png;base64,...
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Error loading image for PPT:', url, error);
+            return null;
+        }
+    }
+
+    /**
      * Export all sections as a full presentation with Premium Dark Design
      * @param {string} title - Vertical Name
      * @param {Array} sections - Array of section objects
@@ -32,33 +51,36 @@ class PptService {
         const COLOR_BG = '000000';
         const COLOR_ACCENT = '0099FF';
 
-        // Assets - Resolve Absolute URLs to prevent loading issues
-        const getAssetUrl = (path) => {
-            const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-            // If we are at root (e.g. domain.com/), base might need adjustment, but usually assets are relative to root.
-            // Safer: use origin
-            return `${window.location.origin}/${path}`;
-        };
+        // Assets - Pre-fetch to Base64 to ensure embedding works
+        const getAssetUrl = (path) => `${window.location.origin}/${path}`;
 
-        const LOGO_URL = getAssetUrl('assets/2N/2N_Logo_RGB_White.png');
-        const MAP_URL = getAssetUrl('assets/gold-presence-map.png');
+        const logoUrl = getAssetUrl('assets/2N/2N_Logo_RGB_White.png');
+        const mapUrl = getAssetUrl('assets/gold-presence-map.png');
 
-        console.log('PPT Assets:', { LOGO_URL, MAP_URL }); // Debug for user console
+        // Parallel Fetch
+        const [logoBase64, mapBase64, heroBase64] = await Promise.all([
+            this.imageUrlToBase64(logoUrl),
+            this.imageUrlToBase64(mapUrl),
+            metadata.heroImage ? this.imageUrlToBase64(metadata.heroImage) : Promise.resolve(null)
+        ]);
 
         // --- 1. MASTER SLIDE ---
-        pptx.defineSlideMaster({
+        const masterOpts = {
             title: 'MASTER_DARK',
             background: { color: COLOR_BG },
             objects: [
-                // Top Accent Line
                 { rect: { x: 0, y: 0, w: '100%', h: 0.08, fill: COLOR_ACCENT } },
-                // Footer Branding
                 { text: { text: '2N Telecommunications · Parte de Axis Communications', options: { x: 0.5, y: '96%', fontSize: 9, color: '666666' } } },
-                { text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } },
-                // Logo in corner
-                { image: { path: LOGO_URL, x: '88%', y: '91%', w: 1.2, h: 0.5, sizing: { type: 'contain' } } }
+                { text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } }
             ]
-        });
+        };
+
+        // Add Logo to Master if loaded
+        if (logoBase64) {
+            masterOpts.objects.push({ image: { data: logoBase64, x: '88%', y: '91%', w: 1.2, h: 0.5, sizing: { type: 'contain' } } });
+        }
+
+        pptx.defineSlideMaster(masterOpts);
 
         // --- 2. COVER SLIDE ---
         const coverSlide = pptx.addSlide();
@@ -66,13 +88,15 @@ class PptService {
         coverSlide.background = { color: COLOR_BG };
 
         // Background Image if available (Hero)
-        if (metadata.heroImage) {
-            coverSlide.addImage({ path: metadata.heroImage, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
+        if (heroBase64) {
+            coverSlide.addImage({ data: heroBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
             coverSlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
         }
 
         // Giant Background Logo
-        coverSlide.addImage({ path: LOGO_URL, x: 3, y: 2.5, w: 7, h: 2, sizing: { type: 'contain' }, transparency: 85 });
+        if (logoBase64) {
+            coverSlide.addImage({ data: logoBase64, x: 3, y: 2.5, w: 7, h: 2, sizing: { type: 'contain' }, transparency: 85 });
+        }
 
         // Title
         coverSlide.addText((metadata.heroTitle || title).toUpperCase(), {
@@ -90,10 +114,15 @@ class PptService {
         companySlide.masterName = 'MASTER_DARK';
         companySlide.background = { color: COLOR_BG };
 
-        // Map Background - Explicitly added 
-        companySlide.addImage({ path: MAP_URL, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-        // Very Light Overlay (only 10% opacity / 90% transparency) just to dim it slightly
-        companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 70 });
+        // Map Background
+        if (mapBase64) {
+            companySlide.addImage({ data: mapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
+            // Very Light Overlay (only 10% opacity / 90% transparency)
+            companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 70 });
+        } else {
+            // Fallback text if map fails
+            companySlide.addText('(Map Loading Failed)', { x: 0, y: 0, fontSize: 8, color: '333333' });
+        }
 
         // Title
         companySlide.addText('SOBRE 2N', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
@@ -157,14 +186,18 @@ class PptService {
             }
         }
 
-        // --- 5. CONTENT SLIDES ---
+        // --- 5. CONTENT SLIDES (With Pre-fetch) ---
+        // For section images, we could also pre-fetch, but for now rely on path if CORS allows.
+        // Actually, to be safe, let's pre-fetch section images too if we want to be bulletproof.
+        // But that might take too long. Let's start with critical assets.
+
         sections.forEach((section, index) => {
             this.createSectionSlide(pptx, section, index);
         });
 
         // Save
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_Premium_Final_v3.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_Premium_Final_v4.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
@@ -176,7 +209,6 @@ class PptService {
         slide.masterName = 'MASTER_DARK';
         slide.background = { color: '000000' };
 
-        // Title Bar
         if (section.title) {
             slide.addText(section.title.toUpperCase(), {
                 x: 0.5, y: 0.5, w: '90%',
@@ -185,7 +217,6 @@ class PptService {
             slide.addShape(pptx.ShapeType.line, { x: 0.5, y: 0.9, w: 10, h: 0, line: { color: '333333', width: 1 } });
         }
 
-        // Layout
         let imgX = 0.5, imgY = 1.2, imgW = 6, imgH = 4.2;
         let txtX = 6.8, txtY = 1.2, txtW = 6.0;
 
@@ -200,6 +231,7 @@ class PptService {
             if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
                 slide.addText("VIDEO DISPONIBLE EN WEB", { x: imgX, y: imgY, w: imgW, h: imgH, fill: '111111', align: 'center', color: '666666', fontSize: 10 });
             } else {
+                // If this fails, next step is to pre-fetch these too.
                 slide.addImage({ path: section.imageUrl, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: 'contain', w: imgW, h: imgH } });
             }
         }
