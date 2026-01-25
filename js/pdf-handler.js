@@ -48,7 +48,7 @@ class ExportHandler {
             };
 
             if (type === 'pdf') {
-                await pdfService.generatePdf(data);
+                await pdfService.generateDossier(this.verticalName, data);
             } else {
                 // PPT Service also updated to use this structure?
                 // Actually pptService.exportFullPresentation(title, sections, meta)
