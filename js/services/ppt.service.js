@@ -19,6 +19,7 @@ class PptService {
     async imageUrlToBase64(url) {
         try {
             const response = await fetch(url);
+            if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
             const blob = await response.blob();
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -28,8 +29,7 @@ class PptService {
             });
         } catch (error) {
             console.error('Error loading image for PPT:', url, error);
-            // Return null so we can handle fallback (e.g. plain color)
-            return null;
+            return null; // Graceful failure
         }
     }
 
@@ -49,7 +49,7 @@ class PptService {
         pptx.layout = 'LAYOUT_16x9';
 
         // Define Theme Colors
-        const COLOR_BG = '000000'; // Fallback
+        const COLOR_BG = '000000';
         const COLOR_ACCENT = '0099FF';
 
         // Assets
@@ -57,31 +57,36 @@ class PptService {
 
         const logoUrl = getAssetUrl('assets/2N/2N_Logo_RGB_White.png');
         const mapUrl = getAssetUrl('assets/gold-presence-map.png');
-        const bgUrl = getAssetUrl('assets/abstract_bg.png'); // New Disruptive BG
+        const bgUrl = getAssetUrl('assets/abstract_bg.png');
 
-        // Parallel Fetch
+        // Parallel Fetch with default logging
+        console.log('Fetching assets for PPT...');
         const [logoBase64, mapBase64, bgBase64, heroBase64] = await Promise.all([
             this.imageUrlToBase64(logoUrl),
             this.imageUrlToBase64(mapUrl),
             this.imageUrlToBase64(bgUrl),
             metadata.heroImage ? this.imageUrlToBase64(metadata.heroImage) : Promise.resolve(null)
         ]);
+        console.log('Assets loaded:', { logo: !!logoBase64, map: !!mapBase64, bg: !!bgBase64 });
 
-        // --- 1. MASTER SLIDE (With Abstract BG) ---
+        // --- 1. MASTER SLIDE (With Abstract BG + Fallback) ---
         const masterOpts = {
             title: 'MASTER_DARK',
-            background: { color: COLOR_BG },
+            background: { color: '000000' }, // Explicit HEX
             objects: []
         };
 
-        // Add Abstract BG if available
+        // LAYER 0: Solid Black Rectangle (Safety Net against White Default)
+        masterOpts.objects.push({ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: '000000' } });
+
+        // LAYER 1: Abstract BG (if loaded)
         if (bgBase64) {
             masterOpts.objects.push({ image: { data: bgBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } } });
-            // Darken it slightly so text pops
+            // Dark overlay to ensure text contrast
             masterOpts.objects.push({ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 20 } });
         }
 
-        // Add Standard Elements on top
+        // LAYER 2: Branding
         masterOpts.objects.push({ rect: { x: 0, y: 0, w: '100%', h: 0.08, fill: COLOR_ACCENT } });
         masterOpts.objects.push({ text: { text: '2N Telecommunications · Parte de Axis Communications', options: { x: 0.5, y: '96%', fontSize: 9, color: 'AAAAAA' } } });
         masterOpts.objects.push({ text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } });
@@ -95,18 +100,15 @@ class PptService {
         // --- 2. COVER SLIDE ---
         const coverSlide = pptx.addSlide();
         coverSlide.masterName = 'MASTER_DARK';
-        // Cover gets Hero Image if available, otherwise falls back to Master BG
+        coverSlide.background = { color: '000000' }; // Redundant
+
+        // Hero Image
         if (heroBase64) {
-            // We need to explicitly clear background or overlay?
-            // Since Master BG is in objects, it might be behind. Ideally we cover it.
             coverSlide.addImage({ data: heroBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
             coverSlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
-        } else if (bgBase64) {
-            // If no hero image, use Abstract BG (already in master, but maybe we want specific cover variation)
-            // Let's just trust master.
         }
 
-        // Giant Background Logo
+        // Giant Background Logo (Watermark)
         if (logoBase64) {
             coverSlide.addImage({ data: logoBase64, x: 3, y: 2.5, w: 7, h: 2, sizing: { type: 'contain' }, transparency: 85 });
         }
@@ -122,20 +124,16 @@ class PptService {
             fontSize: 14, color: COLOR_ACCENT, align: 'center', charSpacing: 4
         });
 
-        // --- 3. COMPANY INTRO SLIDE (Map Background) ---
+        // --- 3. COMPANY INTRO SLIDE (Map) ---
         const companySlide = pptx.addSlide();
         companySlide.masterName = 'MASTER_DARK';
 
-        // This slide needs the MAP, blocking the Abstract BG of Master?
-        // Yes, put image on top at z=0 relative to slide content (on top of master objects?)
-        // PptxGenJS order: Master Objects -> Slide Objects.
-        // So adding image here will cover master BG.
+        // Explicit Black Background Layer again
+        companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000' });
+
         if (mapBase64) {
             companySlide.addImage({ data: mapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-            // Overlay adjustments (ensure visible but text readable)
             companySlide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 60 });
-        } else {
-            companySlide.addText('(Map Loading Failed)', { x: 0, y: 0, fontSize: 8, color: 'red' });
         }
 
         // Title
@@ -161,7 +159,6 @@ class PptService {
         );
 
         // --- 4. SOLUTION INTRO SLIDE ---
-        // Uses Master BG (Abstract)
         if (metadata.introTitle || metadata.introText) {
             const introSlide = pptx.addSlide();
             introSlide.masterName = 'MASTER_DARK';
@@ -196,14 +193,13 @@ class PptService {
         }
 
         // --- 5. CONTENT SLIDES ---
-        // Uses Master BG (Abstract)
         sections.forEach((section, index) => {
             this.createSectionSlide(pptx, section, index);
         });
 
         // Save
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_Disruptive_v1.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_Disruptive_Final.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
@@ -230,9 +226,9 @@ class PptService {
             imgX = 6.8;
         }
 
+        // Image
         if (section.imageUrl) {
-            // Removed white border, used subtle glow/shadow instead for disruptive look
-            slide.addShape(pptx.ShapeType.rect, { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: '111111', line: { color: '333333' } }); // Dark Frame
+            slide.addShape(pptx.ShapeType.rect, { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: '111111', line: { color: '333333' } });
 
             if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
                 slide.addText("VIDEO DISPONIBLE EN WEB", { x: imgX, y: imgY, w: imgW, h: imgH, fill: '111111', align: 'center', color: '666666', fontSize: 10 });
