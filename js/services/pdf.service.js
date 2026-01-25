@@ -512,36 +512,42 @@ class PDFService {
                 </div>
                 
                 <div class="page-content" style="justify-content: flex-start; padding-top: 60px;">
-                    <h2 class="section-title">¿Qué aporta 2N?</h2>
+                    <h2 class="section-title">QUE APORTA 2N</h2>
                     
                     <div style="display: flex; gap: 40px; align-items: flex-start;">
+                         <!-- Image Left (Matches PPT XML coordinates) -->
+                         <div style="flex: 0 0 45%;">
+                            <img src="assets/security_cyb.jpg" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
+                         </div>
+
+                         <!-- Content Right -->
                          <div style="flex: 1;">
-                            <h3 style="color: #3b82f6; font-size: 24px; margin-bottom: 20px;">Seguridad y Ciberseguridad</h3>
-                            <p style="font-size: 16px; line-height: 1.8; color: #ccc; margin-bottom: 20px; text-align: justify;">
+                            <p style="font-size: 14px; line-height: 1.6; color: #ccc; margin-bottom: 25px; text-align: justify;">
                                 La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.
                             </p>
-                            <p style="font-size: 16px; line-height: 1.8; color: #ccc; margin-bottom: 20px; text-align: justify;">
-                                Nuestros dispositivos cuentan con certificación <strong>ISO 27001</strong> y cumplen con los más estrictos estándares de ciberseguridad.
-                            </p>
 
-                            <div style="margin-top: 30px;">
-                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                                    <span style="color: #22c55e; font-size: 20px;">🛡</span>
-                                    <span style="color: #fff; font-size: 16px;"><strong>Cifrado de extremo a extremo</strong> (HTTPS, TLS, SRTP)</span>
+                            <div style="margin-top: 0px; display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
+                                    <span style="color: #eee; font-size: 14px;"><strong>Cifrado de extremo a extremo</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                                    <span style="color: #22c55e; font-size: 20px;">🔐</span>
-                                    <span style="color: #fff; font-size: 16px;"><strong>Autenticación segura</strong> (802.1x)</span>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
+                                    <span style="color: #eee; font-size: 14px;"><strong>Autenticación segura</strong></span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                                    <span style="color: #22c55e; font-size: 20px;">👁</span>
-                                    <span style="color: #fff; font-size: 16px;"><strong>Protección contra ataques</strong> y manipulación física</span>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
+                                    <span style="color: #eee; font-size: 14px;"><strong>Protección contra ataques</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
+                                    <span style="color: #eee; font-size: 14px;"><strong>Firmware seguro y actualizaciones periódicas</strong></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="color: #3b82f6; font-size: 14px;">●</span>
+                                    <span style="color: #eee; font-size: 14px;"><strong>Cumplimiento con normativas</strong></span>
                                 </div>
                             </div>
-                         </div>
-                         
-                         <div style="flex: 0 0 300px;">
-                            <img src="assets/security_cyb.jpg" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; border-radius: 8px; border: 1px solid #333;">
                          </div>
                     </div>
                 </div>

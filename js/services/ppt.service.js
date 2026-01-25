@@ -173,21 +173,29 @@ class PptService {
         finalSlide.masterName = 'MASTER_DARK';
         finalSlide.background = { color: '000000' };
 
-        finalSlide.addText('¿QUÉ APORTA 2N?', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
+        // Title
+        finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
 
-        finalSlide.addText('SEGURIDAD Y CIBERSEGURIDAD', { x: 0.5, y: 1.2, w: '40%', fontSize: 18, color: 'FFFFFF', bold: true });
+        // Image LEFT
+        // Note: XML image x=457200 (approx 0.5 inch), y=1097280 (approx 1.2 inch)
+        // using 'innovationBase64' as placeholder for the security image
+        if (innovationBase64) {
+            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 5, h: 4, sizing: { type: 'cover' } });
+        } else if (logoBase64) {
+            finalSlide.addImage({ data: logoBase64, x: 0.5, y: 1.2, w: 5, h: 2, sizing: { type: 'contain' } });
+        }
+
+        // Text RIGHT
+        // XML text x=6217920 (approx 6.8 inch)
         finalSlide.addText(
             'La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.\n\n' +
-            '• Cifrado de extremo a extremo (HTTPS, TLS, SRTP)\n' +
-            '• Autenticación segura (802.1x)\n' +
-            '• Protección contra ataques y manipulación física',
-            { x: 0.5, y: 1.8, w: '45%', h: 4, fontSize: 14, color: 'CCCCCC', lineSpacing: 24, valign: 'top' }
+            '• Cifrado de extremo a extremo\n' +
+            '• Autenticación segura\n' +
+            '• Protección contra ataques\n' +
+            '• Firmware seguro y actualizaciones periódicas\n' +
+            '• Cumplimiento con normativas',
+            { x: 5.8, y: 1.2, w: 7, h: 4.5, fontSize: 13, color: 'CCCCCC', lineSpacing: 22, valign: 'top' }
         );
-
-        // Add an image on the right if available
-        if (innovationBase64) {
-            finalSlide.addImage({ data: innovationBase64, x: 7, y: 1.5, w: 5, h: 4, sizing: { type: 'cover' } });
-        }
 
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         const filename = `2N_Solucion_${safeTitle}_v15_Fixed.pptx`;
