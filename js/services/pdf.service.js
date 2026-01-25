@@ -590,7 +590,25 @@ class PDFService {
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                             </div>
                             <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">ROI demostrable</h4>
-                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Reduce costes de instalación y mantenimiento, aumenta el valor percibido del inmueble.</p>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Reduce costes de instalación y mantenimiento, aumenta el valor percibido.</p>
+                        </div>
+
+                        <!-- Card 7: Warranty -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">5 años de garantía</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Confianza total con nuestra garantía extendida líder en el mercado.</p>
+                        </div>
+
+                        <!-- Card 8: Partners -->
+                        <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                            <div style="color: #3b82f6; margin-bottom: 10px;">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                            <h4 style="color: #fff; margin: 0 0 8px 0; font-size: 16px;">Instaladores certificados</h4>
+                            <p style="color: #999; font-size: 12px; line-height: 1.5; margin: 0;">Red global de partners formados y certificados por 2N.</p>
                         </div>
                     </div>
 
