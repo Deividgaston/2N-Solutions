@@ -44,220 +44,112 @@ class PptService {
 
         const getAssetUrl = (path) => `${window.location.origin}/${path}`;
 
-        const logoUrl = getAssetUrl('assets/2N/2N_Logo_RGB_White.png');
-        const mapUrl = getAssetUrl('assets/gold-presence-map.png');
-        const bgUrl = getAssetUrl('assets/abstract_bg.png');
-        const innovationUrl = getAssetUrl('assets/innovation_bg.jpg');
-
-        const [logoBase64, mapBase64, bgBase64, innovationBase64, heroBase64] = await Promise.all([
-            this.imageUrlToBase64(logoUrl),
-            this.imageUrlToBase64(mapUrl),
-            this.imageUrlToBase64(bgUrl),
-            this.imageUrlToBase64(innovationUrl),
-            metadata.heroImage ? this.imageUrlToBase64(metadata.heroImage) : Promise.resolve(null)
+        // Load Static Slide Images
+        const [coverBg, innovationBg, historyBg, why2nBg] = await Promise.all([
+            this.imageUrlToBase64(getAssetUrl('assets/export_slides/cover.png')),
+            this.imageUrlToBase64(getAssetUrl('assets/export_slides/innovation.png')),
+            this.imageUrlToBase64(getAssetUrl('assets/export_slides/history.png')),
+            this.imageUrlToBase64(getAssetUrl('assets/export_slides/why_2n.png'))
         ]);
 
-        // --- 1. MASTER SLIDE ---
-        const masterOpts = {
-            title: 'MASTER_DARK',
-            background: { color: '000000' },
-            objects: [
-                { rect: { x: 0, y: 0, w: '100%', h: '100%', fill: '000000' } } // Safety Black
-            ]
-        };
-
-        if (bgBase64) {
-            masterOpts.objects.push({ image: { data: bgBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } } });
-            masterOpts.objects.push({ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 20 } });
-        }
-
-        masterOpts.objects.push({ rect: { x: 0, y: 0, w: '100%', h: 0.08, fill: COLOR_ACCENT } });
-        masterOpts.objects.push({ text: { text: '2N Telecommunications', options: { x: 0.5, y: '96%', fontSize: 9, color: 'AAAAAA' } } });
-        masterOpts.objects.push({ text: { text: title.toUpperCase(), options: { x: 0.5, y: 0.3, fontSize: 12, color: COLOR_ACCENT, bold: true, charSpacing: 2 } } });
-
-        if (logoBase64) {
-            masterOpts.objects.push({ image: { data: logoBase64, x: '90%', y: '92%', w: 1, h: 0.4, sizing: { type: 'contain' } } });
-        }
-
-        pptx.defineSlideMaster(masterOpts);
-
-        // --- 2. COVER SLIDE ---
+        // --- 1. SLIDE 1: PORTADA (Custom Image + Vertical Name Overlay) ---
         const coverSlide = pptx.addSlide();
-        coverSlide.masterName = 'MASTER_DARK';
         coverSlide.background = { color: '000000' };
 
-        if (heroBase64) {
-            coverSlide.addImage({ data: heroBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-            coverSlide.addShape('rect', { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 40 });
+        if (coverBg) {
+            coverSlide.addImage({ data: coverBg, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
         }
 
-        // Giant Logo (Proportional)
-        if (logoBase64) {
-            coverSlide.addImage({ data: logoBase64, x: 3.5, y: 2, w: 6.3, h: 2, sizing: { type: 'contain' } });
-        }
-
-        coverSlide.addText((metadata.heroTitle || title).toUpperCase(), {
-            x: 0.5, y: 4.5, w: '90%',
-            fontSize: 32, color: 'FFFFFF', bold: true, align: 'center', fontFace: 'Arial Black', shadow: { type: 'outer', color: '000000', blur: 10 }
+        // Vertical Name Overlay (Centered, Clean)
+        // User request: "lo unico que meteras ahi seran los disintos nombres de las verticales"
+        coverSlide.addText(title.toUpperCase(), {
+            x: 0.5, y: 4.5, w: 9, h: 1,
+            fontSize: 36, color: '0099FF', bold: true, align: 'left', fontFace: 'Arial Black'
         });
 
-        // --- 3. INNOVATION SLIDE ---
-        const aboutSlide = pptx.addSlide();
-        aboutSlide.masterName = 'MASTER_DARK';
-        aboutSlide.background = { color: '000000' };
 
-        aboutSlide.addText('INNOVACIÓN EN NUESTRO ADN', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
-
-        if (innovationBase64) {
-            aboutSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 4.5, h: 3.5, sizing: { type: 'cover' } });
-            aboutSlide.addShape('rect', { x: 0.5, y: 1.2, w: 4.5, h: 3.5, fill: { type: 'none' }, line: { color: '333333' } });
+        // --- 2. SLIDE 2: INNOVACIÓN (Static Image) ---
+        // "la segunda y tercera van siempre fijas"
+        const slide2 = pptx.addSlide();
+        slide2.background = { color: '000000' };
+        if (innovationBg) {
+            slide2.addImage({ data: innovationBg, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'contain' } });
         }
 
-        aboutSlide.addText(
-            '2N es el líder mundial en sistemas de control de acceso e intercomunicadores IP. Desde 1991, hemos liderado la innovación en el sector.\n\n' +
-            'Como parte de Axis Communications (Grupo Canon), nuestros productos establecen los estándares de seguridad y diseño en la industria.',
-            { x: 5.2, y: 1.2, w: 7.5, h: 4, fontSize: 14, color: 'EEEEEE', align: 'left', lineSpacing: 24, valign: 'top' }
-        );
-
-        // --- 4. TIMELINE + MAP SLIDE ---
-        const timeSlide = pptx.addSlide();
-        timeSlide.masterName = 'MASTER_DARK';
-        timeSlide.background = { color: '000000' };
-
-        if (mapBase64) {
-            timeSlide.addImage({ data: mapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' } });
-            timeSlide.addShape('rect', { x: 0, y: 0, w: '100%', h: '100%', fill: '000000', transparency: 60 });
+        // --- 3. SLIDE 3: HISTORIA (Static Image) ---
+        const slide3 = pptx.addSlide();
+        slide3.background = { color: '000000' };
+        if (historyBg) {
+            slide3.addImage({ data: historyBg, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'contain' } });
         }
 
-        timeSlide.addText('NUESTRA HISTORIA Y ALCANCE', { x: 0.5, y: 0.5, fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
 
-        // Timeline Visualization
-        // Horizontal Line
-        // USE STRING LITERALS FOR SHAPES!
-        timeSlide.addShape('line', { x: 1, y: 4, w: 11, h: 0, line: { color: COLOR_ACCENT, width: 3 } });
+        // --- 4. DYNAMIC SECTIONS (Middle) ---
+        // "las que van en el medio son las secciones de cada vertical"
 
-        const events = [
-            { year: '1991', title: 'Fundación', desc: 'Praga, CZ' },
-            { year: '2008', title: '1er IP Intercom', desc: 'Revolución IP' },
-            { year: '2016', title: 'Axis Group', desc: 'Adquisición' },
-            { year: '2021', title: 'WaveKey', desc: 'Acceso Móvil' }
-        ];
-
-        let xPos = 1;
-        events.forEach(ev => {
-            // Dot (oval/ellipse)
-            timeSlide.addShape('ellipse', { x: xPos, y: 3.85, w: 0.3, h: 0.3, fill: COLOR_ACCENT, line: { color: 'FFFFFF', width: 2 } });
-            // Labels
-            timeSlide.addText(ev.year, { x: xPos - 0.5, y: 3.3, w: 1.5, fontSize: 16, color: 'FFFFFF', bold: true, align: 'center' });
-            timeSlide.addText(ev.title, { x: xPos - 0.5, y: 4.3, w: 1.5, fontSize: 12, color: 'CCCCCC', bold: true, align: 'center' });
-            timeSlide.addText(ev.desc, { x: xPos - 0.5, y: 4.6, w: 1.5, fontSize: 10, color: 'AAAAAA', align: 'center' });
-
-            xPos += 3;
-        });
-
-        // --- 5. SECTIONS ---
+        // 4.1 Introduction (Text Only)
         if (metadata.introTitle || metadata.introText) {
             const introSlide = pptx.addSlide();
-            introSlide.masterName = 'MASTER_DARK';
             introSlide.background = { color: '000000' };
-            introSlide.addText((metadata.introTitle || 'Visión').toUpperCase(), { x: 0.5, y: 0.8, w: '90%', fontSize: 24, color: COLOR_ACCENT, bold: true });
-            introSlide.addText(metadata.introText ? metadata.introText.replace(/<[^>]*>/g, '') : '', { x: 0.5, y: 1.5, w: 12, h: 4, fontSize: 16, color: 'EEEEEE' });
+            // Simple Header
+            introSlide.addText((metadata.introTitle || 'Visión').toUpperCase(), { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: '0099FF', bold: true });
+            introSlide.addShape('line', { x: 0.5, y: 1.0, w: 9, h: 0, line: { color: '333333', width: 1 } });
+
+            introSlide.addText(metadata.introText ? metadata.introText.replace(/<[^>]*>/g, '') : '', { x: 0.5, y: 1.5, w: 9, h: 4, fontSize: 16, color: 'EEEEEE', valign: 'top' });
         }
 
+        // 4.2 Product Sections
         sections.forEach((section, index) => {
             this.createSectionSlide(pptx, section, index);
         });
 
-        // --- 6. FINAL SLIDE: QUE APORTA 2N ---
+
+        // --- 5. FINAL SLIDE: POR QUÉ 2N (Static Image) ---
+        // "la ultima es la que tienes que poner en la ultima"
         const finalSlide = pptx.addSlide();
-        finalSlide.masterName = 'MASTER_DARK';
         finalSlide.background = { color: '000000' };
-
-        // Initialize base64 vars
-        const extractedMapUrl = getAssetUrl('assets/extracted_map.png');
-        const extractedMainImgUrl = getAssetUrl('assets/extracted_image9.png');
-
-        const [recoveredMapBase64, recoveredMainImgBase64] = await Promise.all([
-            this.imageUrlToBase64(extractedMapUrl),
-            this.imageUrlToBase64(extractedMainImgUrl)
-        ]);
-
-        // Title (XML: x=0.5, y=0.5)
-        finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
-
-        // ADD MAP BACKGROUND (Recovered from PPT Image4)
-        // User requested map. Even if not in slide4.xml,        // ADD MAP BACKGROUND (Recovered from PPT Image4)
-        if (recoveredMapBase64) {
-            // Faint background map - Increased visibility (50% transp)
-            finalSlide.addImage({ data: recoveredMapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' }, transparency: 50 });
+        if (why2nBg) {
+            finalSlide.addImage({ data: why2nBg, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'contain' } });
         }
-
-        // Shape 2 (Dark Background Rect for Image) - FROM XML
-        // x=438912 (~0.48"), y=1078992 (~1.18"), w=6.06", h=4.25"
-        finalSlide.addShape(pptx.ShapeType.rect, {
-            x: 0.48, y: 1.18, w: 6.06, h: 4.25,
-            fill: { color: '111111' },
-            line: { color: '333333', width: 1 }
-        });
-
-        // Image LEFT (XML: x=457200 EMU = 0.5", y=1097280 EMU = 1.2", w=6.0", h=4.2")
-        // Using extracted_image9.png which is the exact file from the PPT
-        if (recoveredMainImgBase64) {
-            finalSlide.addImage({ data: recoveredMainImgBase64, x: 0.5, y: 1.2, w: 6.0, h: 4.2, sizing: { type: 'contain' } });
-        } else if (innovationBase64) {
-            // Fallback
-            finalSlide.addImage({ data: innovationBase64, x: 0.5, y: 1.2, w: 6.0, h: 4.2, sizing: { type: 'cover' } });
-        }
-
-        // Text RIGHT (XML: x=6217920 EMU = 6.8", y=1097280 EMU = 1.2", w=2747404 EMU = 3.0")
-        // The text box is NARROW (3 inches). Layout: Image (6") + Gap (0.3") + Text (3")
-        finalSlide.addText(
-            'La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.\n\n' +
-            '• Cifrado de extremo a extremo\n' +
-            '• Autenticación segura\n' +
-            '• Protección contra ataques\n' +
-            '• Firmware seguro y actualizaciones periódicas\n' +
-            '• Cumplimiento con normativas',
-            { x: 6.8, y: 1.2, w: 3.0, h: 4.2, fontSize: 11, color: 'CCCCCC', lineSpacing: 18, valign: 'top' }
-        );
 
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const filename = `2N_Solucion_${safeTitle}_v15_Fixed.pptx`;
+        const filename = `2N_Solucion_${safeTitle}_v16_Hybrid.pptx`;
         await pptx.writeFile({ fileName: filename });
     }
 
     createSectionSlide(pptx, section, index) {
+        // Standard Template for Dynamic Content
         const slide = pptx.addSlide();
-        slide.masterName = 'MASTER_DARK';
         slide.background = { color: '000000' };
 
+        // Title
         if (section.title) {
             slide.addText(section.title.toUpperCase(), {
                 x: 0.5, y: 0.5, w: '90%',
                 fontSize: 20, color: 'FFFFFF', bold: true, fontFace: 'Arial Black'
             });
-            slide.addShape('line', { x: 0.5, y: 0.9, w: 10, h: 0, line: { color: '333333', width: 1 } });
+            slide.addShape('line', { x: 0.5, y: 0.9, w: 9, h: 0, line: { color: '333333', width: 1 } });
         }
 
-        let imgX = 0.5, imgY = 1.2, imgW = 6, imgH = 4.2;
-        let txtX = 6.8, txtY = 1.2, txtW = 6.0;
+        let imgX = 0.5, imgY = 1.2, imgW = 5.5, imgH = 4.0;
+        let txtX = 6.2, txtY = 1.2, txtW = 3.3;
 
-        if (section.layout === 'right') {
-            txtX = 0.5;
-            imgX = 6.8;
-        }
+        // Image Frame (Dark background behind image)
+        slide.addShape(pptx.ShapeType.rect, {
+            x: imgX - 0.05, y: imgY - 0.05, w: imgW + 0.1, h: imgH + 0.1,
+            fill: { color: '111111' }, line: { color: '333333' }
+        });
 
         if (section.imageUrl) {
-            slide.addShape('rect', { x: imgX - 0.02, y: imgY - 0.02, w: imgW + 0.04, h: imgH + 0.04, fill: '111111', line: { color: '333333' } });
             if (section.imageUrl.match(/\.(mp4|webm)$/i)) {
-                slide.addText("VIDEO (WEB)", { x: imgX, y: imgY, w: imgW, h: imgH, fill: '111111', align: 'center', color: '666666' });
+                slide.addText("VIDEO (WEB)", { x: imgX, y: imgY, w: imgW, h: imgH, fill: '000000', align: 'center', color: '666666' });
             } else {
-                slide.addImage({ path: section.imageUrl, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: 'contain', w: imgW, h: imgH } });
+                slide.addImage({ path: section.imageUrl, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: 'contain' } });
             }
         }
 
         const cleanText = section.text ? section.text.replace(/<[^>]*>/g, '') : '';
-        slide.addText(cleanText, { x: txtX, y: txtY, w: txtW, h: 4.2, fontSize: 12, color: 'CCCCCC', valign: 'top', lineSpacing: 20 });
+        slide.addText(cleanText, { x: txtX, y: txtY, w: txtW, h: 4.2, fontSize: 12, color: 'CCCCCC', valign: 'top', lineSpacing: 18 });
     }
 
     async exportSection(section) {
