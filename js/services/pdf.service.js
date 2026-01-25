@@ -114,9 +114,33 @@ class PDFService {
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
         };
 
-        // Wait for images to load (heuristic)
-        // await new Promise(resolve => setTimeout(resolve, 1000));
+        // Preload images to ensure they are ready for html2canvas
+        const images = Array.from(content.querySelectorAll('img'));
+        const bgDivs = Array.from(content.querySelectorAll('.pdf-page'));
 
+        // Helper to load image
+        const loadImg = (src) => new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = () => { console.error('Failed to load PDF asset:', src); resolve(); }; // Continue even if fail
+            img.src = src;
+        });
+
+        // Collect all URls (img src and background-image)
+        const urlsToLoad = [];
+        images.forEach(img => urlsToLoad.push(img.src));
+        bgDivs.forEach(div => {
+            const style = div.style.backgroundImage;
+            if (style && style !== 'none') {
+                const url = style.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                urlsToLoad.push(url);
+            }
+        });
+
+        console.log('PDF: Preloading images...', urlsToLoad);
+        await Promise.all(urlsToLoad.map(loadImg));
+
+        // Use html2pdf
         html2pdf().set(opt).from(content).save();
     }
 

@@ -44,12 +44,23 @@ class PptService {
 
         const getAssetUrl = (path) => `${window.location.origin}/${path}`;
 
-        // Load Static Slide Images
+        // Load Static Slide Images with detailed error logging
+        const loadImgSafe = async (url) => {
+            try {
+                const base64 = await this.imageUrlToBase64(url);
+                if (!base64) console.warn('PPT: Image loaded but returned empty base64:', url);
+                return base64;
+            } catch (e) {
+                console.error('PPT: Failed to load image:', url, e);
+                return null;
+            }
+        };
+
         const [coverBg, innovationBg, historyBg, why2nBg] = await Promise.all([
-            this.imageUrlToBase64(getAssetUrl('assets/export_slides/cover.png')),
-            this.imageUrlToBase64(getAssetUrl('assets/export_slides/innovation.png')),
-            this.imageUrlToBase64(getAssetUrl('assets/export_slides/history.png')),
-            this.imageUrlToBase64(getAssetUrl('assets/export_slides/why_2n.png'))
+            loadImgSafe(getAssetUrl('assets/export_slides/cover.png')),
+            loadImgSafe(getAssetUrl('assets/export_slides/innovation.png')),
+            loadImgSafe(getAssetUrl('assets/export_slides/history.png')),
+            loadImgSafe(getAssetUrl('assets/export_slides/why_2n.png'))
         ]);
 
         // --- 1. SLIDE 1: PORTADA (Custom Image + Vertical Name Overlay) ---
