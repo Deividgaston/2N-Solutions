@@ -53,12 +53,18 @@ class PDFService {
         const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375752617_mapa_2n.png?alt=media&token=4b991682-1e43-4736-bf7e-e239cbe84d66';
         const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
 
+        // Ensure title starts with "SOLUCIONES"
+        let displayTitle = verticalName;
+        if (!displayTitle.startsWith('SOLUCIONES')) {
+            displayTitle = `SOLUCIONES ${displayTitle}`;
+        }
+
         // --- PAGE 1: PORTADA (Background Image + Title Overlay) ---
         content.innerHTML += `
             <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('${coverUrl}'); background-size: cover; background-position: center;">
                 <!-- Overlay Title for Vertical Name -->
                 <div style="position: absolute; bottom: 60px; left: 40px; color: #0099ff; font-family: 'Arial Black', sans-serif; font-size: 32px; font-weight: bold; text-transform: uppercase;">
-                    ${verticalName}
+                    ${displayTitle}
                 </div>
             </div>
         `;

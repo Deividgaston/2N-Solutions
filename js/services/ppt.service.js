@@ -78,8 +78,13 @@ class PptService {
         }
 
         // Vertical Name Overlay (Centered, Clean)
-        // User request: "lo unico que meteras ahi seran los disintos nombres de las verticales"
-        coverSlide.addText(title.toUpperCase(), {
+        // User request: "quiero que lo pongas el titulo completo por ejemplo, soluciones BTS"
+        let displayTitle = title.toUpperCase();
+        if (!displayTitle.startsWith('SOLUCIONES')) {
+            displayTitle = `SOLUCIONES ${displayTitle}`;
+        }
+
+        coverSlide.addText(displayTitle, {
             x: 0.5, y: 4.5, w: 9, h: 1,
             fontSize: 36, color: '0099FF', bold: true, align: 'left', fontFace: 'Arial Black'
         });
