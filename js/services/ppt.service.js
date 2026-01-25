@@ -186,10 +186,18 @@ class PptService {
         finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
 
         // ADD MAP BACKGROUND (Recovered from PPT Image4)
-        // User requested map. Even if not in slide4.xml, we add it as background.
+        // User requested map. Even if not in slide4.xml,        // ADD MAP BACKGROUND (Recovered from PPT Image4)
         if (recoveredMapBase64) {
             finalSlide.addImage({ data: recoveredMapBase64, x: 0, y: 0, w: '100%', h: '100%', sizing: { type: 'cover' }, transparency: 85 });
         }
+
+        // Shape 2 (Dark Background Rect for Image) - FROM XML
+        // x=438912 (~0.48"), y=1078992 (~1.18"), w=6.06", h=4.25"
+        finalSlide.addShape(pptx.ShapeType.rect, {
+            x: 0.48, y: 1.18, w: 6.06, h: 4.25,
+            fill: { color: '111111' },
+            line: { color: '333333', width: 1 }
+        });
 
         // Image LEFT (XML: x=457200 EMU = 0.5", y=1097280 EMU = 1.2", w=6.0", h=4.2")
         // Using extracted_image9.png which is the exact file from the PPT
