@@ -173,8 +173,18 @@ class PptService {
         finalSlide.masterName = 'MASTER_DARK';
         finalSlide.background = { color: '000000' };
 
+        // Initialize base64 vars
+        const extractedMapUrl = getAssetUrl('assets/ppt_map_extracted.png');
+        const [recoveredMapBase64] = await Promise.all([this.imageUrlToBase64(extractedMapUrl)]);
+
         // Title
         finalSlide.addText('QUE APORTA 2N', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: 'FFFFFF', bold: true, fontFace: 'Arial Black' });
+
+        // ADD MAP BACKGROUND (Recovered from PPT)
+        if (recoveredMapBase64) {
+            // Faint background map
+            finalSlide.addImage({ data: recoveredMapBase64, x: 5, y: 1, w: 7, h: 4, sizing: { type: 'contain' }, transparency: 80 });
+        }
 
         // Image LEFT
         // XML image x=457200 (approx 0.5 inch), y=1097280 (approx 1.2 inch)
