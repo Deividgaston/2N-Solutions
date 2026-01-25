@@ -520,54 +520,27 @@ class PDFService {
             <!-- DYNAMIC PAGES -->
             ${data.dynamicSections.length > 0 ? this.renderDynamicPages(data.dynamicSections, verticalName) : ''}
 
-            <!-- PAGE FINAL: QUE APORTA 2N (Global) -->
+            <!-- PAGE FINAL: POR QUE 2N -->
             <div class="pdf-page">
                 <div class="page-header">
-                    <span class="page-header-text">VALOR DIFERENCIAL</span>
+                    <span class="page-header-text">RESUMEN</span>
                 </div>
                 
-                <div class="page-content" style="justify-content: flex-start; padding-top: 60px; background-image: url('assets/extracted_map.png'); background-size: cover; background-blend-mode: overlay; background-color: rgba(0,0,0,0.4);">
-                    <h2 class="section-title">QUE APORTA 2N</h2>
+                <!-- Background: Why 2N Image from Firebase -->
+                <div class="page-content" style="padding: 0; position: relative; background-image: url('https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92'); background-size: cover; background-position: center;">
                     
-                    <div style="display: flex; gap: 30px; align-items: flex-start;">
-                         <!-- Image Left (Wide 60%) Matches PPT XML ratio (6" vs 3") -->
-                         <div style="flex: 0 0 60%;">
-                            <img src="assets/extracted_image9.png" onerror="this.src='assets/2N_Logo_RGB_White.png'" style="width: 100%; height: auto; border-radius: 4px; border: 1px solid #333;">
-                         </div>
+                    <!-- Overlay Gradient to ensure text readability -->
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);"></div>
 
-                         <!-- Content Right (Narrow 35%) -->
-                         <div style="flex: 1;">
-                            <p style="font-size: 11px; line-height: 1.5; color: #ccc; margin-bottom: 20px; text-align: justify;">
-                                La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.
-                            </p>
-
-                            <div style="margin-top: 0px; display: flex; flex-direction: column; gap: 8px;">
-                                <div style="display: flex; align-items: start; gap: 8px;">
-                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
-                                    <span style="color: #eee; font-size: 11px;"><strong>Cifrado de extremo a extremo</strong></span>
-                                </div>
-                                <div style="display: flex; align-items: start; gap: 8px;">
-                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
-                                    <span style="color: #eee; font-size: 11px;"><strong>Autenticación segura</strong></span>
-                                </div>
-                                <div style="display: flex; align-items: start; gap: 8px;">
-                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
-                                    <span style="color: #eee; font-size: 11px;"><strong>Protección contra ataques</strong></span>
-                                </div>
-                                <div style="display: flex; align-items: start; gap: 8px;">
-                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
-                                    <span style="color: #eee; font-size: 11px;"><strong>Firmware seguro y actualizaciones periódicas</strong></span>
-                                </div>
-                                <div style="display: flex; align-items: start; gap: 8px;">
-                                    <span style="color: #3b82f6; font-size: 12px; margin-top: 2px;">●</span>
-                                    <span style="color: #eee; font-size: 11px;"><strong>Cumplimiento con normativas</strong></span>
-                                </div>
-                            </div>
-                         </div>
+                    <!-- Title Content -->
+                    <div style="position: absolute; bottom: 80px; left: 60px; right: 60px; z-index: 10;">
+                        <h2 class="section-title" style="font-size: 48px; line-height: 1.1; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                            Por qué 2N:<br>La diferencia que eleva tu proyecto
+                        </h2>
                     </div>
                 </div>
 
-                <div class="page-footer">
+                <div class="page-footer" style="z-index: 20;">
                     <span>${verticalName}</span>
                     <span>2N Solutions</span>
                 </div>
