@@ -209,6 +209,10 @@ class PptService {
     createSectionSlide(pptx, section, index) {
         const slide = pptx.addSlide();
         slide.masterName = 'MASTER_DARK';
+        slide.background = { color: '000000' }; // EXPLICIT BLACK BACKGROUND FIX
+
+        // Add Abstract BG Image explicitly to section slides as well if Master fails?
+        // No, let's trust Master + Solid Color. The Solid Color prevents White.
 
         if (section.title) {
             slide.addText(section.title.toUpperCase(), {
