@@ -47,9 +47,15 @@ class PDFService {
             </style>
         `;
 
+        // URL Constants
+        const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753951_Portada.png?alt=media&token=2566ea37-c62e-4a62-a078-445ee34504c8';
+        const innovationUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375754501_sobre_2n.png?alt=media&token=1b45b35a-1adf-4faa-bb2a-b64ea02d1a0e';
+        const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375752617_mapa_2n.png?alt=media&token=4b991682-1e43-4736-bf7e-e239cbe84d66';
+        const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
+
         // --- PAGE 1: PORTADA (Background Image + Title Overlay) ---
         content.innerHTML += `
-            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('assets/export_slides/cover.png'); background-size: cover; background-position: center;">
+            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('${coverUrl}'); background-size: cover; background-position: center;">
                 <!-- Overlay Title for Vertical Name -->
                 <div style="position: absolute; bottom: 60px; left: 40px; color: #0099ff; font-family: 'Arial Black', sans-serif; font-size: 32px; font-weight: bold; text-transform: uppercase;">
                     ${verticalName}
@@ -59,13 +65,13 @@ class PDFService {
 
         // --- PAGE 2: INNOVACIÓN (Full Image) ---
         content.innerHTML += `
-            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('assets/export_slides/innovation.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
+            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('${innovationUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
             </div>
         `;
 
         // --- PAGE 3: HISTORIA (Full Image) ---
         content.innerHTML += `
-            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('assets/export_slides/history.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
+            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('${historyUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
             </div>
         `;
 
@@ -101,7 +107,7 @@ class PDFService {
 
         // --- FINAL PAGE: WHY 2N (Full Image) ---
         content.innerHTML += `
-            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('assets/export_slides/why_2n.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
+            <div class="pdf-page" style="height: 595px; width: 842px; background-image: url('${why2nUrl}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #000;">
             </div>
         `;
 
