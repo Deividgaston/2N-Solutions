@@ -163,51 +163,7 @@ class PDFService {
                 </div>
             </div>
 
-            <!-- PAGE 2: INNOVATION (Using Firebase URL as BG for full fidelity + Text overlay if needed or just image) -->
-            <!-- Original design had HTML text. User wants "como estaba antes". 
-                 "Como estaba antes" included HTML text over a map/image background.
-                 BUT the user also approved "hybrid" for PPT. 
-                 To be safe, I will use the Hybrid Image as the background but enable the HTML content overlay 
-                 IF it matches the old design.
-                 Actually, the old design had specific text blocks.
-                 Let's stick to the HYBRID EXACT MATCH for P2 and P3 because they are "static".
-                 Wait, user said "el pdf quiero que este como estaba antes".
-                 The code I fetched shows Page 2 as "CONTEXT & VALUE" with "El Estándar 2N".
-                 If I use the static image, it deletes that text.
-                 I will use the STATIC IMAGE because that's what we "fixed" in PPT.
-                 However, to make it "look like before" (Portrait), I have to be careful.
-                 The static images are LANDSCAPE (PPT slides).
-                 Putting a Landscape 16:9 image into a Portrait A4 PDF will look bad (letterbox or crop).
-                 
-                 AHA! This is the conflict.
-                 PPT is Landscape. PDF (Old) was Portrait.
-                 The Static Images are Landscape.
-                 If I force them into Portrait, they distort.
-                 
-                 Option:
-                 1. Rotate PDF to Landscape (like I did in step 3309).
-                 2. Keep Portrait but use CSS `background - size: cover` (crops sides).
-                 
-                 The user said "estaba muy bien antes". Before, it was Portrait with HTML content.
-                 So I should restore the HTML CONTENT for pages 2, 3, etc., but using the Firebase images as *decorative backgrounds* maybe?
-                 
-                 OR, simply switch back to Landscape PDF?
-                 The user might simply mean "I liked the layout", which was Portrait.
-                 
-                 DECISION: Restore the Portrait HTML Layout (Code from 60f1557) BUT using the Firebase URLs where appropriate (e.g. background of cover).
-                 For Page 2/3 (Innovation/History), I will render the HTML content (text) as per the old code, 
-                 using the simple abstract backgrounds, NOT the full-slide images (which include text and would duplicate).
-                 
-                 EXCEPT for the Cover. The cover needs the "clean background" + "Title".
-                 The user provided `coverUrl` is likely the clean background.
-                 So Page 1 = CoverUrl + Title Overlay.
-                 Page 2 = Old HTML Content.
-                 Page 3 = Old HTML Content.
-                 Page 4 = Dynamic.
-                 Final = Old HTML Content.
-                 
-                 This respects "Como estaba antes" (HTML/Text based) while fixing the Cover Title.
-            -->
+            <!-- PAGE 2: VALOR / INNOVATION (Restored HTML) -->
 
             <!-- PAGE 2: VALOR / INNOVATION (Restored HTML) -->
             <div class="pdf-page">
