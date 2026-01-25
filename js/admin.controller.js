@@ -1810,12 +1810,16 @@ class AdminController {
                     if (this.pickerMode === 'hero' && !isImage) return;
 
                     const item = document.createElement('div');
-                    item.className = 'asset-card gallery-image';
+                    // Use standard structure
+                    item.className = 'gallery-item-card';
                     item.innerHTML = `
-                        <div class="image-preview" style="background-image: url('${file.url}'); height: 120px;">
-                            ${isVideo ? '<i class="fa-solid fa-video" style="position:absolute;top:5px;right:5px;color:white;text-shadow:0 0 3px black"></i>' : ''}
+                         <div class="gallery-thumbnail">
+                            ${isVideo ? '<div class="video-overlay"><i class="fa-solid fa-play" style="position:absolute;top:5px;right:5px;color:white;text-shadow:0 0 3px black"></i></div>' : ''}
+                            <img src="${file.url}" alt="${file.name}" loading="lazy" style="${isVideo ? 'opacity:0.8' : ''}">
                         </div>
-                        <div class="file-name">${file.name}</div>
+                        <div class="gallery-info">
+                            <div class="gallery-name" title="${file.name}">${file.name}</div>
+                        </div>
                     `;
                     item.addEventListener('click', () => this.handleAssetSelected(file));
                     grid.appendChild(item);
