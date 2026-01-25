@@ -1601,11 +1601,11 @@ class AdminController {
             if (folders.length > 0) {
                 folders.forEach(folder => {
                     const item = document.createElement('div');
-                    item.className = 'gallery-folder';
+                    item.className = 'gallery-folder-card'; // Changed class for modal styling
                     item.innerHTML = `
-                    < div class="folder-icon" > <i class="fa-solid fa-folder"></i></div >
+                        <div class="folder-icon"><i class="fa-solid fa-folder"></i></div>
                         <div class="folder-name">${folder.name}</div>
-                `;
+                    `;
                     item.addEventListener('click', () => {
                         this.navigateMultimedia(folder.fullPath);
                     });
@@ -1617,14 +1617,22 @@ class AdminController {
             if (files.length > 0) {
                 files.forEach(img => {
                     const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    item.innerHTML = `< img src = "${img.url}" loading = "lazy" title = "${img.name}" > `;
+                    item.className = 'gallery-item-card'; // New class for card style
+
+                    item.innerHTML = `
+                        <div class="gallery-thumbnail">
+                            <img src="${img.url}" loading="lazy" alt="${img.name}">
+                        </div>
+                        <div class="gallery-info">
+                            <div class="gallery-name" title="${img.name}">${img.name}</div>
+                        </div>
+                    `;
 
                     item.addEventListener('click', () => {
-                        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                        document.querySelectorAll('.gallery-item-card').forEach(i => i.classList.remove('selected'));
                         item.classList.add('selected');
                         this.selectedGalleryImage = img.url;
-                        this.updatePreview(); // Update preview when gallery item selected
+                        this.updatePreview();
                     });
                     grid.appendChild(item);
                 });
