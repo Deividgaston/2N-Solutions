@@ -71,7 +71,8 @@ class PDFService {
         const displayTitle = mapTitle(verticalRaw);
 
         // Firebase Assets
-        const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753951_Portada.png?alt=media&token=2566ea37-c62e-4a62-a078-445ee34504c8';
+        // Assets
+        const coverUrl = 'assets/pdf_cover.png'; // USER REQUEST: Restored Original Dark Building Cover
 
         // 2N CORPORATE DESIGN SYSTEM (DARK PREMIUM)
         container.innerHTML = `
