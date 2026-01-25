@@ -530,12 +530,13 @@ class PDFService {
                 <div class="page-content" style="padding: 0; position: relative; background-image: url('https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92'); background-size: cover; background-position: center;">
                     
                     <!-- Overlay Gradient to ensure text readability -->
-                    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);"></div>
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.1) 100%);"></div>
 
                     <!-- Title Content -->
                     <div style="position: absolute; bottom: 80px; left: 60px; right: 60px; z-index: 10;">
-                        <h2 class="section-title" style="font-size: 48px; line-height: 1.1; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-                            Por qué 2N:<br>La diferencia que eleva tu proyecto
+                        <h2 style="font-size: 42px; line-height: 1.1; margin-bottom: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.8); font-weight: 800;">
+                            <span style="color: #3b82f6; display: block; margin-bottom: 10px;">Por qué 2N:</span>
+                            <span style="color: #ffffff;">La diferencia que eleva tu proyecto</span>
                         </h2>
                     </div>
                 </div>
