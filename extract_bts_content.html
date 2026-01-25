@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Extract BTS Content</title>
+</head>
+
+<body>
+    <h1>Extracting 'Que aporta 2N'...</h1>
+    <pre id="output">Loading...</pre>
+
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module">
+        import { db } from './js/firebase-init.js';
+        import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        async function extract() {
+            try {
+                const q = collection(db, 'verticals', 'bts', 'sections');
+                const snapshot = await getDocs(q);
+                let found = false;
+
+                const output = document.getElementById('output');
+                output.textContent = '';
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.title && data.title.toLowerCase().includes('que aporta 2n')) {
+                        found = true;
+                        output.textContent += JSON.stringify(data, null, 2);
+                    }
+                });
+
+                if (!found) output.textContent = 'Section not found in BTS.';
+            } catch (e) {
+                document.getElementById('output').textContent = 'Error: ' + e.message;
+            }
+        }
+        extract();
+    </script>
+</body>
+
+</html>

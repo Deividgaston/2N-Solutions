@@ -168,6 +168,27 @@ class PptService {
             this.createSectionSlide(pptx, section, index);
         });
 
+        // --- 6. FINAL SLIDE: QUE APORTA 2N ---
+        const finalSlide = pptx.addSlide();
+        finalSlide.masterName = 'MASTER_DARK';
+        finalSlide.background = { color: '000000' };
+
+        finalSlide.addText('¿QUÉ APORTA 2N?', { x: 0.5, y: 0.5, w: '90%', fontSize: 24, color: COLOR_ACCENT, bold: true, fontFace: 'Arial Black' });
+
+        finalSlide.addText('SEGURIDAD Y CIBERSEGURIDAD', { x: 0.5, y: 1.2, w: '40%', fontSize: 18, color: 'FFFFFF', bold: true });
+        finalSlide.addText(
+            'La seguridad física y la ciberseguridad deben ir de la mano. En 2N, no solo diseñamos soluciones avanzadas de control de accesos y videoportero, sino que también garantizamos la protección de datos y comunicaciones frente a amenazas digitales.\n\n' +
+            '• Cifrado de extremo a extremo (HTTPS, TLS, SRTP)\n' +
+            '• Autenticación segura (802.1x)\n' +
+            '• Protección contra ataques y manipulación física',
+            { x: 0.5, y: 1.8, w: '45%', h: 4, fontSize: 14, color: 'CCCCCC', lineSpacing: 24, valign: 'top' }
+        );
+
+        // Add an image on the right if available
+        if (innovationBase64) {
+            finalSlide.addImage({ data: innovationBase64, x: 7, y: 1.5, w: 5, h: 4, sizing: { type: 'cover' } });
+        }
+
         const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         const filename = `2N_Solucion_${safeTitle}_v15_Fixed.pptx`;
         await pptx.writeFile({ fileName: filename });
