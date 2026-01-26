@@ -402,35 +402,36 @@ body {
     }
 
     /* Dynamic Sections Mobile Fix: Text Wrap (Square Adjustment) */
+    /* Dynamic Sections Mobile Fix: Text Wrap (Square Adjustment) */
     .dynamic-section,
     .dynamic-section.layout-right {
-        display: block;
-        /* Disable flex to allow float */
-        flex-direction: unset;
-        gap: 0;
+        display: block !important;
+        /* Disable flex forcefully */
+        flex-direction: unset !important;
+        gap: 0 !important;
         margin-bottom: 3rem;
         clear: both;
-        /* Ensure sections don't overlap */
         overflow: hidden;
-        /* Clearfix internal floats */
+        /* Clearfix */
     }
 
     /* Floating Image (Thumbnail) */
     .ds-image-wrapper {
-        float: left;
-        width: 140px;
-        height: 140px;
-        /* Square aspect ratio */
-        margin-right: 1rem;
-        margin-bottom: 0.5rem;
+        float: left !important;
+        width: 140px !important;
+        height: 140px !important;
+        margin-right: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
         border-radius: 12px;
-        /* Ensure it doesn't take 100% width from previous rules */
-        flex: none;
+        flex: none !important;
+        box-shadow: none !important;
+        /* Cleaner look for small thumb */
+        border: none !important;
     }
 
     .ds-image-wrapper img {
-        height: 100%;
-        object-fit: cover;
+        height: 100% !important;
+        object-fit: cover !important;
     }
 
     /* Content flows around */
@@ -581,8 +582,9 @@ body {
 /* Buttons inside sections (if any, but usually text) */
 
 /* Responsive */
+/* Conflicting media query removed to allow 768px block to control layout */
+/*
 @media (max-width: 900px) {
-
     .dynamic-section,
     .dynamic-section.layout-right {
         flex-direction: column;
@@ -594,6 +596,7 @@ body {
         font-size: 1.5rem;
     }
 }
+*/
 
 /* Print Styles optimized for PDF */
 @media print {
