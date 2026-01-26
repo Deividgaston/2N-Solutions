@@ -1384,27 +1384,101 @@ class AdminController {
         return card;
     }
 
-    // Helper for Drag and Drop
-    getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.section-card:not(.dragging)')];
+    updatePreview() {
+        const fileInput = document.getElementById('section-file');
+        const previewImg = document.querySelector('#section-preview img');
+        const previewVideo = document.querySelector('#section-preview video');
+        const previewPlaceholder = document.querySelector('#section-preview .placeholder');
+        const previewContainer = document.querySelector('#section-preview .section-image');
 
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
+        if (!previewContainer) return;
+
+        // Reset display
+        if (previewImg) previewImg.style.display = 'none';
+        if (previewVideo) previewVideo.style.display = 'none';
+        if (previewPlaceholder) previewPlaceholder.style.display = 'flex';
+
+        // Helper to show image
+        const showImage = (src) => {
+            if (previewPlaceholder) previewPlaceholder.style.display = 'none';
+            if (previewImg) {
+                previewImg.src = src;
+                previewImg.style.display = 'block';
             } else {
-                return closest;
+                // Create if missing
+                previewContainer.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`;
             }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
+        };
+
+        // Helper to show video
+        const showVideo = (src) => {
+            if (previewPlaceholder) previewPlaceholder.style.display = 'none';
+            if (previewVideo) {
+                previewVideo.src = src;
+                previewVideo.style.display = 'block';
+            } else {
+                previewContainer.innerHTML = `<video src="${src}" muted autoplay loop style="width:100%;height:100%;object-fit:cover;"></video>`;
+            }
+        };
+
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (file.type.startsWith('video/')) {
+                    showVideo(e.target.result);
+                } else {
+                    showImage(e.target.result);
+                }
+            };
+            reader.readAsDataURL(file);
+        } else if (this.selectedGalleryImage) {
+            // Use pre-selected image
+            if (this.selectedGalleryImage.match(/\.(mp4|webm)$/i)) {
+                showVideo(this.selectedGalleryImage);
+            } else {
+                showImage(this.selectedGalleryImage);
+            }
+        }
+
+        // Text updates
+        const titleInput = document.getElementById('section-title');
+        const textInput = document.getElementById('section-text');
+        const tagsInput = document.getElementById('section-tags');
+
+        const previewTitle = document.querySelector('#section-preview .section-title');
+        const previewText = document.querySelector('#section-preview .section-text');
+        const previewTags = document.querySelector('#section-preview .section-tags');
+
+        if (previewTitle) previewTitle.innerHTML = (titleInput.value || 'Título de la Sección');
+        if (previewText) previewText.textContent = textInput.value || 'Texto descriptivo de la sección...';
+
+        if (previewTags) {
+            const tags = tagsInput.value ? tagsInput.value.split(',').filter(t => t.trim()) : ['Etiqueta'];
+            previewTags.innerHTML = tags.map(t => `<span class="role-badge prescriptor">${t.trim()}</span>`).join(' ');
+        }
+
+        // Update Layout Class in Preview
+        const previewCard = document.getElementById('section-preview');
+        if (previewCard) {
+            const layout = document.querySelector('input[name="section-layout"]:checked')?.value || 'left';
+            previewCard.className = `section-card preview-card layout-${layout}`;
+
+            // Also update text align
+            const align = document.querySelector('input[name="section-align"]:checked')?.value || 'left';
+            const infoDiv = previewCard.querySelector('.section-info');
+            if (infoDiv) infoDiv.style.textAlign = align;
+        }
+
     }
 
     resetSectionModal() {
+        // This method is now redundant but kept for any external references
         this.openCreateModal();
     }
 
     openCreateModal() {
-        this.currentEditId = null;
+        this.editingSectionId = null;
         document.getElementById('modal-title').textContent = 'Nueva Sección';
         document.getElementById('section-form').reset();
 
@@ -1448,7 +1522,8 @@ class AdminController {
         const section = this.sections.find(s => s.id === sectionId);
         if (!section) return;
 
-        this.currentEditId = sectionId;
+        this.resetInternalState(); // Clear previous state
+        this.editingSectionId = sectionId;
         document.getElementById('modal-title').textContent = 'Editar Sección';
 
         document.getElementById('section-title').value = section.title || '';
@@ -1471,9 +1546,12 @@ class AdminController {
             isVisibleCheck.checked = section.isVisible !== false;
         }
 
+        // Set Pre-filled Image
+        this.selectedGalleryImage = section.imageUrl || null;
+
         // Handle Image Tab logic
-        // Reset to Upload tab by default or maintain state if desired
-        if (document.querySelector('.tab-btn[data-tab="upload"]')) {
+        // If we have an image, don't force upload tab, but maybe ensure preview is updated
+        if (!this.selectedGalleryImage && document.querySelector('.tab-btn[data-tab="upload"]')) {
             document.querySelector('.tab-btn[data-tab="upload"]').click();
         }
 
@@ -1741,9 +1819,21 @@ class AdminController {
                     const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, uploadData);
                     imageUrl = await getDownloadURL(uploadTask.ref);
+                } else if (!imageUrl && this.selectedGalleryImage) {
+                    // Fallback to existing image selection if no new file uploaded
+                    imageUrl = this.selectedGalleryImage;
                 }
             } else if (this.selectedGalleryImage) {
                 imageUrl = this.selectedGalleryImage;
+            }
+
+            // FINAL FAILSAFE: If updating and still no URL, keep original
+            if (!imageUrl && this.editingSectionId) {
+                const originalSection = this.sections.find(s => s.id === this.editingSectionId);
+                if (originalSection && originalSection.imageUrl) {
+                    console.warn('Recovering lost image URL from original section state');
+                    imageUrl = originalSection.imageUrl;
+                }
             }
 
             const data = {
