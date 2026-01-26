@@ -341,13 +341,9 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
 
     /* Navbar Mobile */
-    body {
-        background-color: #2a003b !important;
-        /* DEBUG PURPLE - VERIFY MOBILE QUERY */
-    }
 
     .nav-links {
         display: flex;
