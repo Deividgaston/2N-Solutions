@@ -435,10 +435,14 @@ body {
     }
 
     /* Content flows around */
+    /* Content flows around */
     .ds-content {
-        width: auto;
-        text-align: left;
-        display: block;
+        width: auto !important;
+        text-align: left !important;
+        /* Override inline styles */
+        display: block !important;
+        float: none !important;
+        /* Ensure content itself doesn't float */
     }
 
     .ds-title {
@@ -448,10 +452,13 @@ body {
         /* Slightly smaller for mobile context */
         line-height: 1.2;
         margin-bottom: 0.5rem;
+        text-align: left !important;
     }
 
     .ds-text {
         font-size: 0.95rem;
+        text-align: left !important;
+        width: auto !important;
     }
 
     /* Footer */
