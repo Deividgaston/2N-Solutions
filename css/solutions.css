@@ -401,6 +401,28 @@ body {
         flex-direction: column;
     }
 
+    /* Dynamic Sections Mobile Fix */
+    .dynamic-section,
+    .dynamic-section.layout-right {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Reorder for consistency (Image always top or bottom? Default: Image top) */
+    .dynamic-section.layout-right {
+        flex-direction: column;
+    }
+
+    .ds-image-wrapper {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .ds-content {
+        width: 100%;
+        text-align: left;
+    }
+
     /* Footer */
     .footer {
         flex-direction: column;
