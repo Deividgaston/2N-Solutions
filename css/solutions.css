@@ -344,6 +344,11 @@ body {
 @media (max-width: 768px) {
 
     /* Navbar Mobile */
+    body {
+        background-color: #2a003b !important;
+        /* DEBUG PURPLE - VERIFY MOBILE QUERY */
+    }
+
     .nav-links {
         display: flex;
         /* Keep visible for share icons */
