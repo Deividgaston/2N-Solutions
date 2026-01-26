@@ -371,6 +371,36 @@ body {
         margin-left: 0;
     }
 
+    /* Hero Fixes */
+    .solution-hero {
+        padding: 7rem 5% 4rem;
+        /* More breathing room */
+        min-height: auto;
+    }
+
+    .solution-hero-content {
+        max-width: 100%;
+        /* Let it take full width */
+        padding: 0;
+    }
+
+    .solution-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    /* Content Fixes */
+    .solution-content {
+        padding: 3rem 5%;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+        /* Force single column */
+        gap: 3rem;
+        display: flex;
+        flex-direction: column;
+    }
+
     /* Footer */
     .footer {
         flex-direction: column;
