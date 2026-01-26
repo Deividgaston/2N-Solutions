@@ -342,14 +342,52 @@ body {
 }
 
 @media (max-width: 768px) {
+
+    /* Navbar Mobile */
     .nav-links {
+        display: flex;
+        /* Keep visible for share icons */
+        gap: 0;
+        margin-right: auto;
+        /* Align left */
+        padding-left: 1rem;
+    }
+
+    /* Hide text links (Soluciones, 2N.com) but keep share */
+    .nav-links li:not(.share-item) {
         display: none;
     }
 
+    /* Hide Login Button */
+    .btn-cta {
+        display: none;
+    }
+
+    /* Adjust Share Group for mobile */
+    .share-inline-group {
+        border-left: none;
+        /* Remove divider since links are gone */
+        padding-left: 0;
+        margin-left: 0;
+    }
+
+    /* Footer */
     .footer {
         flex-direction: column;
-        gap: 1rem;
+        gap: 2rem;
         text-align: center;
+        padding-bottom: 6rem;
+        /* Space for bottom nav or scrolling */
+    }
+
+    .footer-left {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
     }
 }
 
