@@ -1759,7 +1759,11 @@ class AdminController {
                 isVisible: document.getElementById('section-visible').checked
             };
 
-            await contentService.addSection(this.currentVertical, data);
+            if (this.editingSectionId) {
+                await contentService.updateSection(this.currentVertical, this.editingSectionId, data);
+            } else {
+                await contentService.addSection(this.currentVertical, data);
+            }
 
             document.getElementById('section-modal').classList.remove('active');
             this.loadSections();
