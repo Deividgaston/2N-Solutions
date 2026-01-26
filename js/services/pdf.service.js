@@ -72,7 +72,8 @@ class PDFService {
 
         // Firebase Assets
         // Assets
-        const coverUrl = 'assets/pdf_cover.png'; // USER REQUEST: Restored Original Dark Building Cover
+        const coverUrl = data.heroImageUrl || 'assets/pdf_cover.png';
+        const showCoverImage = data.showHeroImage !== false; // Default true
 
         // 2N CORPORATE DESIGN SYSTEM (DARK PREMIUM)
         container.innerHTML = `
@@ -392,7 +393,7 @@ class PDFService {
 
             <!-- PAGE 1: HERO COVER -->
             <div class="pdf-page cover-page">
-                <img src="assets/pdf_cover.png" class="cover-image" onerror="this.style.display='none'">
+                ${showCoverImage ? `<img src="${coverUrl}" class="cover-image" onerror="this.style.display='none'">` : ''}
                 <div class="cover-gradient"></div>
                 
                 <img src="assets/2N_Logo_RGB_White.png" class="cover-logo-large">

@@ -475,10 +475,18 @@ class AdminController {
 
     updateHeroPreview(imageUrl = null, x = null, y = null) {
         const bgDiv = document.getElementById('hero-preview-bg');
-        if (!bgDiv) return; // Might be old element if HTML didn't update yet (but it should have)
+        if (!bgDiv) return;
 
-        if (imageUrl) {
-            bgDiv.style.backgroundImage = `url('${imageUrl}')`;
+        const showImage = document.getElementById('hero-show-image')?.checked !== false;
+
+        if (!showImage) {
+            bgDiv.style.backgroundImage = 'none';
+            bgDiv.style.backgroundColor = '#111'; // Fallback color
+        } else {
+            if (imageUrl) {
+                bgDiv.style.backgroundImage = `url('${imageUrl}')`;
+            }
+            bgDiv.style.backgroundColor = 'transparent';
         }
 
         if (x !== null && y !== null) {
@@ -529,11 +537,15 @@ class AdminController {
                 heroImagePath = this.pendingHeroImage.path;
             }
 
+            // Checkbox for visibility
+            const showHeroImage = document.getElementById('hero-show-image')?.checked !== false;
+
             const data = {
                 heroTitle,
                 heroSubtitle,
                 badgeText,
-                badgeColor
+                badgeColor,
+                showHeroImage
             };
 
             if (heroImageUrl) {
@@ -1244,6 +1256,17 @@ class AdminController {
             setVal('hero-subtitle', meta.heroSubtitle);
             setVal('hero-badge', meta.badgeText);
             checkRadio('hero-color', meta.badgeColor || 'blue');
+
+            // Hero Visibility Checkbox
+            const showHeroImageCheck = document.getElementById('hero-show-image');
+            if (showHeroImageCheck) {
+                showHeroImageCheck.checked = meta.showHeroImage !== false; // Default true
+
+                // Add listener for immediate preview update
+                showHeroImageCheck.addEventListener('change', () => {
+                    this.updateHeroPreview(meta.heroImageUrl, meta.heroPosX || 50, meta.heroPosY || 50);
+                });
+            }
 
             // Hero Preview logic
             this.updateHeroPreview(meta.heroImageUrl, meta.heroPosX || 50, meta.heroPosY || 50);
