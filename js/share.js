@@ -12,43 +12,24 @@ export function initShare() {
     const shareLi = document.createElement('li');
     shareLi.className = 'share-item';
     shareLi.innerHTML = `
-        <button class="share-trigger" aria-label="Compartir">
-            <i class="fa-solid fa-share-nodes"></i>
-        </button>
-        <div class="share-dropdown">
-            <a href="#" class="share-action" data-type="whatsapp" title="WhatsApp">
+        <div class="share-inline-group">
+            <a href="#" class="share-action" data-type="whatsapp" title="WhatsApp" aria-label="Compartir en WhatsApp">
                 <i class="fa-brands fa-whatsapp"></i>
             </a>
-            <a href="#" class="share-action" data-type="email" title="Email">
+            <a href="#" class="share-action" data-type="email" title="Email" aria-label="Compartir por Email">
                 <i class="fa-solid fa-envelope"></i>
             </a>
-            <a href="#" class="share-action" data-type="copy" title="Copiar Enlace">
+            <a href="#" class="share-action" data-type="copy" title="Copiar Enlace" aria-label="Copiar Enlace">
                 <i class="fa-solid fa-link"></i>
             </a>
         </div>
     `;
 
-    // 3. Insert into Navbar (before the last item usually, or at end)
-    // We'll append it to the end of the list
+    // 3. Insert into Navbar
     navLinks.appendChild(shareLi);
 
     // 4. Handle Logic
-    const trigger = shareLi.querySelector('.share-trigger');
-    const dropdown = shareLi.querySelector('.share-dropdown');
     const actions = shareLi.querySelectorAll('.share-action');
-
-    // Toggle Dropdown
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        shareLi.classList.toggle('active');
-    });
-
-    // Close when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!shareLi.contains(e.target)) {
-            shareLi.classList.remove('active');
-        }
-    });
 
     // Handle Actions
     actions.forEach(action => {
@@ -71,8 +52,6 @@ export function initShare() {
                     setTimeout(() => action.innerHTML = originalIcon, 2000);
                 });
             }
-            // Close dropdown after action
-            shareLi.classList.remove('active');
         });
     });
 }

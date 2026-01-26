@@ -402,3 +402,50 @@ a:hover {
 .hero.dynamic-bg::before {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
 }
+
+/* Inline Share Styles */
+.share-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 10px;
+    padding-left: 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.share-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+    /* Bigger icons */
+    color: var(--text-gray);
+    border-radius: 50%;
+    transition: all 0.2s;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.share-action:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Specific brand colors on hover */
+.share-action[data-type="whatsapp"]:hover {
+    color: #25D366;
+    background: rgba(37, 211, 102, 0.1);
+}
+
+.share-action[data-type="email"]:hover {
+    color: #EA4335;
+    background: rgba(234, 67, 53, 0.1);
+}
+
+.share-action[data-type="copy"]:hover {
+    color: #0099FF;
+    background: rgba(0, 153, 255, 0.1);
+}
