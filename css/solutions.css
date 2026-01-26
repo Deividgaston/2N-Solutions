@@ -583,20 +583,7 @@ body {
 
 /* Responsive */
 /* Conflicting media query removed to allow 768px block to control layout */
-/*
-@media (max-width: 900px) {
-    .dynamic-section,
-    .dynamic-section.layout-right {
-        flex-direction: column;
-        gap: 2rem;
-        text-align: left;
-    }
-
-    .ds-title {
-        font-size: 1.5rem;
-    }
-}
-*/
+/* (Deleted conflicting media query) */
 
 /* Print Styles optimized for PDF */
 @media print {
