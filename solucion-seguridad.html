@@ -12,7 +12,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/solutions.css?v=mobile_Fix_5">
+    <link rel="stylesheet" href="css/solutions.css?v=mobile_Fix_7">
+    <style>
+        /* CRITICAL MOBILE FIX - INLINE TO BYPASS CACHE ISSUES */
+        @media (max-width: 1200px) {
+
+            .dynamic-section,
+            .dynamic-section.layout-right {
+                display: block !important;
+                flex-direction: unset !important;
+                gap: 0 !important;
+                margin-bottom: 3rem;
+                clear: both;
+                overflow: visible !important;
+            }
+
+            .ds-image-wrapper {
+                float: left !important;
+                width: 140px !important;
+                height: 140px !important;
+                margin-right: 1.25rem !important;
+                margin-bottom: 0.5rem !important;
+                flex: none !important;
+                border-radius: 12px;
+            }
+
+            .ds-content {
+                display: block !important;
+                width: auto !important;
+                float: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                text-align: left !important;
+            }
+
+            .ds-title {
+                text-align: left !important;
+                font-size: 1.3rem;
+                margin-top: 0;
+            }
+
+            .ds-text {
+                text-align: left !important;
+                font-size: 0.95rem;
+                display: block !important;
+            }
+        }
+    </style>
 </head>
 
 <body data-vertical="security">
