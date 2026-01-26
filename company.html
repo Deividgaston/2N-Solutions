@@ -91,6 +91,58 @@
             color: var(--primary);
             margin-bottom: 1rem;
         }
+
+        /* CRITICAL MOBILE FIX (Conoce 2N) - INLINE TO BYPASS CACHE ISSUES */
+        @media (max-width: 1200px) {
+            .about-grid {
+                display: block !important;
+                gap: 0 !important;
+                margin-bottom: 3rem;
+                clear: both;
+            }
+
+            .about-image {
+                float: left !important;
+                width: 140px !important;
+                height: 140px !important;
+                margin-right: 1.25rem !important;
+                margin-bottom: 0.5rem !important;
+                border-radius: 12px !important;
+                border: none !important;
+                /* Simplify border for small size */
+            }
+
+            .about-image img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+
+            .about-text {
+                display: block !important;
+                width: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                /* Prevent BFC */
+                text-align: left !important;
+            }
+
+            .about-text h2 {
+                text-align: left !important;
+                font-size: 1.3rem !important;
+                margin-top: -5px !important;
+                /* Visual alignment */
+                line-height: 1.1 !important;
+                margin-bottom: 0.5rem !important;
+            }
+
+            .about-text p {
+                text-align: left !important;
+                font-size: 0.95rem !important;
+                display: block !important;
+            }
+        }
     </style>
 </head>
 
