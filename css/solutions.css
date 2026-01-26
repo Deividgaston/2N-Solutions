@@ -401,26 +401,56 @@ body {
         flex-direction: column;
     }
 
-    /* Dynamic Sections Mobile Fix */
+    /* Dynamic Sections Mobile Fix: Text Wrap (Square Adjustment) */
     .dynamic-section,
     .dynamic-section.layout-right {
-        flex-direction: column;
-        gap: 2rem;
+        display: block;
+        /* Disable flex to allow float */
+        flex-direction: unset;
+        gap: 0;
+        margin-bottom: 3rem;
+        clear: both;
+        /* Ensure sections don't overlap */
+        overflow: hidden;
+        /* Clearfix internal floats */
     }
 
-    /* Reorder for consistency (Image always top or bottom? Default: Image top) */
-    .dynamic-section.layout-right {
-        flex-direction: column;
-    }
-
+    /* Floating Image (Thumbnail) */
     .ds-image-wrapper {
-        width: 100%;
-        margin-bottom: 1.5rem;
+        float: left;
+        width: 140px;
+        height: 140px;
+        /* Square aspect ratio */
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 12px;
+        /* Ensure it doesn't take 100% width from previous rules */
+        flex: none;
     }
 
+    .ds-image-wrapper img {
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Content flows around */
     .ds-content {
-        width: 100%;
+        width: auto;
         text-align: left;
+        display: block;
+    }
+
+    .ds-title {
+        margin-top: 0;
+        /* Align with top of image */
+        font-size: 1.3rem;
+        /* Slightly smaller for mobile context */
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+    }
+
+    .ds-text {
+        font-size: 0.95rem;
     }
 
     /* Footer */
