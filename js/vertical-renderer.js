@@ -112,7 +112,19 @@ class VerticalRenderer {
         if (!heroSection) return;
 
         // Background Image
-        if (meta.heroImageUrl) {
+        const showImage = meta.showHeroImage !== false; // Default true
+
+        if (!showImage) {
+            // Hide image if disabled
+            const bgDiv = heroSection.querySelector('.solution-hero-bg');
+            if (bgDiv) {
+                bgDiv.style.backgroundImage = 'none';
+                bgDiv.style.backgroundColor = '#111';
+            } else {
+                heroSection.style.backgroundImage = 'none';
+                heroSection.style.backgroundColor = '#111';
+            }
+        } else if (meta.heroImageUrl) {
             // Find the background div or apply to section
             const bgDiv = heroSection.querySelector('.solution-hero-bg');
             if (bgDiv) {
