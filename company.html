@@ -5,337 +5,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre 2N | Líder Global en Intercomunicación IP</title>
-    <meta name="description"
-        content="Conoce 2N, el líder mundial en sistemas de control de acceso e intercomunicadores IP. Innovación, calidad y seguridad desde 1991.">
+    <meta name="description" content="Conoce 2N, el líder mundial en sistemas de control de acceso e intercomunicadores IP. Innovación, calidad y seguridad desde 1991.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/solutions.css">
-    <link rel="stylesheet" href="css/company.css">
+    <link rel="stylesheet" href="css/theme.css?v=2.0">
+
     <style>
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            margin-bottom: 6rem;
+        :root {
+            --primary:        #2563EB;
+            --primary-dark:   #1D4ED8;
+            --primary-light:  #3B82F6;
+            --bg-deep:        #0A0A0F;
+            --bg-section:     #0D1117;
+            --bg-card:        #111827;
+            --border:         #1a2035;
+            --text-white:     #FFFFFF;
+            --text-muted:     #9CA3AF;
+            --text-hint:      #6B7280;
+            --font:           'Inter', sans-serif;
         }
 
-        .about-image {
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Los estilos de NAVBAR ahora vienen de theme.css?v=2.0 */
+        .fi { border-radius: 2px; }
+
+        /* HERO */
+        .hero { min-height: 80vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 8rem 5% 4rem; background: var(--bg-deep); }
+        .hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 80px 80px; opacity: 0.25; mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 0%, transparent 75%); }
+        .hero-container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 1rem; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.25); border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: var(--primary-light); text-transform: uppercase; margin-bottom: 1.75rem; }
+        .hero h1 { 
+            font-size: clamp(2.2rem, 4.5vw, 3.6rem); 
+            font-weight: 500; 
+            line-height: 1.1; 
+            margin-bottom: 1.5rem; 
+            letter-spacing: -0.025em; 
+            text-shadow: none; 
         }
+        .hero h1 .blue { color: var(--primary-light); }
+        .hero-subtitle { font-size: 1.1rem; color: var(--text-muted); line-height: 1.75; max-width: 540px; }
 
-        .about-image img {
-            width: 100%;
-            display: block;
+        /* SECTIONS */
+        section { padding: 6rem 5%; }
+        .section-label { font-size: 0.7rem; font-weight: 600; color: var(--primary-light); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; text-align: center; display: block; }
+        .section-title { font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; text-align: center; margin-bottom: 4rem; letter-spacing: -0.02em; }
+
+        /* INNOVATION BLOCK */
+        .innovation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .innovation-img { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .innovation-img img { width: 100%; display: block; }
+        .innovation-content h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+        .innovation-content p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.8; }
+
+        /* HIERARCHY */
+        .hierarchy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto; padding-top: 2rem; }
+        .hierarchy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 2.5rem; text-align: center; position: relative; transition: transform 0.3s; }
+        .hierarchy-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .hierarchy-card.primary { border-top: 4px solid var(--primary); }
+        .h-logo { font-size: 1.8rem; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: 0.1em; color: var(--text-white); }
+        .h-metric { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .h-metric strong { color: var(--primary-light); }
+        .h-metric span { color: var(--text-hint); }
+
+        /* TIMELINE */
+        .timeline { max-width: 800px; margin: 0 auto; border-left: 2px solid var(--primary); padding-left: 3rem; position: relative; }
+        .timeline-item { margin-bottom: 4rem; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: calc(-3rem - 7px); top: 5px; width: 12px; height: 12px; background: var(--bg-deep); border: 3px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
+        .timeline-date { color: var(--primary-light); font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem; display: block; }
+        .timeline-item h3 { font-size: 1.3rem; margin-bottom: 0.75rem; color: var(--text-white); }
+        .timeline-item p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* VALUES */
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1200px; margin: 4rem auto 0; }
+        .value-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 2.5rem; text-align: center; transition: all 0.3s; }
+        .value-card:hover { border-color: var(--primary-light); background: rgba(37,99,235,0.02); }
+        .value-icon { width: 60px; height: 60px; background: rgba(37,99,235,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary-light); margin: 0 auto 1.5rem; }
+        .value-card h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .value-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* MAP SPECIAL STYLES (Restored Gold/Cyber) */
+        .map-section { background: var(--bg-section); position: relative; text-align: center; }
+        .map-container { 
+            position: relative; width: 100%; max-width: 900px; aspect-ratio: 16 / 9; 
+            margin: 0 auto; border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 0 80px rgba(37,99,235,0.1); border: 1px solid var(--border);
+            background-image: 
+                linear-gradient(rgba(37,99,235,0.1) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(37,99,235,0.1) 1px, transparent 1px);
+            background-size: 40px 40px; background-color: #000;
+            display: flex; align-items: center; justify-content: center;
         }
+        .map-bg-svg { width: 100%; height: auto; max-height: 100%; object-fit: contain; display: block; filter: none !important; opacity: 1 !important; transform: scale(1.05); }
+        .map-pin { position: absolute; width: 10px; height: 10px; border-radius: 50%; cursor: pointer; z-index: 10; transition: transform 0.2s; }
+        .map-pin:hover { transform: scale(1.5); }
+        .map-pin::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; background: inherit; animation: pulse 2.5s infinite; }
+        .map-pin::after { content: attr(data-label); position: absolute; bottom: 150%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(10,15,30,0.95); color: white; padding: 0.6rem 1.1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .map-pin:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); visibility: visible; }
+        
+        @keyframes pulse { 0% { width: 100%; height: 100%; opacity: 0.8; box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { width: 350%; height: 350%; opacity: 0; box-shadow: 0 0 0 10px rgba(255,255,255,0); } 100% { width: 100%; height: 100%; opacity: 0; } }
+        
+        /* Adjusted Geographical Pins (Standard Projection) */
+        .map-bg-svg { width: 100%; height: 100%; object-fit: cover; object-position: center 50.5%; display: block; filter: none !important; opacity: 1 !important; }
+        .map-pin { position: absolute; width: 10px; height: 10px; border-radius: 50%; cursor: pointer; z-index: 10; transition: transform 0.2s; }
+        .map-pin:hover { transform: scale(1.5); }
+        .map-pin::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; background: inherit; animation: pulse 2.5s infinite; }
+        .map-pin::after { content: attr(data-label); position: absolute; bottom: 150%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(10,15,30,0.95); color: white; padding: 0.6rem 1.1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; opacity: 0; visibility: hidden; transition: all 0.3s; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .map-pin:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); visibility: visible; }
+        
+        @keyframes pulse { 0% { width: 100%; height: 100%; opacity: 0.8; box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { width: 350%; height: 350%; opacity: 0; box-shadow: 0 0 0 10px rgba(255,255,255,0); } 100% { width: 100%; height: 100%; opacity: 0; } }
+        
+        .legend-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 0.6rem 1.25rem; border-radius: 50px; border: 1px solid var(--border); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-blue { background: var(--primary-light); box-shadow: 0 0 10px var(--primary-light); }
+        .dot-yellow { background: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+        .dot-red { background: #ff3333; box-shadow: 0 0 10px #ff3333; }
 
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-            border-left: 2px solid rgba(0, 153, 255, 0.3);
-            padding-left: 2rem;
-        }
+        /* FOOTER */
+        .footer { background: #060608; border-top: 1px solid var(--border); padding: 3rem 5%; display: flex; justify-content: space-between; align-items: center; }
+        .footer img { height: 28px; }
+        .footer span { color: var(--text-hint); font-size: 0.8rem; }
+        .footer-links a { color: var(--text-hint); text-decoration: none; font-size: 0.8rem; margin-left: 1.5rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--text-white); }
 
-        .timeline-item {
-            margin-bottom: 3rem;
-            position: relative;
-        }
+        /* MODALS (From Index) */
+        .modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; padding: 20px; backdrop-filter: blur(10px); background: rgba(0,0,0,0.8); }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; width: 100%; max-width: 400px; padding: 40px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: translateY(20px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal.active .modal-card { transform: translateY(0); }
+        .modal-avatar { width: 80px; height: 80px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; margin: 0 auto 20px; }
+        .modal-info { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .modal-link { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; font-size: 0.95rem; border: 1px solid #374151; transition: all 0.2s; }
+        .modal-link:hover { background: rgba(255,255,255,0.1); border-color: var(--primary-light); }
+        .modal-close { position: absolute; top: 20px; right: 20px; color: #9ca3af; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.6rem;
-            top: 0.5rem;
-            width: 1rem;
-            height: 1rem;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
-        }
+        /* SHARE */
+        .share-selector { position: relative; }
+        .share-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 8px; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); z-index: 1500; }
+        .share-selector:hover .share-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .share-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #9ca3af; text-decoration: none; font-size: 0.875rem; border-radius: 6px; transition: all 0.2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+        .share-option:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        .timeline-date {
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .timeline-item h3 {
-            margin-bottom: 0.5rem;
-            color: var(--text-white);
-        }
-
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .value-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-        }
-
-        .value-icon {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        /* CRITICAL MOBILE FIX (Conoce 2N) - INLINE TO BYPASS CACHE ISSUES */
-        @media (max-width: 1200px) {
-            .about-grid {
-                display: block !important;
-                gap: 0 !important;
-                margin-bottom: 3rem;
-                clear: both;
-            }
-
-            .about-image {
-                float: left !important;
-                width: 140px !important;
-                height: 140px !important;
-                margin-right: 1.25rem !important;
-                margin-bottom: 0.5rem !important;
-                border-radius: 12px !important;
-                border: none !important;
-                /* Simplify border for small size */
-            }
-
-            .about-image img {
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover !important;
-            }
-
-            .about-text {
-                display: block !important;
-                width: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: visible !important;
-                /* Prevent BFC */
-                text-align: left !important;
-            }
-
-            .about-text h2 {
-                text-align: left !important;
-                font-size: 1.3rem !important;
-                margin-top: -5px !important;
-                /* Visual alignment */
-                line-height: 1.1 !important;
-                margin-bottom: 0.5rem !important;
-            }
-
-            .about-text p {
-                text-align: left !important;
-                font-size: 0.95rem !important;
-                display: block !important;
-            }
-
-            .values-grid {
-                grid-template-columns: 1fr !important;
-                gap: 2rem !important;
-            }
+        @media (max-width: 1024px) {
+            .hero-container, .innovation-grid, .hierarchy-grid, .values-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-subtitle { margin: 0 auto; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 
 <body>
+    <!-- ── NAVBAR ── -->
     <nav class="navbar" id="navbar">
-        <a href="/" class="logo"><img src="assets/2N_Logo_RGB_White.png" alt="2N"></a>
+        <a href="/" class="logo">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+        </a>
         <ul class="nav-links">
-            <li><a href="/#solutions">Soluciones</a></li>
+            <li><a href="/#solutions" data-i18n="nav_solutions">Soluciones</a></li>
+            <li><a href="casos-exito.html" data-i18n="nav_cases">Casos de éxito</a></li>
+            <li><a href="productos.html">Productos</a></li>
+            <li><a href="company.html" data-i18n="nav_about" class="active">Sobre 2N</a></li>
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
-        <a href="login.html" class="btn-cta">Área Prescriptores</a>
+        <div class="nav-actions">
+            <div class="lang-selector">
+                <button class="lang-btn">
+                    <span class="fi fi-es"></span> <span>ES</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem;"></i>
+                </button>
+                <div class="lang-dropdown">
+                    <a href="#" class="lang-option" data-lang="es"><span class="fi fi-es"></span> Español</a>
+                    <a href="#" class="lang-option" data-lang="en"><span class="fi fi-gb"></span> English</a>
+                    <a href="#" class="lang-option" data-lang="pt"><span class="fi fi-pt"></span> Português</a>
+                    <a href="#" class="lang-option" data-lang="fr"><span class="fi fi-fr"></span> Français</a>
+                    <a href="#" class="lang-option" data-lang="it"><span class="fi fi-it"></span> Italiano</a>
+                </div>
+            </div>
+            <div class="share-selector" id="share-selector">
+                <button class="btn-nav" style="background:transparent; border:1px solid rgba(255,255,255,0.1); width: 42px; padding: 0.6rem 0; display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                </button>
+                <div class="share-dropdown">
+                    <button class="share-option wa" id="share-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+                    <button class="share-option mail" id="share-mail"><i class="fa-solid fa-envelope"></i> Email</button>
+                    <button class="share-option copy" id="share-copy"><i class="fa-solid fa-link"></i> Copiar enlace</button>
+                </div>
+            </div>
+            <button class="btn-nav" id="contact-btn" style="background:transparent; border:1px solid rgba(255,255,255,0.2); cursor:pointer;">
+                <i class="fa-solid fa-user-tie"></i> Contacto
+            </button>
+        </div>
     </nav>
 
-    <section class="solution-hero">
-        <div class="solution-hero-bg"></div>
-        <div class="solution-hero-content"
-            style="max-width: 1200px; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
-            <div>
-                <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
-                <span class="solution-badge">🏢 Sobre Nosotros</span>
-                <h1 class="company-title" style="margin-bottom: 1.5rem;">
-                    <span class="title-bold">Videoportero y Control de Accesos IP</span>
-                </h1>
-                <p class="solution-subtitle">Desde 1991, 2N ha liderado la innovación en telecomunicaciones y control de
-                    acceso. Hoy, como parte del grupo Axis Communications, definimos el estándar mundial en seguridad y
-                    diseño.</p>
+    <!-- ── HERO ── -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">Estándar Mundial en Intercomunicación IP</div>
+                <h1>Nuestra Misión:<br><span class="blue">Prescribir Excelencia.</span></h1>
+                <p class="hero-subtitle">Desde 1991, 2N lidera la innovación en control de acceso. Como parte estratégica de Axis Communications, definimos el futuro de la seguridad arquitectónica.</p>
             </div>
-            <div style="text-align: right; display: flex; justify-content: center; padding-top: 3rem;">
-                <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo"
-                    style="width: 100%; max-width: 400px; height: auto; opacity: 0.9;">
+            <div style="text-align: right; opacity: 0.15; pointer-events: none;">
+                <img src="assets/2N_Logo_RGB_White.png" alt="2N" style="width: 100%; max-width: 450px;">
             </div>
         </div>
     </section>
 
-    <section class="solution-content">
-        <div class="about-grid">
-            <div class="about-image">
-                <img src="assets/innovation_bg.jpg" alt="2N Innovation"
-                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+    <!-- ── INNOVACIÓN ── -->
+    <section>
+        <div class="innovation-grid">
+            <div class="innovation-img">
+                <img src="assets/innovation_bg.jpg" alt="Innovación 2N">
             </div>
-            <div class="about-text">
+            <div class="innovation-content">
+                <span style="color: var(--primary-light); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; display: block; margin-bottom: 1rem;">MÁS QUE SOFTWARE</span>
                 <h2>Innovación en nuestro ADN</h2>
-                <p>2N es una empresa líder mundial en el desarrollo y fabricación de sistemas de control de acceso e
-                    intercomunicadores IP. Con sede en Praga y presencia global, nos dedicamos a crear soluciones que
-                    hacen la vida más segura y cómoda.</p>
-                <p>En 2016, 2N pasó a formar parte de la familia Axis Communications, fortaleciendo nuestra posición en
-                    el mercado y ampliando nuestras capacidades de integración.</p>
-                <p>Nuestros productos se encuentran en los edificios más emblemáticos del mundo, desde oficinas
-                    corporativas en Nueva York hasta complejos residenciales de lujo en Dubái.</p>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- Company Structure Hierarchy -->
-    <section class="company-structure">
-        <div class="content-main" style="max-width: 100%;">
-            <center>
-                <div class="solution-badge"
-                    style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">Estructura
-                    del Grupo</div>
-                <h2 style="font-size: 2.5rem; margin-top: 1rem; margin-bottom: 4rem;">Fortaleza Global</h2>
-            </center>
-
-            <div class="hierarchy-container">
-                <!-- Canon -->
-                <div class="hierarchy-card card-canon">
-                    <div class="h-logo">CANON</div>
-                    <div class="h-data">
-                        <div class="h-metric"><strong>34B EUR</strong> <span>Ingresos</span></div>
-                        <div class="h-metric"><strong>184,000</strong> <span>Empleados</span></div>
-                        <div class="h-metric"><strong>Tokyo, Japan</strong> <span>HQ</span></div>
-                    </div>
-                </div>
-
-                <div class="connector-line"></div>
-
-                <!-- Axis -->
-                <div class="hierarchy-card card-axis">
-                    <div class="h-logo">AXIS</div>
-                    <div class="h-data">
-                        <div class="h-metric"><strong>1.4B EUR</strong> <span>Ingresos</span></div>
-                        <div class="h-metric"><strong>4,170</strong> <span>Empleados</span></div>
-                        <div class="h-metric"><strong>Lund, Sweden</strong> <span>HQ</span></div>
-                    </div>
-                </div>
-
-                <div class="connector-line"></div>
-
-                <!-- 2N -->
-                <div class="hierarchy-card card-2n">
-                    <div class="h-logo">2N</div>
-                    <div class="h-data">
-                        <div class="h-metric"><strong>96M EUR</strong> <span>Ingresos</span></div>
-                        <div class="h-metric"><strong>553</strong> <span>Empleados</span></div>
-                        <div class="h-metric"><strong>Prague, CZ</strong> <span>HQ</span></div>
-                    </div>
-                </div>
+                <p>2N es el desarrollador líder mundial de sistemas de control de acceso e intercomunicadores IP. Con sede en Praga, nos enfocamos en soluciones que integran diseño de vanguardia con seguridad industrial.</p>
+                <p>En 2016 nos unimos a Axis Communications, fusionando nuestra experiencia en intercomunicación con el líder mundial en vídeo en red. Una sinergia inmejorable para proyectos de gran escala.</p>
             </div>
         </div>
     </section>
 
-    <!-- Global Map Presence -->
-    <section class="global-presence">
-        <center>
-            <div class="solution-badge" style="background: rgba(0, 153, 255, 0.1); color: var(--primary);">Global Reach
+    <!-- ── ESTRUCTURA ── -->
+    <section style="background: var(--bg-section);">
+        <span class="section-label">RESPALDO CORPORATIVO</span>
+        <h2 class="section-title">Estructura Global del Grupo</h2>
+        
+        <div class="hierarchy-grid">
+            <div class="hierarchy-card">
+                <div class="h-logo" style="color:#C41230">CANON</div>
+                <div class="h-metric"><span>Ingresos</span><strong>34B EUR</strong></div>
+                <div class="h-metric"><span>Empleados</span><strong>184,000</strong></div>
+                <div class="h-metric"><span>Matriz</span><strong>Tokio, Japón</strong></div>
             </div>
-            <h2 style="font-size: 2.5rem; margin-top: 1rem; margin-bottom: 4rem;">Presencia Internacional</h2>
-        </center>
+            <div class="hierarchy-card">
+                <div class="h-logo">AXIS</div>
+                <div class="h-metric"><span>Ingresos</span><strong>1.4B EUR</strong></div>
+                <div class="h-metric"><span>Empleados</span><strong>4,170</strong></div>
+                <div class="h-metric"><span>HQ</span><strong>Lund, Suecia</strong></div>
+            </div>
+            <div class="hierarchy-card primary">
+                <div class="h-logo" style="color:var(--primary-light)">2N</div>
+                <div class="h-metric"><span>Ingresos</span><strong>96M EUR</strong></div>
+                <div class="h-metric"><span>Empleados</span><strong>553</strong></div>
+                <div class="h-metric"><span>HQ</span><strong>Praga, CZ</strong></div>
+            </div>
+        </div>
+    </section>
 
+    <!-- ── MAPA ── -->
+    <section class="map-section">
+        <span class="section-label">GLOBAL REACH</span>
+        <h2 class="section-title">Presencia Internacional</h2>
         <div class="map-container">
-            <img src="assets/gold-presence-map.png" alt="2N Global Map" class="map-bg" style="opacity: 1; width: 100%;">
-
-            <!-- Hotspots -->
-            <div class="map-pin pin-prague" data-label="HQ 2N Prague"></div>
-            <div class="map-pin pin-lund" data-label="HQ Axis Lund"></div>
-            <div class="map-pin pin-boston" data-label="Axis & 2N Boston"></div>
+            <img src="assets/gold-presence-map.png" alt="2N Global Reach" class="map-bg-svg">
         </div>
-
-
+        
+        <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; opacity: 0.8;">
+            * Estos son los países donde 2N suministra sus soluciones de intercomunicación y control de acceso IP.
+        </p>
     </section>
 
-    <section class="solution-content">
-        <div class="content-main" style="max-width: 100%;">
-            <center>
-                <h2>Hitos que definen nuestra historia</h2>
-            </center>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <span class="timeline-date">1991</span>
-                    <h3>Fundación en Praga</h3>
-                    <p>Nace 2N con la visión de innovar en el sector de las telecomunicaciones.</p>
-                </div>
-                <div class="timeline-item">
-                    <span class="timeline-date">2008</span>
-                    <h3>El primer intercomunicador IP</h3>
-                    <p>Lanzamiento del 2N IP Vario, el primer intercomunicador IP del mundo, revolucionando el mercado.
-                    </p>
-                </div>
-                <div class="timeline-item">
-                    <span class="timeline-date">2016</span>
-                    <h3>Unión con Axis Communications</h3>
-                    <p>2N se convierte en parte del líder mundial en vídeo en red, abriendo nuevas posibilidades de
-                        integración.</p>
-                </div>
-                <div class="timeline-item">
-                    <span class="timeline-date">2021</span>
-                    <h3>Lanzamiento de WaveKey</h3>
-                    <p>Tecnología patentada de acceso móvil más rápida y fiable del mercado.</p>
-                </div>
+    <!-- ── HITOS ── -->
+    <section>
+        <span class="section-label">TRAYECTORIA</span>
+        <h2 class="section-title">Hitos de nuestra Historia</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="timeline-date">1991</span>
+                <h3>Fundación en Praga</h3>
+                <p>Nace 2N con la misión de transformar las telecomunicaciones europeas.</p>
             </div>
-
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-award"></i></div>
-                    <h3>Calidad Premium</h3>
-                    <p>Diseño europeo y fabricación propia con los más altos estándares.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                    <h3>Innovación Continua</h3>
-                    <p>Invertimos el 14% de nuestros ingresos en I+D cada año.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-earth-europe"></i></div>
-                    <h3>Soporte Global</h3>
-                    <p>Presencia en más de 100 países con soporte técnico especializado.</p>
-                </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2008</span>
+                <h3>El 1º Intercomunicador IP</h3>
+                <p>Lanzamiento del 2N IP Vario, el primer intercomunicador IP del mundo.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2016</span>
+                <h3>Unión con Axis Communications</h3>
+                <p>Pasamos a formar parte de la familia Axis, potenciando nuestra capacidad global.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2021</span>
+                <h3>Lanzamiento de WaveKey</h3>
+                <p>Revolución móvil: la tecnología Bluetooth más rápida y segura del mercado.</p>
             </div>
         </div>
     </section>
 
+    <!-- ── VALORES ── -->
+    <section style="background: var(--bg-section);">
+        <span class="section-label">FILOSOFÍA 2N</span>
+        <h2 class="section-title">Valores que nos impulsan</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon"><i class="fa-solid fa-award"></i></div>
+                <h3>Calidad Premium</h3>
+                <p>Ingeniería europea con estándares de fabricación industrial y garantía extendida.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3>I+D Constante</h3>
+                <p>Invertimos más del 13% de nuestros ingresos anuales exclusivamente en I+D.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon"><i class="fa-solid fa-earth-europe"></i></div>
+                <h3>Ecosistema Abierto</h3>
+                <p>Nuestra tecnología se integra con los principales líderes del mercado (BIM, ONVIF, Domótica).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
     <footer class="footer">
-        <div class="footer-left">
+        <div>
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-            <span>© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+            <p style="margin-top: 1rem; opacity: 0.5; font-size: 0.75rem;">© 2024 2N Telekomunikace a.s. · Parte de Axis Communications</p>
         </div>
         <div class="footer-links">
             <a href="https://www.2n.com" target="_blank">2N.com</a>
-            <a href="login.html">Acceso prescriptores</a>
+            <a href="company.html">Sobre 2N</a>
         </div>
     </footer>
 
-    <script>
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
-    </script>
-</body>
+    <!-- ── MODAL CONTACTO ── -->
+    <div class="modal" id="contact-modal">
+        <div class="modal-card">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-avatar">DG</div>
+            <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 5px;">David Gaston</h3>
+            <p style="color: var(--primary-light); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 25px;">Prescripción 2N Iberia</p>
+            <div class="modal-info">
+                <a href="tel:+34660204003" class="modal-link"><i class="fa-solid fa-phone" style="color:var(--primary-light)"></i> +34 660 204 003</a>
+                <a href="mailto:gaston@2n.com" class="modal-link"><i class="fa-solid fa-envelope" style="color:var(--primary-light)"></i> gaston@2n.com</a>
+                <a href="https://wa.me/34660204003" class="modal-link" style="background: #25D366; border:none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Directo</a>
+            </div>
+        </div>
+    </div>
 
+    <script type="module" src="js/i18n.js"></script>
+    <script src="js/nav-controller.js?v=2.0"></script>
+</body>
 </html>

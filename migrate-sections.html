@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Migrar Bloques Destacados a Firebase</title>
+    <style>
+        body { font-family: system-ui; max-width: 800px; margin: 40px auto; background: #111; color: #fff; }
+        button { background: #2563EB; color: #fff; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-bottom: 20px;}
+        #log { background: #222; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; height: 500px; overflow-y: auto;}
+    </style>
+</head>
+<body>
+    <h1>Recuperación de Bloques Destacados al CMS</h1>
+    <p>Este script escaneará automáticamente todas tus páginas HTML (BTS, BTR, Oficinas, etc.), extraerá las fotos y textos que habías maquetado, y las incrustará nativamente en el nuevo CMS de Firebase.</p>
+    <button id="start-btn">Escanear y Migrar Bloques</button>
+    <div id="log">Esperando orden de escaneo...</div>
+
+    <script type="module">
+        import { db, auth } from './js/firebase-init.js';
+        import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+        const logEl = document.getElementById('log');
+        const log = (msg) => {
+            console.log(msg);
+            logEl.innerHTML += msg + '\\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        let userAuthed = false;
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userAuthed = true;
+                log("✅ Confirmado: Tienes acceso como administrador (" + user.email + ")");
+            } else {
+                log("❌ OJO: No estás logueado en el CMS. Inicia sesión en /login.html primero.");
+            }
+        });
+
+        const urls = [
+            { id: 'bts', url: 'solucion-bts.html' },
+            { id: 'btr', url: 'solucion-btr.html' },
+            { id: 'office', url: 'solucion-oficinas.html' },
+            { id: 'hotel', url: 'solucion-hoteles.html' },
+            { id: 'security', url: 'solucion-seguridad.html' }
+        ];
+
+        document.getElementById('start-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('start-btn');
+            btn.disabled = true;
+            btn.textContent = "Extrayendo...";
+
+            try {
+                for (const vertical of urls) {
+                    log(`\\n--- Escaneando y Migrando Vertical: ${vertical.id.toUpperCase()} ---`);
+                    
+                    // 1. Descargamos el archivo local
+                    const response = await fetch(vertical.url);
+                    if (!response.ok) {
+                        log(`⚠️ No se encontró la página ${vertical.url}, saltando...`);
+                        continue;
+                    }
+                    const htmlString = await response.text();
+                    
+                    // 2. Parseamos el HTML con DOMParser
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlString, 'text/html');
+                    
+                    // 3. Buscamos todos los bloques destacados
+                    const blocks = doc.querySelectorAll('.feature-block');
+                    if (blocks.length === 0) {
+                        log(`⚠️ No hay bloques que migrar en ${vertical.id}`);
+                        continue;
+                    }
+
+                    // 4. Guardar en Firebase uno por uno
+                    let orderCounter = 1;
+                    for (const block of blocks) {
+                        const eyebrowEl = block.querySelector('.feature-eyebrow');
+                        const titleEl = block.querySelector('.feature-title');
+                        const descEl = block.querySelector('.feature-desc');
+                        const imgEl = block.querySelector('.feature-img img');
+                        const pillsEl = block.querySelectorAll('.feature-pill');
+                        
+                        const layout = block.classList.contains('flip') ? 'right' : 'left';
+                        const eyebrow = eyebrowEl ? eyebrowEl.textContent.trim() : '';
+                        const title = titleEl ? titleEl.textContent.trim() : '';
+                        const text = descEl ? descEl.textContent.trim() : '';
+                        const imageUrl = imgEl ? imgEl.getAttribute('src') : '';
+                        const tags = Array.from(pillsEl).map(p => p.textContent.trim());
+
+                        const data = {
+                            layout, eyebrow, title, text, imageUrl, tags, 
+                            order: orderCounter++,
+                            createdAt: serverTimestamp()
+                        };
+
+                        const ref = collection(db, 'verticals', vertical.id, 'sections');
+                        await addDoc(ref, data);
+                        log(`  ✅ Insertado bloque: "${title.substring(0,25)}..."`);
+                    }
+                }
+                
+                log("\\n🎉¡TODAS LAS VERTICALES CLONADAS CON ÉXITO!🎉");
+                log("👉 Ya puedes ir a tu panel de /admin.html y verás absolutamente todo listo para editar en el CMS Studio.");
+            } catch (error) {
+                log("❌ ERROR CRÍTICO: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Finalizado";
+            }
+        });
+    </script>
+</body>
+</html>

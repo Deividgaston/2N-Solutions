@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Migración de Casos | 2N Presenter</title>
+    <style>
+        body { font-family: sans-serif; background: #0f1115; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { background: #1f2229; padding: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); text-align: center; max-width: 400px; }
+        h2 { color: #2563EB; }
+        p { color: #94a3b8; line-height: 1.5; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Migración de Casos</h2>
+        <p>Este proceso inyectará automáticamente los casos de éxito antiguos en la nueva Biblioteca Global de Firestore.</p>
+        <div id="status">Cargando Firebase...</div>
+    </div>
+
+    <script type="module">
+        import { db } from './js/firebase-init.js';
+        import { contentService } from './js/services/content.service.js';
+
+        const casesToMigrate = [
+            {
+                name: 'Torres Matiricos',
+                icon: 'fa-building',
+                imageUrl: 'assets/casos/image183.png',
+                description: 'Promoción residencial de gran volumen con 253 viviendas. Solución completa de videoportero IP con monitores en vivienda, control de garaje y zonas comunes. Integración con sistema contra incendios y PMS.',
+                items: ['1× IP Style — portal principal', '253× Indoor Compact — monitores en vivienda', '1× IP Verso — garaje', '17× Access Unit — zonas comunes', 'Integración sistema de incendios', 'Integración PMS'],
+                verticals: ['bts'],
+                order: 1
+            },
+            {
+                name: 'Residencial Dunique',
+                icon: 'fa-house-chimney-window',
+                imageUrl: 'assets/casos/image189.png',
+                description: 'Complejo residencial premium con viviendas unifamiliares y colectivas. El proyecto destaca por su integración dual: PMS para la gestión de propietarios y domótica para el control inteligente de las viviendas.',
+                items: ['2× IP Style — portales principales', '32× IP One — viviendas unifamiliares', '22× IP Verso — accesos vivienda', '8× Access Unit — zonas comunes', '94× App My2N — residentes', 'Integración PMS + Domótica'],
+                verticals: ['bts'],
+                order: 2
+            },
+            {
+                name: 'Residencial Natkam',
+                icon: 'fa-microchip',
+                imageUrl: 'assets/casos/image185.png',
+                description: 'Residencial de nueva construcción con integración de domótica avanzada. El sistema 2N se conecta mediante Node-RED al ecosistema domótico del edificio, permitiendo escenarios automatizados.',
+                items: ['1× IP Style — portal principal', '2× IP Verso — accesos secundarios', 'Integración Domótica completa', 'Node-RED para automatizaciones'],
+                verticals: ['bts'],
+                order: 3
+            },
+            {
+                name: 'Residencial Propia Valdebebas',
+                icon: 'fa-building-user',
+                imageUrl: 'assets/casos/image187.jpeg',
+                description: 'Desarrollo residencial en el nuevo barrio de Valdebebas, Madrid. Con 234 usuarios activos en la app My2N, este es uno de los proyectos con mayor adopción digital de toda la cartera.',
+                items: ['1× IP Style — portal', '2× IP Verso — accesos', '234× App My2N — propietarios activos', 'Integración PMS automatizada'],
+                verticals: ['bts'],
+                order: 4
+            },
+            {
+                name: 'Residencial Las Rosas Plaza',
+                icon: 'fa-building-circle-check',
+                imageUrl: 'assets/casos/image197.png',
+                description: 'Complejo residencial con solución mixta de videoporteros de representación en los portales principales y dispositivos IP Clip para cada vivienda individual.',
+                items: ['2× IP Style — portales principales', '26× IP Clip — accesos individuales de vivienda', '3× Access Unit — garaje y zona común'],
+                verticals: ['bts'],
+                order: 5
+            },
+            {
+                name: 'Soul Marbella',
+                icon: 'fa-umbrella-beach',
+                imageUrl: 'assets/casos/image184.png',
+                description: 'Proyecto residencial de lujo en la Costa del Sol con 29 Access Units gestionando todos los puntos de acceso del complejo. La integración con PMS permite al operador controlar de forma remota.',
+                items: ['29× Access Unit — zonas comunes y accesos', 'Integración PMS para gestión remota', 'Control parking, piscina, portales'],
+                verticals: ['bts'],
+                order: 6
+            },
+            {
+                name: 'Residencial Propia Sants',
+                icon: 'fa-key',
+                imageUrl: 'assets/casos/image196.jpeg',
+                description: 'Edificio de alquiler institucional (BTR) en el barrio de Sants, Barcelona. La gestora opera los 45 apartamentos sin personal de conserjería presencial. Gestión 100% remota.',
+                items: ['1× IP Verso — portal', '45× App My2N — inquilinos activos', 'Integración PMS', 'Gestión 100% remota'],
+                verticals: ['btr'],
+                order: 7
+            },
+            {
+                name: 'Residencial Propia Terrassa',
+                icon: 'fa-repeat',
+                imageUrl: 'assets/casos/image195.jpeg',
+                description: 'Réplica del modelo Sants en Terrassa. Misma arquitectura IT, misma plataforma My2N, misma integración PMS. El modelo es perfectamente escalable.',
+                items: ['1× IP Verso — portal', '45× App My2N', 'Integración PMS', 'Modelo replicable BTR'],
+                verticals: ['btr'],
+                order: 8
+            },
+            {
+                name: 'Hotel Four Seasons',
+                icon: 'fa-hotel',
+                imageUrl: 'assets/casos/image198.jpeg',
+                description: 'Una de las cadenas hoteleras más reconocidas del mundo confía en 2N para sus accesos principales. El videoportero IP Verso Full HD garantiza la identificación perfecta.',
+                items: ['5× IP Verso — accesos y entradas principales', '1× Integración con sistema de recepción', 'Full HD WDR — imagen en contraluces', 'Visión nocturna infrarroja'],
+                verticals: ['hotel'],
+                order: 9
+            },
+            {
+                name: 'Hotel Brach',
+                icon: 'fa-gem',
+                imageUrl: 'assets/casos/image202.jpeg',
+                description: 'Hotel boutique de alto diseño que combina estética premium con cumplimiento normativo de accesibilidad. Incluye zonas de refugio 2N.',
+                items: ['3× IP Verso — entradas principales', '4× Zonas de Refugio — accesibilidad normativa', '1× Recepción integrada SIP'],
+                verticals: ['hotel'],
+                order: 10
+            },
+            {
+                name: 'Oficinas Caser',
+                icon: 'fa-briefcase',
+                imageUrl: 'assets/casos/image201.jpeg',
+                description: 'Sede corporativa con uno de los despliegues más completos. El sistema cubre desde la entrada principal hasta cada subdepartamento con recepciones propias.',
+                items: ['1× IP Verso — entrada principal', '1× IP Style — recepción premium', '5× Access Unit — control de zonas', '14× Sub-recepciones SIP', '7× Zonas de Refugio normativas'],
+                verticals: ['office'],
+                order: 11
+            },
+            {
+                name: 'Universidad UDIT',
+                icon: 'fa-graduation-cap',
+                imageUrl: 'assets/casos/image199.png',
+                description: 'Campus universitario con control de acceso integral: desde los tornos de entrada principal hasta el control individual de 58 aulas mediante Bluetooth (BLE).',
+                items: ['5× IP Verso — tornos y accesos principales', '13× Access Unit — zonas de acceso', '58× Access Unit M — control de aulas', 'Acceso de estudiantes mediante BLE'],
+                verticals: ['security'],
+                order: 12
+            },
+            {
+                name: 'Edificios Ampans',
+                icon: 'fa-shield-halved',
+                imageUrl: 'assets/casos/image194.jpeg',
+                description: 'Complejo de edificios institucionales con control de acceso en 45 puntos. Integración con la centralita PBX existente y sistema de incendios.',
+                items: ['6× IP Verso — portales de edificios', '45× Access Unit — zonas de acceso', '1× Access Commander — plataforma centralizada', 'Integración PBX existente', 'Integración sistema de incendios'],
+                verticals: ['security'],
+                order: 13
+            }
+        ];
+
+        window.onload = async () => {
+            const status = document.getElementById('status');
+            status.textContent = 'Iniciando migración...';
+            
+            for (let i = 0; i < casesToMigrate.length; i++) {
+                const c = casesToMigrate[i];
+                try {
+                    status.textContent = `Migrando (${i+1}/${casesToMigrate.length}): ${c.name}`;
+                    await contentService.addGlobalCase(c);
+                } catch (e) {
+                    console.error('Error migrando', c.name, e);
+                }
+            }
+            
+            status.innerHTML = '<span style="color:#10b981">¡Migración completada con éxito!</span><br><br><a href="admin.html" style="color:#2563EB">Ir al Panel Admin</a>';
+        };
+    </script>
+</body>
+</html>

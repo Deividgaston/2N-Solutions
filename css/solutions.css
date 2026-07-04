@@ -1,14 +1,17 @@
+/* ── solutions.css ── variables ahora vienen de theme.css ── */
+/* Este archivo solo contiene overrides específicos de contenido dinámico */
 :root {
-    --primary: #0099FF;
-    --primary-dark: #0077CC;
-    --accent: #00E5FF;
-    --bg-black: #000000;
-    --bg-dark: #0A0A0A;
-    --bg-card: #111111;
-    --text-white: #FFFFFF;
-    --text-gray: #888888;
-    --gradient-primary: linear-gradient(135deg, #0099FF 0%, #00E5FF 100%);
-    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Aliases de compatibilidad (NO usar colores nuevos aquí) */
+    --primary:        #2563EB;
+    --primary-dark:   #1D4ED8;
+    --accent:         #3B82F6;
+    --bg-black:       #0A0A0F;
+    --bg-dark:        #0D1117;
+    --bg-card:        #111827;
+    --text-white:     #FFFFFF;
+    --text-gray:      #9CA3AF;
+    --gradient-primary: #2563EB; /* elimina gradiente cyan legacy */
+    --font:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -28,47 +31,7 @@ body {
     line-height: 1.6;
 }
 
-/* Navbar */
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 1.25rem 4%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: transparent;
-    transition: background 0.3s;
-}
-
-.navbar.scrolled {
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-}
-
-.logo img {
-    height: 60px;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-}
-
-.nav-links a {
-    color: var(--text-gray);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-
-.nav-links a:hover {
-    color: var(--text-white);
-}
+/* Navbar gestionada por theme.css */
 
 .btn-cta {
     background: var(--gradient-primary);
@@ -96,39 +59,69 @@ body {
 .solution-hero-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 153, 255, 0.15) 0%, transparent 50%), var(--bg-black);
+    /* Image is set here via JS */
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-black);
+}
+
+/* Gradient Overlay - Always on top of image */
+.solution-hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, 
+        rgba(0,0,0,0.9) 0%, 
+        rgba(0,0,0,0.7) 40%, 
+        rgba(0,0,0,0.3) 100%
+    );
+    z-index: 1;
 }
 
 .solution-hero-content {
     position: relative;
     max-width: 800px;
+    z-index: 2; /* Above the overlay */
 }
 
+/* Modern Glassmorphism Back Link */
 .back-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-gray);
+    color: var(--text-white); /* Always white for visibility */
     text-decoration: none;
     font-size: 0.9rem;
+    font-weight: 500;
     margin-bottom: 2rem;
-    transition: color 0.2s;
+    
+    /* Glass Effect */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
 .back-link:hover {
-    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .solution-badge {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: rgba(0, 153, 255, 0.1);
-    border: 1px solid rgba(0, 153, 255, 0.3);
+    background: rgba(0, 153, 255, 0.15); /* More visible bg */
+    border: 1px solid rgba(0, 153, 255, 0.4);
     border-radius: 50px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--primary);
+    color: #4db8ff; /* Brighter blue */
     margin-bottom: 1.5rem;
+    backdrop-filter: blur(5px);
 }
 
 .solution-hero h1 {
@@ -136,12 +129,14 @@ body {
     font-weight: 900;
     margin-bottom: 1rem;
     letter-spacing: -0.02em;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Shadow for readability */
 }
 
 .solution-subtitle {
     font-size: 1.2rem;
-    color: var(--text-gray);
+    color: #e0e0e0; /* Brighter gray */
     line-height: 1.6;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 /* Solution Content */
@@ -343,34 +338,7 @@ body {
 
 @media (max-width: 1200px) {
 
-    /* Navbar Mobile */
-
-    .nav-links {
-        display: flex;
-        /* Keep visible for share icons */
-        gap: 0;
-        margin-right: auto;
-        /* Align left */
-        padding-left: 1rem;
-    }
-
-    /* Hide text links (Soluciones, 2N.com) but keep share */
-    .nav-links li:not(.share-item) {
-        display: none;
-    }
-
-    /* Hide Login Button */
-    .btn-cta {
-        display: none;
-    }
-
-    /* Adjust Share Group for mobile */
-    .share-inline-group {
-        border-left: none;
-        /* Remove divider since links are gone */
-        padding-left: 0;
-        margin-left: 0;
-    }
+    /* Navbar mobile configuration now natively handled by theme.css */
 
     /* Hero Fixes */
     .solution-hero {
@@ -583,6 +551,17 @@ body {
     line-height: 1.2;
 }
 
+/* No Image Modifier */
+.dynamic-section.no-image {
+    justify-content: center;
+}
+
+.dynamic-section.no-image .ds-content {
+    flex: 0 1 1200px;
+    /* Don't stretch infinitely on ultra-wide screens */
+    width: 100%;
+}
+
 .ds-text {
     font-size: 1rem;
     line-height: 1.7;
@@ -591,7 +570,282 @@ body {
     /* Handle line breaks */
 }
 
-/* Buttons inside sections (if any, but usually text) */
+/* =========================================
+   SUCCESS CASES - GRID SYSTEM (Galería)
+   ========================================= */
+.casos-premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 400px)); /* Bloqueamos el máximo para que no se estiren */
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 4rem auto;
+    justify-content: flex-start; /* Alineamos a la izquierda para mantener el orden */
+}
+
+.caso-premium-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.caso-premium-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-light);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.caso-premium-photo {
+    height: 240px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: #000;
+}
+
+.caso-premium-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.caso-premium-card:hover .caso-premium-photo img {
+    transform: scale(1.08);
+}
+
+.caso-premium-vertical-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(10, 10, 15, 0.8);
+    backdrop-filter: blur(10px);
+    color: var(--primary-light);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    z-index: 2;
+    border: 1px solid rgba(79, 172, 254, 0.3);
+}
+
+.caso-premium-body {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.caso-premium-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+}
+
+.caso-premium-location {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.caso-premium-description {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* =========================================
+   SUCCESS CASES - ZIGZAG SYSTEM (Verticales)
+   ========================================= */
+.casos-zigzag-container {
+    max-width: 1200px;
+    margin: 6rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10rem;
+    padding: 0 40px;
+}
+
+.caso-zigzag-row {
+    display: flex;
+    align-items: center;
+    gap: 6rem;
+}
+
+.caso-zigzag-row:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.caso-zigzag-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: left;
+}
+
+.caso-zigzag-badge {
+    color: #4facfe; /* Azul brillante como tus soluciones */
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.caso-zigzag-title {
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: white;
+    letter-spacing: -0.01em;
+}
+
+.caso-zigzag-description {
+    font-size: 1.05rem;
+    color: rgb(156, 163, 175);
+    line-height: 1.6;
+    margin: 0.5rem 0;
+}
+
+.caso-zigzag-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.caso-zigzag-tag-item {
+    font-size: 0.75rem;
+    color: #4facfe;
+    background: rgba(79, 172, 254, 0.1);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    padding: 0.4rem 0.9rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.caso-zigzag-image {
+    flex: 1;
+    height: 450px; /* Altura fija obligatoria para todas */
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.5);
+    background: #000; /* Fondo negro por si la imagen tarda en cargar */
+}
+
+.caso-zigzag-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Forzado de encuadre homogéneo */
+    display: block;
+}
+
+/* Desktop Hover */
+.caso-zigzag-row:hover .caso-zigzag-image img {
+    transform: scale(1.02);
+    transition: transform 0.6s ease;
+}
+
+@media (max-width: 992px) {
+    .caso-zigzag-row, .caso-zigzag-row:nth-child(even) {
+        flex-direction: column;
+        gap: 2.5rem;
+        padding: 0 20px;
+    }
+    .casos-zigzag-container {
+        gap: 6rem;
+    }
+}
+
+.caso-premium-vertical-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 2;
+}
+
+.caso-premium-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.caso-premium-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.caso-premium-location {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.caso-premium-location i {
+    color: var(--primary);
+}
+
+.caso-premium-description {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.caso-premium-specs {
+    list-style: none;
+    padding: 0;
+    margin-top: auto;
+}
+
+.caso-premium-specs li {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.caso-premium-specs li i {
+    font-size: 0.4rem;
+    color: var(--primary);
+}
 
 /* Responsive */
 /* Conflicting media query removed to allow 768px block to control layout */

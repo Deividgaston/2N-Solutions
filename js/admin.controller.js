@@ -224,6 +224,27 @@ class AdminController {
             });
         }
 
+        // New Modals Bindings
+        const addTechBtn = document.getElementById('add-tech-btn');
+        if (addTechBtn) {
+            addTechBtn.addEventListener('click', () => {
+                this.editingTechId = null;
+                document.getElementById('tech-form').reset();
+                document.getElementById('tech-modal-title').textContent = 'Añadir Dispositivo';
+                document.getElementById('tech-modal').classList.add('active');
+            });
+        }
+
+        const addCaseBtn = document.getElementById('add-case-btn');
+        if (addCaseBtn) {
+            addCaseBtn.addEventListener('click', () => {
+                this.editingCaseId = null;
+                document.getElementById('case-form').reset();
+                document.getElementById('case-modal-title').textContent = 'Añadir Caso de Éxito';
+                document.getElementById('case-modal').classList.add('active');
+            });
+        }
+
         // Close modals
         document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
             el.addEventListener('click', () => {
@@ -298,6 +319,18 @@ class AdminController {
             saveSectionBtn.addEventListener('click', (e) => this.handleSaveSection(e));
         }
 
+        // Tech Form
+        const techFormEl = document.getElementById('tech-form');
+        if (techFormEl) {
+            techFormEl.addEventListener('submit', (e) => this.handleSaveTech(e));
+        }
+
+        // Case Form
+        const caseFormEl = document.getElementById('case-form');
+        if (caseFormEl) {
+            caseFormEl.addEventListener('submit', (e) => this.handleSaveCase(e));
+        }
+
         // Filter
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -312,24 +345,25 @@ class AdminController {
         });
 
         // Section Form Inputs (for Live Preview)
-        const inputs = [
-            'section-text',
-            'section-file'
-        ];
-        inputs.forEach(id => {
+        const updatePreviewHandler = () => this.updatePreview();
+        ['section-title', 'section-text', 'section-tags', 'section-file'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.addEventListener('input', () => this.updatePreview());
+            if (el) el.addEventListener('input', updatePreviewHandler);
         });
 
         // Layout radio buttons
-        document.querySelectorAll('input[name="section-layout"]').forEach(radio => {
-            radio.addEventListener('change', () => this.updatePreview());
+        document.querySelectorAll('input[name="section-layout"]').forEach(el => {
+            el.addEventListener('change', updatePreviewHandler);
         });
 
         // Alignment radio buttons
-        document.querySelectorAll('input[name="section-align"]').forEach(radio => {
-            radio.addEventListener('change', () => this.updatePreview());
+        document.querySelectorAll('input[name="section-align"]').forEach(el => {
+            el.addEventListener('change', updatePreviewHandler);
         });
+
+        // New Show Image Checkbox
+        const showImageCheck = document.getElementById('section-show-image');
+        if (showImageCheck) showImageCheck.addEventListener('change', updatePreviewHandler);
 
         // Intro Editor Bindings
         const addBenefitBtn = document.getElementById('add-benefit-btn');
@@ -1168,6 +1202,10 @@ class AdminController {
                 container.appendChild(card);
             });
 
+            // Load sub-modules
+            this.loadTechCards();
+            this.loadCases();
+
         } catch (error) {
             console.error('Error loading sections:', error);
             container.innerHTML = '<div class="error-state">Error al cargar contenido</div>';
@@ -1441,6 +1479,23 @@ class AdminController {
             }
         }
 
+        // Checkbox override for preview
+        const showImageCheck = document.getElementById('section-show-image');
+        if (showImageCheck && !showImageCheck.checked) {
+            if (previewPlaceholder) previewPlaceholder.style.display = 'block'; // Or hide entirely?
+            // User wants to see NO image. 
+            // In preview structure, we have .section-image. We should hide that container usually.
+            // But updatePreview doesn't fully control structure styles here, just content.
+            // Let's hide the image element itself if possible or add a class.
+
+            // Better: hide the .section-image div in preview card
+            const previewCardImageDiv = document.querySelector('#section-preview .section-image');
+            if (previewCardImageDiv) previewCardImageDiv.style.display = 'none';
+        } else {
+            const previewCardImageDiv = document.querySelector('#section-preview .section-image');
+            if (previewCardImageDiv) previewCardImageDiv.style.display = 'flex'; // Restore
+        }
+
         // Text updates
         const titleInput = document.getElementById('section-title');
         const textInput = document.getElementById('section-text');
@@ -1493,6 +1548,10 @@ class AdminController {
         const isVisibleCheck = document.getElementById('section-visible');
         if (isVisibleCheck) isVisibleCheck.checked = true;
 
+        // Reset Show Image to true
+        const showImageCheck = document.getElementById('section-show-image');
+        if (showImageCheck) showImageCheck.checked = true;
+
         // Reset Tabs
         this.resetInternalState();
         document.getElementById('section-modal').classList.add('active');
@@ -1544,6 +1603,12 @@ class AdminController {
         const isVisibleCheck = document.getElementById('section-visible');
         if (isVisibleCheck) {
             isVisibleCheck.checked = section.isVisible !== false;
+        }
+
+        // Handle Show Image
+        const showImageCheck = document.getElementById('section-show-image');
+        if (showImageCheck) {
+            showImageCheck.checked = section.showImage !== false;
         }
 
         // Set Pre-filled Image
@@ -1766,14 +1831,13 @@ class AdminController {
 
     async handleSaveSection(e) {
         e.preventDefault();
-        console.log('handleSaveSection Triggered', e.type); // DEBUG LOG
+        console.log('handleSaveSection Triggered', e.type);
 
         // Determine submit button based on event type
         let submitBtn;
         if (e.target.tagName === 'BUTTON') {
             submitBtn = e.target;
         } else {
-            // It was a form submit
             submitBtn = document.getElementById('save-section-btn') || e.target.querySelector('button[type="submit"]');
         }
 
@@ -1796,12 +1860,11 @@ class AdminController {
             let imageUrl = null;
             let storagePath = null;
 
-            // ... (image upload logic remains) ...
+            // HANDLE IMAGE LOGIC
             if (activeTab === 'upload') {
                 const fileInput = document.getElementById('section-file');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-
                     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
                     if (!validTypes.includes(file.type)) {
                         throw new Error('Formato no soportado. Usa JPG, PNG, WEBP o MP4.');
@@ -1810,7 +1873,7 @@ class AdminController {
                     const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')} `;
                     storagePath = `${this.currentMediaPath}/${fileName}`;
 
-                    // If Image, Compress. If Video, Upload direct.
+                    // Compress if image
                     let uploadData = file;
                     if (file.type.startsWith('image/')) {
                         uploadData = await compressImage(file, 1200, 0.75);
@@ -1819,19 +1882,23 @@ class AdminController {
                     const storageRef = ref(storage, storagePath);
                     const uploadTask = await uploadBytesResumable(storageRef, uploadData);
                     imageUrl = await getDownloadURL(uploadTask.ref);
-                } else if (!imageUrl && this.selectedGalleryImage) {
-                    // Fallback to existing image selection if no new file uploaded
+                } else if (this.selectedGalleryImage) {
+                    // Fallback to gallery selection if tab is upload but no file
                     imageUrl = this.selectedGalleryImage;
                 }
             } else if (this.selectedGalleryImage) {
+                // Tab is gallery
                 imageUrl = this.selectedGalleryImage;
             }
 
-            // FINAL FAILSAFE: If updating and still no URL, keep original
+            // FINAL FAILSAFE: If updating and still no URL (user didn't change image), keep original
+            // This prevents overwriting existing image with null if user just edits text
             if (!imageUrl && this.editingSectionId) {
                 const originalSection = this.sections.find(s => s.id === this.editingSectionId);
                 if (originalSection && originalSection.imageUrl) {
-                    console.warn('Recovering lost image URL from original section state');
+                    // Only keep if we didn't explicitly want to remove it? 
+                    // Assume null means "no change" in this context unless we implemented a specific "remove image" button.
+                    console.warn('Recovering lost image URL from original section state', originalSection.imageUrl);
                     imageUrl = originalSection.imageUrl;
                 }
             }
@@ -1840,14 +1907,18 @@ class AdminController {
                 title,
                 tags,
                 text,
-                imageUrl,
-                imagePath: storagePath,
-                layout,
-                imagePath: storagePath,
+                imageUrl, // might be null or old url
                 layout,
                 textAlign,
-                isVisible: document.getElementById('section-visible').checked
+                showImage: document.getElementById('section-show-image')?.checked !== false, // read checkbox
+                isVisible: document.getElementById('section-visible').checked,
+                updatedAt: serverTimestamp()
             };
+
+            // Only add path if we uploaded new one
+            if (storagePath) {
+                data.imagePath = storagePath;
+            }
 
             if (this.editingSectionId) {
                 await contentService.updateSection(this.currentVertical, this.editingSectionId, data);
@@ -1857,13 +1928,16 @@ class AdminController {
 
             document.getElementById('section-modal').classList.remove('active');
             this.loadSections();
-            this.loadMultimediaGallery();
+            this.loadMultimediaGallery(); // Refresh gallery in case we uploaded
 
         } catch (error) {
+            console.error('Save Error:', error);
             alert(error.message);
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
         }
     }
 
@@ -1963,6 +2037,174 @@ class AdminController {
         }
         document.getElementById('asset-picker-modal').classList.remove('active');
     }
+
+    // ============================
+    // NEW CMS MANAGER METHODS
+    // ============================
+
+    async loadTechCards() {
+        if (this.currentSection !== 'content') return;
+        const container = document.getElementById('tech-cards-container');
+        if (!container) return;
+        container.innerHTML = '<div class="loader">Cargando dispositivos...</div>';
+
+        try {
+            const cards = await contentService.getTechCards(this.currentVertical);
+            if (cards.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No hay dispositivos configurados</p></div>';
+                return;
+            }
+            container.innerHTML = '';
+            cards.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'section-card layout-left';
+                el.innerHTML = `
+                    <div class="section-content">
+                        <div class="section-info">
+                            <span class="role-badge" style="background:var(--primary);color:#fff;">${c.label}</span>
+                            <h4 class="section-title" style="margin-top:5px;">${c.name}</h4>
+                            <p class="section-text" style="font-size:0.85rem;margin:5px 0;">${c.desc}</p>
+                            <div class="section-tags">
+                                ${(c.tags || []).map(t => '<span class="role-badge prescriptor">'+t+'</span>').join(' ')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn-icon" onclick="adminController.editTech('${c.id}')" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-icon delete" onclick="adminController.deleteTech('${c.id}')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            this.techCardsData = cards;
+        } catch (e) {
+            console.error('Error loadTechCards', e);
+            container.innerHTML = '<div class="error-state">Error cargando dispositivos</div>';
+        }
+    }
+
+    async handleSaveTech(e) {
+        e.preventDefault();
+        const data = {
+            label: document.getElementById('tech-label').value.trim(),
+            name: document.getElementById('tech-name').value.trim(),
+            desc: document.getElementById('tech-desc').value.trim(),
+            tags: document.getElementById('tech-tags').value.split(',').map(t=>t.trim()).filter(t=>t)
+        };
+        try {
+            if (this.editingTechId) {
+                await contentService.updateTechCard(this.currentVertical, this.editingTechId, data);
+            } else {
+                await contentService.addTechCard(this.currentVertical, data);
+            }
+            document.getElementById('tech-modal').classList.remove('active');
+            this.loadTechCards();
+        } catch (error) {
+            alert("Error guardando: " + error.message);
+        }
+    }
+
+    editTech(id) {
+        const c = this.techCardsData?.find(x => x.id === id);
+        if(!c) return;
+        this.editingTechId = id;
+        document.getElementById('tech-modal-title').textContent = 'Editar Dispositivo';
+        document.getElementById('tech-label').value = c.label || '';
+        document.getElementById('tech-name').value = c.name || '';
+        document.getElementById('tech-desc').value = c.desc || '';
+        document.getElementById('tech-tags').value = (c.tags || []).join(', ');
+        document.getElementById('tech-modal').classList.add('active');
+    }
+
+    async deleteTech(id) {
+        if(!confirm("¿Eliminar dispositivo?")) return;
+        try {
+            await contentService.deleteTechCard(this.currentVertical, id);
+            this.loadTechCards();
+        } catch(e) {
+            alert('Error eliminando: ' + e.message);
+        }
+    }
+
+    async loadCases() {
+        if (this.currentSection !== 'content') return;
+        const container = document.getElementById('cases-container');
+        if (!container) return;
+        container.innerHTML = '<div class="loader">Cargando casos...</div>';
+        try {
+            const cases = await contentService.getCases(this.currentVertical);
+            if (cases.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No hay casos configurados</p></div>';
+                return;
+            }
+            container.innerHTML = '';
+            cases.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'section-card layout-left';
+                el.innerHTML = `
+                    <div class="section-content">
+                        <div class="section-info">
+                            <h4 class="section-title"><i class="fa-solid ${c.icon}" style="color:var(--primary);margin-right:8px;"></i>${c.name}</h4>
+                            <ul style="margin:10px 0; padding-left:15px; color:var(--text-secondary); font-size:12px;">
+                                ${(c.items || []).map(i => '<li>'+i+'</li>').join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn-icon" onclick="adminController.editCase('${c.id}')" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-icon delete" onclick="adminController.deleteCase('${c.id}')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            this.casesData = cases;
+        } catch (e) {
+            console.error('Error loadCases', e);
+            container.innerHTML = '<div class="error-state">Error cargando casos</div>';
+        }
+    }
+
+    async handleSaveCase(e) {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('case-name').value.trim(),
+            icon: document.getElementById('case-icon').value.trim() || 'fa-building',
+            items: document.getElementById('case-items').value.split('\\n').map(i=>i.trim()).filter(i=>i)
+        };
+        try {
+            if (this.editingCaseId) {
+                await contentService.updateCase(this.currentVertical, this.editingCaseId, data);
+            } else {
+                await contentService.addCase(this.currentVertical, data);
+            }
+            document.getElementById('case-modal').classList.remove('active');
+            this.loadCases();
+        } catch (error) {
+            alert("Error guardando caso: " + error.message);
+        }
+    }
+
+    editCase(id) {
+        const c = this.casesData?.find(x => x.id === id);
+        if(!c) return;
+        this.editingCaseId = id;
+        document.getElementById('case-modal-title').textContent = 'Editar Caso';
+        document.getElementById('case-name').value = c.name || '';
+        document.getElementById('case-icon').value = c.icon || 'fa-building';
+        document.getElementById('case-items').value = (c.items || []).join('\\n');
+        document.getElementById('case-modal').classList.add('active');
+    }
+
+    async deleteCase(id) {
+        if(!confirm("¿Eliminar caso de éxito?")) return;
+        try {
+            await contentService.deleteCase(this.currentVertical, id);
+            this.loadCases();
+        } catch(e) {
+            alert('Error eliminando: ' + e.message);
+        }
+    }
+
 }
 
 // Crear instancia única y exponer globalmente

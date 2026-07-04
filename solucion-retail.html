@@ -1,121 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail | 2N Solutions</title>
-    <meta name="description"
-        content="Soluciones 2N para centros comerciales y retail. Seguridad, análisis y gestión de accesos.">
+    <title>Retail y Comercial | 2N Soluciones de Acceso IP</title>
+    <meta name="description" content="Control de acceso IP 2N para retail, centros comerciales y flagship stores. Diseño Red Dot Award, ONVIF, gestión multi-tienda y acceso a zonas restringidas.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/solutions.css?v=mobile_Fix_7">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css?v=2.0">
+    <link rel="stylesheet" href="css/solutions.css?v=2.0">
     <style>
-        /* CRITICAL MOBILE FIX - INLINE TO BYPASS CACHE ISSUES */
-        @media (max-width: 1200px) {
-
-            .dynamic-section,
-            .dynamic-section.layout-right {
-                display: block !important;
-                flex-direction: unset !important;
-                gap: 0 !important;
-                margin-bottom: 3rem;
-                clear: both;
-                overflow: visible !important;
-            }
-
-            .ds-image-wrapper {
-                float: left !important;
-                width: 140px !important;
-                height: 140px !important;
-                margin-right: 1.25rem !important;
-                margin-bottom: 0.5rem !important;
-                flex: none !important;
-                border-radius: 12px;
-            }
-
-            .ds-content {
-                display: block !important;
-                width: auto !important;
-                float: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: visible !important;
-                text-align: left !important;
-            }
-
-            .ds-title {
-                text-align: left !important;
-                font-size: 1.3rem;
-                margin-top: -5px !important;
-                /* Visual alignment with image top */
-                line-height: 1.1 !important;
-            }
-
-            .ds-text {
-                text-align: left !important;
-                font-size: 0.95rem;
-                display: block !important;
-            }
-        }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; }
+        .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-bottom: 4rem; }
+        .intro-text h2 { font-size: 1.75rem; font-weight: 600; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .intro-text p { color: var(--text-muted); line-height: 1.75; font-size: 0.95rem; margin-bottom: 1rem; }
+        .quote-block { border-left: 2px solid var(--primary); padding: 1.25rem 1.5rem; margin: 2rem 0; background: rgba(37,99,235,0.05); border-radius: 0 8px 8px 0; }
+        .quote-block p { color: var(--text-white); font-style: italic; font-size: 1rem; margin: 0; }
+        .benefits-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 2rem 0; }
+        .benefit-card { background: var(--bg-card); border: 0.5px solid var(--border); border-top: 2px solid var(--primary); border-radius: 8px; padding: 1.25rem; }
+        .benefit-card-icon { width: 36px; height: 36px; background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.2); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--primary-light); font-size: 0.9rem; margin-bottom: 0.85rem; }
+        .benefit-card h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .benefit-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.6; }
+        .tech-section { background: var(--bg-deep); padding: 5rem 5%; border-top: 1px solid var(--border); }
+        .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 1200px; margin: 0 auto; }
+        .tech-card { background: var(--bg-card); border: 0.5px solid var(--border); border-top: 2px solid var(--primary); border-radius: 8px; padding: 1.5rem; }
+        .tech-card-label { font-size: 0.65rem; font-weight: 600; color: var(--primary-light); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .tech-card-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.6rem; }
+        .tech-card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+        .tech-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.85rem; }
+        .tech-tag { font-size: 0.68rem; font-weight: 500; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); color: var(--primary-light); padding: 0.2rem 0.55rem; border-radius: 3px; }
+        .integrations-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+        .integration-tag { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.8rem; }
+        .cta-section { background: linear-gradient(135deg, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0.02) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4rem 5%; text-align: center; }
+        .cta-section h2 { font-size: 1.75rem; font-weight: 500; margin-bottom: 0.75rem; }
+        .cta-section p { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .cta-primary { background: var(--primary); color: #fff; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.2s, transform 0.2s; }
+        .cta-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .cta-secondary { background: transparent; color: var(--text-white); padding: 0.85rem 2rem; border-radius: 6px; border: 1px solid var(--border); text-decoration: none; font-weight: 500; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+        .cta-secondary:hover { border-color: var(--primary-light); color: var(--primary-light); }
+        @media (max-width: 1024px) { .intro-grid { grid-template-columns: 1fr; } .tech-grid { grid-template-columns: repeat(2, 1fr); } .benefits-cards { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
-
 <body data-vertical="retail">
 
     <nav class="navbar" id="navbar">
-        <a href="/" class="logo"><img src="assets/2N_Logo_RGB_White.png" alt="2N"></a>
+        <a href="/" class="logo">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+        </a>
         <ul class="nav-links">
-            <li><a href="/#solutions">Soluciones</a></li>
+            <li><a href="/#solutions" data-i18n="nav_solutions" class="active">Soluciones</a></li>
+            <li><a href="casos-exito.html" data-i18n="nav_cases">Casos de éxito</a></li>
+            <li><a href="productos.html">Productos</a></li>
+            <li><a href="company.html" data-i18n="nav_about">Sobre 2N</a></li>
             <li><a href="https://www.2n.com" target="_blank">2N.com</a></li>
         </ul>
-        <a href="login.html" class="btn-cta">Área Prescriptores</a>
+        <div class="nav-actions">
+            <div class="lang-selector">
+                <button class="lang-btn">
+                    <span class="fi fi-es"></span> <span>ES</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem;"></i>
+                </button>
+                <div class="lang-dropdown">
+                    <a href="#" class="lang-option" data-lang="es"><span class="fi fi-es"></span> Español</a>
+                    <a href="#" class="lang-option" data-lang="en"><span class="fi fi-gb"></span> English</a>
+                    <a href="#" class="lang-option" data-lang="pt"><span class="fi fi-pt"></span> Português</a>
+                    <a href="#" class="lang-option" data-lang="fr"><span class="fi fi-fr"></span> Français</a>
+                    <a href="#" class="lang-option" data-lang="it"><span class="fi fi-it"></span> Italiano</a>
+                </div>
+            </div>
+            
+            <div class="share-selector" id="share-selector">
+                <button class="btn-nav" style="background:transparent; border:1px solid rgba(255,255,255,0.1); width: 42px; padding: 0.6rem 0; display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                </button>
+                <div class="share-dropdown">
+                    <button class="share-option wa" id="share-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+                    <button class="share-option mail" id="share-mail"><i class="fa-solid fa-envelope"></i> Email</button>
+                    <button class="share-option copy" id="share-copy"><i class="fa-solid fa-link"></i> Copiar enlace</button>
+                </div>
+            </div>
+            <button class="btn-nav" id="contact-btn" style="background:transparent; border:1px solid rgba(255,255,255,0.2); cursor:pointer;">
+                <i class="fa-solid fa-user-tie"></i> Contacto
+            </button>
+        </div>
     </nav>
 
     <section class="solution-hero">
-        <div class="solution-hero-bg"></div>
         <div class="solution-hero-content">
-            <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
-            <span class="solution-badge">🛍️ Retail</span>
-            <h1>Retail</h1>
-            <p class="solution-subtitle">Centros comerciales y espacios comerciales. Seguridad de activos, eficiencia
-                operativa y experiencia de cliente fluida.</p>
-            <button id="download-dossier-btn" class="btn-cta" style="margin-top: 1.5rem;">
-                <i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF
-            </button>
+            <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a soluciones</a>
+            <span class="solution-badge">COMERCIAL · RETAIL Y CENTROS COMERCIALES</span>
+            <h1>...</h1>
+            <p class="solution-subtitle" style="max-width:680px;">...</p>
+            <button id="download-dossier-btn"><i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF Retail</button>
         </div>
     </section>
 
     <section class="solution-content">
-        <div class="content-grid" style="grid-template-columns: 1fr;">
-            <div class="content-main">
-                <h2>Seguridad inteligente para el retail</h2>
-                <p>El sector retail demanda soluciones que protejan los activos sin entorpecer la experiencia de compra.
-                    2N ofrece control de accesos que se integra con sistemas de videovigilancia y gestión de almacenes.
-                </p>
-
-                <p>Optimiza la gestión de empleados y proveedores, asegurando que solo el personal autorizado acceda a
-                    áreas sensibles.</p>
-
-                <h3>Beneficios para el gestor</h3>
-                <ul class="benefits-list">
-                    <li><i class="fa-solid fa-check"></i> <strong>Protección de activos:</strong> Control estricto de
-                        almacenes y oficinas</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Gestión de proveedores:</strong> Accesos temporales
-                        para entregas</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Eficiencia operativa:</strong> Apertura remota y
-                        gestión centralizada</li>
-                    <li><i class="fa-solid fa-check"></i> <strong>Integración CCTV:</strong> Vinculación de eventos de
-                        acceso con vídeo</li>
-                </ul>
-
-                <div id="dynamic-sections-container" class="dynamic-sections-container">
-                    <!-- Dynamic sections from private area will be injected here -->
+        <div class="content-wrapper">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <h2>...</h2>
+                    <p>...</p>
+                </div>
+                <div>
+                    <div class="benefits-cards">
+                        <!-- Dynamic Benefits -->
+                    </div>
                 </div>
             </div>
+
+            <h3 style="font-size:0.72rem;font-weight:600;color:var(--primary-light);margin-bottom:1.5rem;letter-spacing:0.04em;text-transform:uppercase;">Soluciones por zona</h3>
+            <ul class="benefits-list">
+                <!-- Dynamic List Items -->
+            </ul>
+
+            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones disponibles</h3>
+            <div class="integrations-row">
+                <span class="integration-tag">Milestone Xprotect</span>
+                <span class="integration-tag">Genetec Security Center</span>
+                <span class="integration-tag">Avigilon</span>
+                <span class="integration-tag">ONVIF (cualquier VMS)</span>
+                <span class="integration-tag">Access Commander</span>
+                <span class="integration-tag">Node-RED automatizaciones</span>
+                <span class="integration-tag">APIs abiertas REST</span>
+                <span class="integration-tag">Sistemas contra incendios</span>
+                <span class="integration-tag">BMS (control de edificio)</span>
+            </div>
+            
+            <!-- DYNAMIC SECTIONS CONTAINER -->
+            <div id="dynamic-sections-container" class="dynamic-sections-container"></div>
+        </div>
+    </section>
+
+    <section class="tech-section">
+        <div class="section-header">
+            <span class="section-label">Tecnología 2N</span>
+            <h2 class="section-title">Dispositivos para espacios comerciales</h2>
+        </div>
+        <div class="tech-grid">
+            <!-- Dynamic Tech Cards -->
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>¿Tienes un proyecto retail?</h2>
+        <p>Desde una flagship store hasta una cadena con cientos de locales. Diseñamos la arquitectura de acceso para cada tipología y te damos soporte técnico desde la especificación hasta la puesta en marcha.</p>
+        <div class="cta-buttons">
+            <a href="mailto:gaston@2n.com?subject=Solicitud de información técnica - Retail&body=Hola David,%0D%0A%0D%0ASolicito información para saber de las soluciones de 2N para mis proyectos de Retail. Me gustaría recibir una especificación técnica detallada y conocer cómo vuestra tecnología puede elevar el valor de mis obras.%0D%0A%0D%0ARuego se pongan en contacto conmigo para ampliar detalles.%0D%0A%0D%0ASaludos cordiales." class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
+            <a href="/" class="cta-secondary">Ver otras soluciones</a>
         </div>
     </section>
 
@@ -126,20 +163,31 @@
         </div>
         <div class="footer-links">
             <a href="https://www.2n.com" target="_blank">2N.com</a>
-            <a href="login.html">Acceso prescriptores</a>
+            <a href="company.html">Sobre 2N</a>
+
         </div>
     </footer>
+
+    <div class="modal" id="contact-modal">
+        <div class="modal-card">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-avatar">DG</div>
+            <h3 class="modal-name">David Gaston</h3>
+            <p class="modal-dept">Prescripción 2N Iberia</p>
+            <div class="modal-info">
+                <a href="tel:+34660204003" class="modal-link"><i class="fa-solid fa-phone" style="color:var(--primary-light)"></i> +34 660 204 003</a>
+                <a href="mailto:gaston@2n.com" class="modal-link"><i class="fa-solid fa-envelope" style="color:var(--primary-light)"></i> gaston@2n.com</a>
+                <a href="https://wa.me/34660204003" class="modal-link" style="background:#25D366; border:none; color:white;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Directo</a>
+            </div>
+            <p style="font-size:0.75rem; color:#6b7280;">Especialista en soluciones de control de acceso IP y soporte a la prescripción técnica.</p>
+        </div>
+    </div>
 
     <script src="js/html2pdf.bundle.min.js"></script>
     <script type="module" src="js/firebase-init.js"></script>
     <script type="module" src="js/vertical-renderer.js?v=2.0"></script>
     <script type="module" src="js/pdf-handler.js"></script>
-    <script type="module" src="js/share.js"></script>
-    <script>
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
-    </script>
+    <script type="module" src="js/i18n.js"></script>
+    <script src="js/nav-controller.js?v=2.0"></script>
 </body>
-
 </html>

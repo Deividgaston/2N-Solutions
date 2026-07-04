@@ -7,6 +7,9 @@
     },
     "hosting": {
         "site": "specifications-solutions-2n",
+        "predeploy": [
+            "bash scripts/optimize-assets.sh"
+        ],
         "public": ".",
         "ignore": [
             "firebase.json",
@@ -15,28 +18,24 @@
             "README.md",
             "firestore.rules"
         ],
-        "rewrites": [
-            {
-                "source": "**",
-                "destination": "/index.html"
-            }
-        ],
+        "cleanUrls": true,
+        "trailingSlash": false,
         "headers": [
             {
                 "source": "**/*.@(jpg|jpeg|gif|png|webp|svg|ico)",
                 "headers": [
                     {
                         "key": "Cache-Control",
-                        "value": "max-age=31536000"
+                        "value": "public, max-age=31536000, immutable"
                     }
                 ]
             },
             {
-                "source": "**/*.@(js|css)",
+                "source": "**/*.@(js|css|html)",
                 "headers": [
                     {
                         "key": "Cache-Control",
-                        "value": "no-cache, no-store, must-revalidate"
+                        "value": "public, max-age=3600, must-revalidate"
                     }
                 ]
             }

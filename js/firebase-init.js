@@ -29,8 +29,17 @@ setPersistence(auth, browserLocalPersistence).catch((err) => {
 
 // Firestore with offline persistence
 const db = getFirestore(app);
-// Persistence removed to prevent "already started" race conditions in Admin
-// enableIndexedDbPersistence(db)...
+
+// Enable persistence to reduce reads and allow offline access
+enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code == 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a time.
+        console.warn('Firestore persistence failed: Multiple tabs open');
+    } else if (err.code == 'unimplemented') {
+        // The current browser doesn't support all of the features required to enable persistence
+        console.warn('Firestore persistence is not supported by this browser');
+    }
+});
 
 // Storage
 const storage = getStorage(app);

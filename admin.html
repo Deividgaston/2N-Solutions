@@ -1,572 +1,566 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2N Especificación | Admin</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>2N Presenter - CMS Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/admin-preview.css">
+    <link rel="stylesheet" href="css/cms.css">
+    <!-- Drag & Drop Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 </head>
-
-<body class="admin-page">
+<body>
 
     <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
-                <img src="assets/2N_Logo_RGB_White.png" alt="2N" style="height: 32px; vertical-align: middle;">
-                <span class="logo-presenter">Especificación</span>
-            </a>
+    <aside class="cms-sidebar">
+        <div class="cms-logo">
+            <img src="assets/2N_Logo_RGB_White.png" alt="2N Logo"> CMS Studio
         </div>
-
-        <nav class="sidebar-nav">
-            <a href="#users" class="nav-item active" data-section="users">
-                <i class="fa-solid fa-users"></i>
-                <span data-i18n="admin.users">Usuarios</span>
-            </a>
-            <a href="#assets" class="nav-item" data-section="assets">
-                <i class="fa-solid fa-images"></i>
-                <span data-i18n="admin.assets">Archivos</span>
-            </a>
-            <a href="#content" class="nav-item" data-section="content">
-                <i class="fa-solid fa-layer-group"></i>
-                <span data-i18n="admin.content">Contenido</span>
-            </a>
+        <nav class="cms-nav">
+            <div class="nav-item active" data-view="content"><i class="fa-solid fa-layer-group"></i> Gestión de Contenido</div>
+            <div class="nav-item" data-view="global-cases"><i class="fa-solid fa-trophy"></i> Biblioteca de Casos</div>
+            <div class="nav-item" data-view="global-products"><i class="fa-solid fa-box-open"></i> Portfolio de Productos</div>
+            <div class="nav-item" data-view="users"><i class="fa-solid fa-users"></i> Gestión de Usuarios</div>
+            <div class="nav-item" data-view="media"><i class="fa-solid fa-images"></i> Explorador Multimedia</div>
+            <div style="flex:1"></div>
+            <div class="nav-item" id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</div>
         </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <i class="fa-solid fa-user-shield"></i>
-                <span id="current-user-email">admin@2n.com</span>
-            </div>
-            <button class="btn-logout" onclick="logout()">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span data-i18n="admin.logout">Cerrar Sesión</span>
-            </button>
-        </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-
-        <!-- Users Section -->
-        <section id="users-section" class="admin-section active">
-            <header class="section-header">
-                <h1><i class="fa-solid fa-users"></i> <span data-i18n="admin.users">Gestión de Usuarios</span></h1>
-                <button class="btn btn-primary" id="add-user-btn">
-                    <i class="fa-solid fa-plus"></i>
-                    <span data-i18n="common.add">Añadir</span>
-                </button>
-            </header>
-
-            <div class="data-table-wrapper">
-                <table class="data-table" id="users-table">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Nombre</th>
-                            <th>Rol</th>
-                            <th>Idioma</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="users-tbody">
-                        <!-- Dynamic content -->
-                    </tbody>
-                </table>
+    <!-- Main Workspace -->
+    <main class="cms-workspace">
+        <header class="cms-header">
+            <div class="cms-header-title">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent)"></i> 
+                <span>Personalización B2B Total</span>
             </div>
-        </section>
+            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                Autoguardado activado en Firebase <i class="fa-solid fa-cloud-check" style="color:var(--success)"></i>
+            </div>
+        </header>
 
-        <!-- Assets Section -->
-        <section id="assets-section" class="admin-section">
-            <header class="section-header">
-                <h1><i class="fa-solid fa-images"></i> <span data-i18n="admin.assets">Gestión de Archivos</span></h1>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" id="create-folder-btn">
-                        <i class="fa-solid fa-folder-plus"></i>
-                        <span>Nueva Carpeta</span>
-                    </button>
-                    <button class="btn btn-primary" id="upload-asset-btn">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>Subir Archivos</span>
-                    </button>
+        <div class="cms-content">
+            
+            <div id="view-content" class="cms-view active">
+            <!-- Selector de Vertical -->
+            <div class="vertical-selector" id="vertical-selector">
+                <div class="vertical-pill active" data-id="bts">Residencial BTS</div>
+                <div class="vertical-pill" data-id="btr">Residencial BTR</div>
+                <div class="vertical-pill" data-id="office">Oficinas</div>
+                <div class="vertical-pill" data-id="hotel">Hoteles</div>
+                <div class="vertical-pill" data-id="security">Seguridad</div>
+                <div class="vertical-pill" data-id="retail">Retail</div>
+            </div>
+
+            <!-- Módulo Hero / Portada -->
+            <div class="cms-module">
+                <div class="cms-module-header">
+                    <div>
+                        <h2 class="cms-module-title"><i class="fa-solid fa-image"></i> Diseño Principal (Hero)</h2>
+                        <p class="cms-module-desc">Configura lo primero que ve el cliente al entrar en la página.</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" id="save-hero">Guardar Cambios</button>
                 </div>
-            </header>
-
-            <div class="assets-filters">
-                <div class="filter-group">
-                    <label>Ver:</label>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">Todas</button>
-                        <button class="filter-btn" data-filter="image">Imágenes</button>
-                        <button class="filter-btn" data-filter="video">Videos</button>
+                <div class="cms-form-grid">
+                    <div class="cms-form-group">
+                        <label class="cms-label">Título Principal</label>
+                        <input type="text" class="cms-input" id="meta-heroTitle" placeholder="Ej: Dossier de Soluciones BTS">
+                    </div>
+                    <div class="cms-form-group">
+                        <label class="cms-label">Texto del Badge</label>
+                        <input type="text" class="cms-input" id="meta-badgeText" placeholder="Ej: Para Promotores">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Subtítulo / Lead</label>
+                        <input type="text" class="cms-input" id="meta-heroSubtitle">
                     </div>
                 </div>
             </div>
 
-            <div class="assets-grid" id="assets-grid">
-                <!-- Dynamic content -->
-            </div>
-        </section>
-
-        <!-- Content Section -->
-        <section id="content-section" class="admin-section">
-            <header class="section-header">
-                <h1><i class="fa-solid fa-layer-group"></i> <span data-i18n="admin.content">Gestión de Contenido</span>
-                </h1>
-                <button class="btn btn-primary" id="add-section-btn">
-                    <i class="fa-solid fa-plus"></i>
-                    <span data-i18n="common.add">Añadir Sección</span>
-                </button>
-            </header>
-
-            <div class="verticals-tabs">
-                <button class="vertical-tab active" data-vertical="bts">Residencial BTS</button>
-                <button class="vertical-tab" data-vertical="btr">Residencial BTR</button>
-                <button class="vertical-tab" data-vertical="office">Oficinas</button>
-                <button class="vertical-tab" data-vertical="hotel">Hoteles</button>
-                <button class="vertical-tab" data-vertical="retail">Retail</button>
-                <button class="vertical-tab" data-vertical="security">Seguridad</button>
-                <button id="global-ppt-btn" class="tab-btn-style ppt-action"
-                    title="Descargar presentación completa de esta vertical">
-                    <i class="fa-solid fa-file-powerpoint"></i> &nbsp; Descargar PPT Completo
-                </button>
-            </div>
-            </div>
-            </div>
-
-            <!-- Hero Editor -->
-            <div class="hero-editor-container"
-                style="background: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                <div class="hero-header"
-                    style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
-                    onclick="document.getElementById('hero-form-body').classList.toggle('hidden'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-down'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-up');">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--text-primary);"><i
-                            class="fa-solid fa-image"></i> Editar Portada (Héroe)</h3>
-                    <i class="fa-solid fa-chevron-down toggle-icon" style="color: var(--text-muted);"></i>
+            <!-- Módulo Intro -->
+            <div class="cms-module">
+                <div class="cms-module-header">
+                    <div>
+                        <h2 class="cms-module-title"><i class="fa-solid fa-align-left"></i> Introducción de Mercado</h2>
+                        <p class="cms-module-desc">El manifiesto o mensaje inicial detallado para esta vertical.</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" id="save-intro">Guardar Cambios</button>
                 </div>
+                <div class="cms-form-grid">
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Título de Introducción</label>
+                        <input type="text" class="cms-input" id="meta-introTitle">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Texto de Introducción (Manifiesto)</label>
+                        <textarea class="cms-textarea" id="meta-introText" rows="3"></textarea>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Frase Destacada (Cita / Quote)</label>
+                        <input type="text" class="cms-input" id="meta-introQuote" placeholder="Ej: Toda la gestión desde el cloud.">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Beneficios Destacados (Uno por línea, formato "Título: Descripción")</label>
+                        <textarea class="cms-textarea" id="meta-benefits" rows="4" placeholder="Ej: Seguridad: Control de acceso 24/7&#10;Movilidad: Apertura con smartphone"></textarea>
+                    </div>
+                </div>
+            </div>
 
-                <div id="hero-form-body" class="hidden" style="margin-top: 20px;">
-                    <div class="form-row" style="display: flex; gap: 20px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Título Héroe</label>
-                            <input type="text" id="hero-title" placeholder="Ej: Dossier de Seguridad">
+            <!-- Módulo Secciones (Feature Showcase) -->
+            <div class="cms-module">
+                <div class="cms-module-header">
+                    <div>
+                        <h2 class="cms-module-title"><i class="fa-solid fa-layer-group"></i> Bloques Estructurales (Feature Showcase)</h2>
+                        <p class="cms-module-desc">Los bloques de imagen + texto que explican la propuesta de valor.</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" id="btn-add-section"><i class="fa-solid fa-plus"></i> Añadir Bloque</button>
+                </div>
+                <div class="data-grid" id="grid-sections" style="grid-template-columns: 1fr;">
+                    <div style="color:var(--text-secondary); padding: 20px;">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- Módulo Tecnologías (Tech Cards) LEGACY - Oculto. Ahora se gestiona seleccionando productos globales -->
+            <div class="cms-module" style="display:none;">
+                <div class="cms-module-header">
+                    <div>
+                        <h2 class="cms-module-title"><i class="fa-solid fa-microchip"></i> Dispositivos (Legacy)</h2>
+                    </div>
+                </div>
+                <div class="data-grid" id="grid-tech" style="display:none;"></div>
+                <button id="btn-add-tech" style="display:none;"></button>
+                <button id="save-tech-btn" style="display:none;"></button>
+            </div>
+
+            <!-- Módulo Casos de Éxito -->
+            <div class="cms-module">
+                <div class="cms-module-header">
+                    <div>
+                        <h2 class="cms-module-title"><i class="fa-solid fa-trophy"></i> Casos de Éxito</h2>
+                        <p class="cms-module-desc">Proyectos de referencia donde se ha instalado 2N.</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" id="btn-add-case"><i class="fa-solid fa-plus"></i> Nuevo Proyecto</button>
+                </div>
+                <div class="data-grid" id="grid-cases">
+                    <div style="color:var(--text-secondary); padding: 20px;">Cargando...</div>
+                </div>
+            </div>
+
+            </div> <!-- End view-content -->
+
+            <div id="view-global-cases" class="cms-view" style="display:none;">
+                <div class="cms-module">
+                    <div class="cms-module-header">
+                        <div>
+                            <h2 class="cms-module-title"><i class="fa-solid fa-list-check"></i> Biblioteca Global de Casos</h2>
+                            <p class="cms-module-desc">Gestiona todos los proyectos de éxito. Un caso puede aparecer en varias soluciones asignándole las verticales correspondientes.</p>
                         </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Etiqueta Badge</label>
-                            <input type="text" id="hero-badge" placeholder="Ej: Seguridad">
-                        </div>
+                        <button class="cms-btn cms-btn-primary" id="btn-add-global-case"><i class="fa-solid fa-plus"></i> Nuevo Caso Global</button>
                     </div>
-
-                    <div class="form-group">
-                        <label>Subtítulo / Lead</label>
-                        <input type="text" id="hero-subtitle"
-                            placeholder="Ej: Manual de Soluciones y Especificaciones Técnicas">
+                    <div class="data-grid" id="grid-global-cases">
+                        <!-- Dynamic list -->
                     </div>
-
-                    <div class="form-row" style="display: flex; gap: 20px;">
-                        <div class="form-group" style="flex: 1;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                <label style="margin-bottom: 0;">Imagen de Fondo</label>
-                                <label
-                                    style="font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                    <input type="checkbox" id="hero-show-image" checked>
-                                    Mostrar Imagen
-                                </label>
-                            </div>
-
-                            <!-- Preview Box -->
-                            <!-- Preview Box -->
-                            <div id="hero-preview-container" class="hero-preview-box">
-                                <div id="hero-preview-bg" class="hero-preview-bg"></div>
-                                <div class="hero-preview-overlay"></div>
-                                <div class="hero-preview-content">
-                                    <span class="hero-preview-badge" id="preview-badge">Badge</span>
-                                    <h1 id="preview-title">Título Héroe</h1>
-                                    <p id="preview-subtitle" class="lead">Subtítulo o Lead</p>
-                                </div>
-                                <div class="hero-preview-hint"><i class="fa-solid fa-arrows-up-down-left-right"></i>
-                                    Arrastra para mover</div>
-                            </div>
-                            <!-- Hidden inputs for X/Y storage (still used for value) -->
-                            <div style="display:none;">
-                                <input type="range" id="hero-pos-x" min="0" max="100" value="50">
-                                <input type="range" id="hero-pos-y" min="0" max="100" value="50">
-                            </div>
-
-                            <div class="file-upload-actions" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <div class="file-upload-area small-upload" id="hero-file-area"
-                                    style="padding: 10px; flex: 1;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span id="hero-file-info">Subir Nueva (WebP/JPG)</span>
-                                    <input type="file" id="hero-file" accept="image/jpeg, image/png, image/webp">
-                                </div>
-                                <button class="btn btn-secondary" id="open-library-btn" style="flex: 1;">
-                                    <i class="fa-solid fa-folder-open"></i> Abrir Librería
-                                </button>
-                            </div>
-
-
+                </div>
+            </div>
+            <div id="view-global-products" class="cms-view" style="display:none;">
+                <div class="cms-module">
+                    <div class="cms-module-header">
+                        <div>
+                            <h2 class="cms-module-title"><i class="fa-solid fa-box-open"></i> Portfolio de Productos</h2>
+                            <p class="cms-module-desc">Gestiona el catálogo de dispositivos 2N para la sección Portfolio.</p>
                         </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>Color de Acento</label>
-                            <div class="color-selector" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <label class="color-option">
-                                    <input type="radio" name="hero-color" value="blue" checked>
-                                    <span class="color-circle" style="background: #3b82f6;"></span>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="hero-color" value="orange">
-                                    <span class="color-circle" style="background: #f97316;"></span>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="hero-color" value="green">
-                                    <span class="color-circle" style="background: #22c55e;"></span>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="hero-color" value="red">
-                                    <span class="color-circle" style="background: #ef4444;"></span>
-                                </label>
-                                <label class="color-option">
-                                    <input type="radio" name="hero-color" value="purple">
-                                    <span class="color-circle" style="background: #a855f7;"></span>
-                                </label>
-                            </div>
-                        </div>
+                        <button class="cms-btn cms-btn-primary" id="btn-add-global-product"><i class="fa-solid fa-plus"></i> Nuevo Producto</button>
                     </div>
-
-                    <div style="text-align: right; margin-top: 10px;">
-                        <button class="btn btn-primary" id="save-hero-btn">Guardar Portada</button>
+                    <div class="data-grid" id="grid-global-products">
+                        <!-- Dynamic list -->
                     </div>
                 </div>
             </div>
 
-            <!-- Intro Editor -->
-            <div class="intro-editor-container"
-                style="background: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--border-color);">
-                <div class="intro-header"
-                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer;"
-                    onclick="document.getElementById('intro-form-body').classList.toggle('hidden'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-down'); this.querySelector('i.toggle-icon').classList.toggle('fa-chevron-up');">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--text-primary);"><i
-                            class="fa-solid fa-pen-to-square"></i> Editar Introducción & Beneficios</h3>
-                    <i class="fa-solid fa-chevron-down toggle-icon" style="color: var(--text-muted);"></i>
-                </div>
-
-                <div id="intro-form-body" class="hidden">
-                    <div class="form-group">
-                        <label>Título Principal</label>
-                        <input type="text" id="intro-title" placeholder="Ej: Seguridad de nivel enterprise">
-                    </div>
-                    <div class="form-group">
-                        <label>Subtítulo (Opcional)</label>
-                        <input type="text" id="intro-subtitle" placeholder="Ej: Una entradilla impactante...">
-                    </div>
-                    <div class="form-group">
-                        <label>Descripción (Párra. separados por Enter)</label>
-                        <textarea id="intro-text" rows="5" class="large-textarea"
-                            placeholder="Descripción de la solución..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Lista de Capacidades/Beneficios</label>
-                        <div id="benefits-container"
-                            style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;">
-                            <!-- Dynamic inputs -->
+            <div id="view-users" class="cms-view" style="display:none;">
+                <div class="cms-module">
+                    <div class="cms-module-header">
+                        <div>
+                            <h2 class="cms-module-title"><i class="fa-solid fa-users"></i> Control de Acceso</h2>
+                            <p class="cms-module-desc">Usuarios registrados que pueden acceder al panel o áreas privadas.</p>
                         </div>
-                        <button class="btn btn-secondary btn-sm" id="add-benefit-btn"><i class="fa-solid fa-plus"></i>
-                            Añadir Item</button>
+                        <button class="cms-btn cms-btn-primary" id="btn-add-user"><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</button>
                     </div>
-
-                    <div style="text-align: right; margin-top: 20px;">
-                        <button class="btn btn-primary" id="save-intro-btn">Guardar Intro</button>
+                    
+                    <div class="cms-table-wrapper" style="margin-top:20px; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
+                        <table style="width:100%; border-collapse:collapse; text-align:left;">
+                            <thead style="background:var(--bg-card-hover); color:var(--text-secondary); font-size:0.8rem; text-transform:uppercase;">
+                                <tr>
+                                    <th style="padding:15px;">Usuario / Email</th>
+                                    <th style="padding:15px;">Rol</th>
+                                    <th style="padding:15px;">Estado</th>
+                                    <th style="padding:15px; text-align:right;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr>
+                                    <td colspan="4" style="padding:20px; text-align:center; color:var(--text-secondary);">Cargando usuarios...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
+            </div> <!-- End view-users -->
 
-            <div class="sections-list" id="sections-list">
-                <!-- Dynamic content -->
-            </div>
-        </section>
+            <!-- MEDIA VIEW -->
+            <div id="view-media" class="cms-view" style="display:none; height:100%; flex-direction:column;">
+                <div class="cms-module" style="flex:1; display:flex; flex-direction:column; padding:0; overflow:hidden;">
+                    <div class="cms-module-header" style="padding:20px; border-bottom:1px solid var(--border-light);">
+                        <div>
+                            <h2 class="cms-module-title"><i class="fa-solid fa-folder-tree"></i> Explorador Virtual de Archivos</h2>
+                            <p class="cms-module-desc" id="media-breadcrumbs">Inicio / </p>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <label class="cms-btn cms-btn-secondary" style="cursor:pointer;">
+                                <i class="fa-solid fa-upload"></i> Subir Archivos
+                                <input type="file" id="upload-files" multiple style="display:none;">
+                            </label>
+                            <label class="cms-btn cms-btn-primary" style="cursor:pointer;">
+                                <i class="fa-solid fa-folder-plus"></i> Subir Carpeta
+                                <input type="file" id="upload-folder" webkitdirectory directory multiple style="display:none;">
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Reuse the exact same layout as the modal grid but styled for full page -->
+                    <div style="padding:20px; display:flex; gap:10px; border-bottom:1px solid var(--border-light); background:var(--bg-dark);">
+                        <button class="cms-btn cms-btn-secondary" id="media-btn-up" style="display:none;"><i class="fa-solid fa-arrow-up"></i> Subir Nivel</button>
+                        <input type="text" id="media-search" class="cms-input" placeholder="Buscar por nombre de archivo o carpeta..." style="flex:1; max-width:400px; background:var(--bg-card);">
+                        <div style="color:var(--text-muted); font-size:0.9rem; align-self:center; margin-left:auto;" id="media-count">Cargando...</div>
+                    </div>
+                    <div id="media-grid" style="flex:1; overflow-y:auto; display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px; align-content:start; padding:20px;">
+                        <!-- Folders and files injected here -->
+                    </div>
+                </div>
+            </div> <!-- End view-media -->
 
+        </div>
     </main>
 
-    <!-- Modal for Add/Edit User -->
-    <div class="modal" id="user-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="user-modal-title">Nuevo Usuario</h2>
-                <button class="modal-close" aria-label="Cerrar">&times;</button>
+    <!-- Modals -->
+    <!-- Modal User Add/Edit -->
+    <div class="cms-modal-overlay" id="modal-user">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 style="margin:0" id="user-modal-title">Añadir Usuario</h3>
+                <i class="fa-solid fa-times close-modal" style="cursor:pointer"></i>
             </div>
-            <form id="user-form">
-                <div class="form-group">
-                    <label for="user-email">Email</label>
-                    <input type="email" id="user-email" required>
+            <div class="cms-modal-body">
+                <input type="hidden" id="user-id">
+                <div class="cms-form-group">
+                    <label class="cms-label">Nombre Completo</label>
+                    <input type="text" class="cms-input" id="user-name" placeholder="Ej: Juan Pérez">
                 </div>
-                <div class="form-group">
-                    <label for="user-name">Nombre</label>
-                    <input type="text" id="user-name" required>
+                <div class="cms-form-group">
+                    <label class="cms-label">Correo Electrónico</label>
+                    <input type="email" class="cms-input" id="user-email" placeholder="example@2n.com">
                 </div>
-                <div class="form-group">
-                    <label for="user-password">Contraseña</label>
-                    <input type="password" id="user-password" placeholder="Dejar vacío para no cambiar">
-                </div>
-                <div class="form-group">
-                    <label for="user-role">Rol</label>
-                    <select id="user-role">
-                        <option value="prescriptor">Prescriptor</option>
-                        <option value="admin">Administrador</option>
+                <div class="cms-form-group">
+                    <label class="cms-label">Rol de Sistema</label>
+                    <select class="cms-select" id="user-role">
+                        <option value="prescriptor">Prescriptor (Solo lectura/descarga)</option>
+                        <option value="admin">Administrador (Control total)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="user-lang">Idioma</label>
-                    <select id="user-lang">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                        <option value="pt">Português</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal for Upload Asset -->
-    <div class="modal" id="asset-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Subir Archivos</h2>
-                <button class="modal-close" aria-label="Cerrar">&times;</button>
             </div>
-            <form id="asset-form">
-                <div class="modal-explorer-toolbar">
-                    <button type="button" class="btn-icon" id="modal-up-btn" title="Subir nivel">
-                        <i class="fa-solid fa-arrow-turn-up"></i>
-                    </button>
-                    <div class="current-path-display">
-                        <span class="path-label">Guardar en:</span>
-                        <strong id="upload-current-path">/</strong>
-                    </div>
-                    <button type="button" class="btn-icon" id="modal-new-folder-btn" title="Nueva Carpeta">
-                        <i class="fa-solid fa-folder-plus"></i>
-                    </button>
-                </div>
-
-                <div class="modal-folder-grid" id="modal-folder-grid">
-                    <!-- Folders will be injected here -->
-                </div>
-
-                <div class="form-group">
-                    <label for="asset-file">Archivos a subir</label>
-                    <div class="file-upload-area" id="file-upload-area">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p>Arrastra imágenes/videos o haz clic para seleccionar (Múltiple)</p>
-                        <span class="file-info" id="file-info"></span>
-                        <input type="file" id="asset-file" accept="image/*,video/*" multiple required>
-                    </div>
-                </div>
-                <!-- ... existing form content ... -->
-                <div class="upload-progress hidden" id="upload-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <span class="progress-text" id="progress-text"></span>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Subir</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal for Add Section -->
-    <div class="modal" id="section-modal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content extra-large-modal">
-            <div class="modal-header">
-                <h2 id="modal-title">Editor de Sección</h2>
-                <button class="modal-close" aria-label="Cerrar">&times;</button>
-            </div>
-
-            <div class="modal-body-split">
-                <!-- LEft Column: Editor -->
-                <div class="editor-column">
-                    <form id="section-form">
-                        <!-- New Fields -->
-                        <div class="form-group">
-                            <label for="section-title">Título (Opcional)</label>
-                            <input type="text" id="section-title" placeholder="Ej: Introducción">
-                        </div>
-                        <div class="form-group">
-                            <label for="section-tags">Etiquetas (Obligatorio)</label>
-                            <input type="text" id="section-tags" required
-                                placeholder="Ej: portada, intro (separar por comas)">
-                            <small style="color: var(--text-muted);">Usa etiquetas para identificar internamente la
-                                sección.</small>
-                        </div>
-
-                        <!-- Layout Selector -->
-                        <div class="form-group">
-                            <label>Diseño</label>
-                            <div class="layout-selector">
-                                <label class="layout-option">
-                                    <input type="radio" name="section-layout" value="left" checked>
-                                    <span class="layout-icon"><i class="fa-solid fa-table-columns"></i> Izquierda</span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-layout" value="top">
-                                    <span class="layout-icon"><i class="fa-solid fa-table-cells-large"></i>
-                                        Arriba</span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-layout" value="right">
-                                    <span class="layout-icon"><i
-                                            class="fa-solid fa-table-columns fa-flip-horizontal"></i> Derecha</span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-layout" value="bottom">
-                                    <span class="layout-icon"><i class="fa-solid fa-table-cells"></i> Abajo</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Alignment Selector -->
-                        <div class="form-group">
-                            <label>Alineación de Texto</label>
-                            <div class="layout-selector">
-                                <label class="layout-option">
-                                    <input type="radio" name="section-align" value="left" checked>
-                                    <span class="layout-icon"><i class="fa-solid fa-align-left"></i></span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-align" value="center">
-                                    <span class="layout-icon"><i class="fa-solid fa-align-center"></i></span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-align" value="right">
-                                    <span class="layout-icon"><i class="fa-solid fa-align-right"></i></span>
-                                </label>
-                                <label class="layout-option">
-                                    <input type="radio" name="section-align" value="justify">
-                                    <span class="layout-icon"><i class="fa-solid fa-align-justify"></i></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Image Selection -->
-                        <div class="form-group">
-                            <label>Imagen</label>
-                            <div class="image-selector-tabs">
-                                <button type="button" class="tab-btn active" data-tab="upload">Subir Nueva</button>
-                                <button type="button" class="tab-btn" data-tab="gallery">Galería</button>
-                            </div>
-
-                            <div class="image-tab-content active" id="tab-upload">
-                                <div class="file-upload-area small-upload" id="section-file-area">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <p>Clic para subir</p>
-                                    <span class="file-info" id="section-file-info"></span>
-                                    <input type="file" id="section-file" accept="image/*,video/*">
-                                </div>
-                            </div>
-
-                            <div class="image-tab-content" id="tab-gallery">
-                                <div class="gallery-grid" id="multimedia-grid">
-                                    <!-- Dynamic gallery images -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Text Content -->
-                        <div class="form-group">
-                            <label>Texto</label>
-                            <textarea id="section-text" rows="12" class="large-textarea" required
-                                placeholder="Escribe el contenido aquí..."></textarea>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Right Column: Preview -->
-                <div class="preview-column">
-                    <div class="preview-header">Previsualización en vivo</div>
-                    <div id="section-preview" class="section-card preview-card layout-left">
-                        <div class="section-image">
-                            <div class="placeholder"
-                                style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#333;color:#666;">
-                                IMG</div>
-                        </div>
-                        <div class="section-content">
-                            <div class="section-info">
-                                <h4 class="section-title">Título de la Sección</h4>
-                                <div class="section-tags"></div>
-                                <p class="section-text">Texto descriptivo...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="section-visible" checked style="width: auto;">
-                    <span>Publicar en Web y PDF/PPT</span>
-                </label>
-                <small style="color: var(--text-muted);">Si se desmarca, solo será visible aquí en el Admin
-                    (Borrador).</small>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="save-section-btn">Guardar Sección</button>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary close-modal">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="save-user-btn">Guardar Usuario</button>
             </div>
         </div>
     </div>
 
-    <!-- Asset Picker Modal -->
-    <div id="asset-picker-modal" class="modal">
-        <div class="modal-content" style="max-width: 800px; height: 80vh; display: flex; flex-direction: column;">
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-folder-open"></i> Seleccionar Imagen</h2>
-                <button class="close-modal" id="close-asset-picker"><i class="fa-solid fa-times"></i></button>
+    <!-- Modal Tech Add/Edit -->
+    <div class="cms-modal-overlay" id="modal-tech">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 style="margin:0" id="tech-modal-title">Editar Dispositivo</h3>
+                <i class="fa-solid fa-times close-modal" style="cursor:pointer"></i>
             </div>
-            <div class="modal-body" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-                <div id="picker-breadcrumbs"
-                    style="padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-secondary);">
-                    <!-- Breadcrumbs could go here if implemented, for now just a spacer -->
-                    <span style="color: var(--primary);">Librería Multimedia</span>
+            <div class="cms-modal-body">
+                <input type="hidden" id="tech-id">
+                <div class="cms-form-group">
+                    <label class="cms-label">Concepto (Ej: Videoportero flagship)</label>
+                    <input type="text" class="cms-input" id="tech-label">
                 </div>
-                <div id="picker-grid" class="gallery-grid" style="flex: 1; overflow-y: auto; padding: 20px;">
-                    <!-- Dynamic Assets -->
-                    <div class="loader">Cargando...</div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Nombre del Producto (Ej: 2N IP Style)</label>
+                    <input type="text" class="cms-input" id="tech-name">
                 </div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Descripción Técnica</label>
+                    <textarea class="cms-textarea" id="tech-desc" rows="3"></textarea>
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Etiquetas Clave (separadas por coma)</label>
+                    <input type="text" class="cms-input" id="tech-tags" placeholder="Face Zoom, WaveKey, 10 Touch">
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Imagen del Dispositivo</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" class="cms-input" id="tech-image" placeholder="assets/devices/ip-style.png" style="flex:1;">
+                        <button type="button" id="btn-browse-tech-assets" class="cms-btn cms-btn-secondary" style="white-space:nowrap;"><i class="fa-solid fa-images"></i> Elegir</button>
+                    </div>
+                    <!-- Live Preview -->
+                    <div id="preview-tech-image" style="margin-top:10px; height:120px; border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); overflow:hidden;">
+                        <span style="color:var(--text-muted); font-size:0.8rem;">Sin imagen seleccionada</span>
+                    </div>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary close-modal">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="save-tech-btn">Guardar Equipo</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="js/firebase-init.js?v=3.1"></script>
-    <script type="module" src="js/auth.controller.js?v=3.1"></script>
-    <script type="module" src="js/services/content.service.js?v=3.1"></script>
-    <script type="module" src="js/services/pdf.service.js?v=3.1"></script>
-    <script type="module" src="js/services/ppt.service.js?v=3.1"></script>
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-    <script type="module" src="js/admin.controller.js?v=3.2"></script>
-    <script type="module" src="js/vertical-renderer.js?v=3.1"></script>
-    <script type="module" src="js/pdf-handler.js?v=3.1"></script>
+    <!-- Modal Cases Add/Edit -->
+    <div class="cms-modal-overlay" id="modal-case">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 style="margin:0" id="case-modal-title">Editar Caso de Éxito</h3>
+                <i class="fa-solid fa-times close-modal" style="cursor:pointer"></i>
+            </div>
+            <div class="cms-modal-body">
+                <input type="hidden" id="case-id">
+                <div class="cms-form-group">
+                    <label class="cms-label">Nombre del Proyecto (Ej: Torres Matiricos)</label>
+                    <input type="text" class="cms-input" id="case-name">
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Icono (FontAwesome, ej: fa-building)</label>
+                    <input type="text" class="cms-input" id="case-icon" value="fa-building">
+                </div>
+                <div class="cms-form-group">
+                    <label class="cms-label">Equipos Instalados (Uno por línea)</label>
+                    <textarea class="cms-textarea" id="case-items" rows="5" placeholder="1x IP Style&#10;253x Indoor Compact"></textarea>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary close-modal">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="save-case-btn">Guardar Proyecto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sections Add/Edit -->
+    <div class="cms-modal-overlay" id="modal-section">
+        <div class="cms-modal" style="max-width: 800px;">
+            <div class="cms-modal-header">
+                <h3 style="margin:0" id="section-modal-title">Editar Bloque Destacado</h3>
+                <i class="fa-solid fa-times close-modal" style="cursor:pointer"></i>
+            </div>
+            <div class="cms-modal-body">
+                <input type="hidden" id="section-id">
+                <div class="cms-form-grid">
+                    <div class="cms-form-group">
+                        <label class="cms-label">Etiqueta Superior (Eyebrow)</label>
+                        <input type="text" class="cms-input" id="section-eyebrow" placeholder="Ej: Parking · Acceso vehicular">
+                    </div>
+                    <div class="cms-form-group">
+                        <label class="cms-label">Disposición de la Imagen</label>
+                        <select class="cms-input" id="section-layout">
+                            <option value="left">Imagen a la Izquierda</option>
+                            <option value="right">Imagen a la Derecha (Invertido)</option>
+                        </select>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Título Principal</label>
+                        <input type="text" class="cms-input" id="section-title">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Texto Descriptivo</label>
+                        <textarea class="cms-textarea" id="section-text" rows="5"></textarea>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Píldoras Informativas (separadas por coma)</label>
+                        <input type="text" class="cms-input" id="section-tags" placeholder="Ej: WaveKey, Abrir con móvil, Reconocimiento">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">URL de la Imagen / Asset</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" class="cms-input" id="section-image" placeholder="assets/casos/image76.jpeg" style="flex:1;">
+                            <button type="button" id="btn-browse-assets" class="cms-btn cms-btn-secondary" style="white-space:nowrap;"><i class="fa-solid fa-images"></i> Elegir de Base de Datos</button>
+                        </div>
+                        <!-- Live Preview -->
+                        <div id="preview-section-image" style="margin-top:10px; height:120px; border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); overflow:hidden;">
+                            <span style="color:var(--text-muted); font-size:0.8rem;">Sin imagen seleccionada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary close-modal">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="save-section-btn">Guardar Bloque</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Asset Browser Modal -->
+    <div class="cms-modal-overlay" id="modal-assets">
+        <div class="cms-modal" style="max-width:90%; width:1000px; height:85vh; display:flex; flex-direction:column; padding:0;">
+            <div class="cms-modal-header" style="background:var(--bg-card); padding:20px; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:1.25rem;"><i class="fa-solid fa-cloud" style="color:var(--accent); margin-right:10px;"></i> Base de Datos Multimedia</h3>
+                <button class="close-assets" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="cms-modal-body" style="flex:1; overflow:hidden; display:flex; flex-direction:column; padding:20px; background:var(--bg-dark);">
+                <div style="margin-bottom:15px; display:flex; gap:10px;">
+                    <button class="cms-btn cms-btn-secondary" id="asset-btn-up" style="display:none;"><i class="fa-solid fa-arrow-up"></i></button>
+                    <input type="text" id="asset-search" class="cms-input" placeholder="Buscar por nombre de archivo (ej. btr, oficinas, hotel...)" style="flex:1; max-width:400px; background:var(--bg-card);">
+                    <div style="color:var(--text-muted); font-size:0.9rem; align-self:center; margin-left:auto;" id="asset-count">Cargando...</div>
+                </div>
+                
+                <div id="asset-grid" style="flex:1; overflow-y:auto; display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px; align-content:start; padding-right:5px;">
+                    <!-- Images will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL CASOS GLOBAL -->
+    <div class="cms-modal-overlay" id="modal-global-case">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 id="global-case-modal-title" style="margin:0;">Nuevo Caso Global</h3>
+                <button class="btn-close-modal" data-target="modal-global-case" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="cms-modal-body">
+                <input type="hidden" id="global-case-id">
+                <div class="cms-form-grid">
+                    <div class="cms-form-group">
+                        <label class="cms-label">Nombre del Proyecto</label>
+                        <input type="text" id="global-case-name" class="cms-input">
+                    </div>
+                    <div class="cms-form-group">
+                        <label class="cms-label">Icono Visual</label>
+                        <div class="icon-picker-grid" id="global-case-icon-picker" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border);">
+                            <button type="button" class="icon-option active" data-icon="fa-building" title="Edificio"><i class="fa-solid fa-building"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-house-chimney" title="Residencial"><i class="fa-solid fa-house-chimney"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-hotel" title="Hotel"><i class="fa-solid fa-hotel"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-shop" title="Retail"><i class="fa-solid fa-shop"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-shield-halved" title="Seguridad"><i class="fa-solid fa-shield-halved"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-hospital" title="Sanidad"><i class="fa-solid fa-hospital"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-school" title="Educación"><i class="fa-solid fa-school"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-vault" title="Banca"><i class="fa-solid fa-vault"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-umbrella-beach" title="Resort"><i class="fa-solid fa-umbrella-beach"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-briefcase" title="Oficinas"><i class="fa-solid fa-briefcase"></i></button>
+                        </div>
+                        <input type="hidden" id="global-case-icon" value="fa-building">
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Verticales (Selecciona donde aparecerá)</label>
+                        <div class="checkbox-group" id="global-case-verticals" style="display:flex; gap:15px; flex-wrap:wrap; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--border);">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="bts"> BTS</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="btr"> BTR</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="hotel"> Hoteles</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="office"> Oficinas</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="security"> Seguridad</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="retail"> Retail</label>
+                        </div>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Imagen (URL o ruta)</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="global-case-image" class="cms-input" placeholder="URL de la imagen...">
+                            <button class="cms-btn cms-btn-secondary" onclick="const input = document.getElementById('global-case-image'); window.openMediaFor(input.id)"><i class="fa-solid fa-images"></i></button>
+                        </div>
+                        <!-- Live Preview -->
+                        <div id="preview-global-case-image" style="margin-top:10px; height:120px; border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); overflow:hidden;">
+                            <span style="color:var(--text-muted); font-size:0.8rem;">Sin imagen seleccionada</span>
+                        </div>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Descripción</label>
+                        <textarea id="global-case-description" class="cms-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Equipos instalados (Uno por línea)</label>
+                        <textarea id="global-case-items" class="cms-textarea" rows="3" placeholder="1x IP Style\n12x Access Unit..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary btn-close-modal" data-target="modal-global-case">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="btn-save-global-case">Guardar Caso</button>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL PRODUCTO GLOBAL -->
+    <div class="cms-modal-overlay" id="modal-global-product">
+        <div class="cms-modal">
+            <div class="cms-modal-header">
+                <h3 id="global-product-modal-title" style="margin:0;">Nuevo Producto</h3>
+                <button class="btn-close-modal" data-target="modal-global-product" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="cms-modal-body">
+                <input type="hidden" id="global-product-id">
+                <div class="cms-form-grid">
+                    <div class="cms-form-group">
+                        <label class="cms-label">Nombre del Producto</label>
+                        <input type="text" id="global-product-name" class="cms-input" placeholder="Ej: 2N® IP Style">
+                    </div>
+                    <div class="cms-form-group">
+                        <label class="cms-label">Categoría</label>
+                        <select class="cms-input" id="global-product-category">
+                            <option value="intercom">Intercomunicadores IP</option>
+                            <option value="access">Lectores de Acceso</option>
+                            <option value="indoor">Unidades Interiores</option>
+                            <option value="software">Software y Apps</option>
+                            <option value="aux">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Visible en estas Verticales (Soluciones Recomendadas)</label>
+                        <div class="checkbox-group" id="global-product-verticals" style="display:flex; gap:15px; flex-wrap:wrap; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--border);">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="bts"> BTS</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="btr"> BTR</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="hotel"> Hoteles</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="office"> Oficinas</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="security"> Seguridad</label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;"><input type="checkbox" value="retail"> Retail</label>
+                        </div>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Imagen (URL o ruta)</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="global-product-image" class="cms-input" placeholder="URL de la imagen...">
+                            <button class="cms-btn cms-btn-secondary" onclick="const input = document.getElementById('global-product-image'); window.openMediaFor(input.id)"><i class="fa-solid fa-images"></i></button>
+                        </div>
+                        <!-- Live Preview -->
+                        <div id="preview-global-product-image" style="margin-top:10px; height:200px; border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); overflow:hidden;">
+                            <span style="color:var(--text-muted); font-size:0.8rem;">Sin imagen seleccionada</span>
+                        </div>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Descripción Breve</label>
+                        <textarea id="global-product-description" class="cms-textarea" rows="2" placeholder="Resumen comercial..."></textarea>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Lista Rápida (Exterior de la Tarjeta) - Una por línea</label>
+                        <textarea id="global-product-tags" class="cms-textarea" rows="3" placeholder="Ej:\nWaveKey\n10' Touch\n5MP Camera"></textarea>
+                    </div>
+                    <div class="cms-form-group full">
+                        <label class="cms-label">Características Detalladas (Interior del Producto) - Formato 'Etiqueta: Valor'</label>
+                        <textarea id="global-product-specs" class="cms-textarea" rows="4" placeholder="Cámara: 5MP Full HD\nPantalla: Táctil de 10 pulgadas\nResistencia: IP65 e IK08"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="cms-modal-footer">
+                <button class="cms-btn cms-btn-secondary btn-close-modal" data-target="modal-global-product">Cancelar</button>
+                <button class="cms-btn cms-btn-primary" id="btn-save-global-product">Guardar Producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/services/content.service.js"></script>
+    <script type="module" src="js/admin-cms.js?v=3"></script>
 </body>
-
 </html>

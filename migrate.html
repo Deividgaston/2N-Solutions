@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Migrar Datos a Firebase</title>
+    <style>
+        body { font-family: system-ui; max-width: 800px; margin: 40px auto; background: #111; color: #fff; }
+        button { background: #2563EB; color: #fff; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-bottom: 20px;}
+        #log { background: #222; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; height: 400px; overflow-y: auto;}
+    </style>
+</head>
+<body>
+    <h1>Migración de Contenido Estático a CMS</h1>
+    <p>Haz clic en el botón para cargar todos los Dispositivos y Casos de Éxito de todas las verticales a tu base de datos de Firebase. Una vez finalizado, podrás editarlos desde el Panel de Administración.</p>
+    <button id="start-btn">Iniciar Migración</button>
+    <div id="log">Esperando...</div>
+
+    <script type="module">
+        import { db, auth } from './js/firebase-init.js';
+        import { collection, addDoc, serverTimestamp, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+        const data = {
+            bts: {
+                techCards: [
+                    { label: "Videoportero flagship", name: "2N IP Style", desc: "Pantalla táctil de 10\". Diseño Red Dot Award 2023. Reconocimiento facial FaceZoom, WaveKey y cámara Full HD con WDR.", tags: ["Red Dot Award", "10\" Touch", "Face Zoom", "WaveKey"], order: 1 },
+                    { label: "Videoportero modular", name: "2N IP Verso 2.0", desc: "Solución modular. Cámara Full HD WDR, lector RFID, teclado y Bluetooth WaveKey. Resistencia IP69K.", tags: ["Modular", "RFID", "IP69K", "PoE"], order: 2 },
+                    { label: "Monitor interior", name: "2N Indoor Compact / Touch", desc: "Monitor táctil para la vivienda. Responde sin smartphone. Llama al ascensor. Integración con domótica.", tags: ["Táctil", "Ascensor", "SIP", "Domótica"], order: 3 },
+                    { label: "Control de acceso", name: "2N Access Unit 2.0", desc: "Lector de acceso compacto para garajes y zonas comunes. RFID, Bluetooth WaveKey, PIN y QR.", tags: ["RFID/NFC", "BLE", "QR", "IP65"], order: 4 },
+                    { label: "Llave digital", name: "WaveKey", desc: "Tecnología Bluetooth más rápida del mercado. El residente abre puertas con el smartphone o Apple Watch.", tags: ["Bluetooth BLE", "Apple Watch", "Sin tarjeta", "Patentado"], order: 5 },
+                    { label: "Plataforma cloud", name: "My2N", desc: "App y portal gestión. Responde llamadas desde el móvil. 99,98% fiabilidad.", tags: ["Gratis", "99.98% uptime", "Visitantes", "iOS/Android"], order: 6 }
+                ],
+                cases: [
+                    { name: "Torres Matiricos", icon: "fa-building", items: ["1× IP Style", "253× Indoor Compact", "1× IP Verso", "17× Access Unit", "Integración KNX"], order: 1 },
+                    { name: "Residencial Dunique", icon: "fa-building", items: ["2× IP Style", "32× IP One", "22× IP Verso", "8× Access Unit", "My2N App"], order: 2 },
+                    { name: "Las Rosas Plaza", icon: "fa-building", items: ["2× IP Style", "26× IP Clip", "3× Access Unit", "WaveKey BLE"], order: 3 },
+                    { name: "Residencial Natkam", icon: "fa-building", items: ["1× IP Style", "2× IP Verso", "Integración domótica", "WaveKey"], order: 4 },
+                    { name: "Residencial Valdebebas", icon: "fa-building", items: ["1× IP Style", "2× IP Verso", "234× My2N App", "Integración PMS"], order: 5 },
+                    { name: "Soul Marbella", icon: "fa-umbrella-beach", items: ["29× Access Unit", "Integración PMS resort", "WaveKey", "Control zonas exclusivas"], order: 6 }
+                ]
+            },
+            btr: {
+                techCards: [
+                    { label: "Videoportero Inteligente", name: "2N IP Style", desc: "Sistema de control de accesos all-in-one para edificio BTR. Pantalla de 10 pulgadas ideal para inquilinos y recepción digital.", tags: ["Red Dot Award", "Pantalla 10\"", "WaveKey"], order: 1 },
+                    { label: "Lector de Comunidades", name: "2N Access Unit", desc: "Control de acceso distribuido para gimnasio, lavandería y salas de coworking del complejo.", tags: ["Gimnasio", "Coworking", "RFID/BLE"], order: 2 },
+                    { label: "Intercomunicador", name: "2N Indoor View", desc: "Pantalla premium de 7\" operando como centro de control domótico y conserje virtual.", tags: ["Pantalla 7\"", "Conserje", "Domótica"], order: 3 }
+                ],
+                cases: [
+                    { name: "BTR BeCasa (Greystar)", icon: "fa-building", items: ["14× IP Style", "80× Access Unit", "My2N App para inquilinos"], order: 1 },
+                    { name: "Livensa Living", icon: "fa-building", items: ["22× IP Verso", "Control de áreas comunes", "Gestión remota"], order: 2 }
+                ]
+            },
+            hotel: {
+                techCards: [
+                    { label: "Acceso Habitación", name: "2N Access Unit M", desc: "Lector estrecho para marcos de puerta de habitación. Soporta Mobile Key y tarjeta RFID hotelera.", tags: ["Habitación", "Mobile Key", "RFID Múltiple"], order: 1 },
+                    { label: "Videoportero Externo", name: "2N IP Force", desc: "Intercomunicador de máxima resistencia para barreras de parking y zonas de carga del hotel.", tags: ["IK10", "IP69K", "Parking"], order: 2 }
+                ],
+                cases: [
+                    { name: "Hotel VP Plaza Design", icon: "fa-hotel", items: ["Barreras parking", "Accesos de servicio", "Integración PMS Hotelero"], order: 1 }
+                ]
+            },
+            office: {
+                techCards: [
+                    { label: "Control de Tornos", name: "2N IP Style", desc: "Videoportero para control de accesos integrado en tornos corporativos con Face Recognition.", tags: ["Tornos", "Face Recognition", "QR Visitas"], order: 1 },
+                    { label: "Lector de Puerta Central", name: "2N Access Unit 2.0", desc: "Lector multitecnología ideal para oficinas con control de horario y presencia.", tags: ["Control Horario", "BLE", "RFID"], order: 2 }
+                ],
+                cases: [
+                    { name: "Sede Central Utopicus", icon: "fa-building", items: ["Tornos corporativos", "Salas de reuniones", "WaveKey"], order: 1 }
+                ]
+            },
+            security: {
+                techCards: [
+                    { label: "Intercomunicador Blindado", name: "2N IP Force", desc: "El videoportero más robusto del mundo. Soporta impactos extremos. Ideal para cajeros y prisiones.", tags: ["IK10+", "10W Altavoz", "Redundancia"], order: 1 },
+                    { label: "Audio SIP", name: "2N SIP Mic / Speaker", desc: "Megafonía IP para integración con CCTV inteligente y emisión de avisos automáticos de disuasión.", tags: ["Megafonía IP", "ONVIF", "Disuasión"], order: 2 }
+                ],
+                cases: [
+                    { name: "Cajeros Banco Santander", icon: "fa-vault", items: ["Botón de pánico", "Cámaras integradas CCTV", "IP Force"], order: 1 }
+                ]
+            }
+        };
+
+        const logEl = document.getElementById('log');
+        const log = (msg) => {
+            console.log(msg);
+            logEl.innerHTML += msg + '\\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        let userAuthed = false;
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userAuthed = true;
+                log("✅ Usuario autenticado: " + user.email);
+            } else {
+                log("❌ OJO: No estás logueado. Inicia sesión en /admin.html primero y vuelve aquí.");
+            }
+        });
+
+        document.getElementById('start-btn').addEventListener('click', async () => {
+            if (!userAuthed) {
+                alert("Debes tener sesión iniciada como admin en otra pestaña.");
+                return;
+            }
+
+            const btn = document.getElementById('start-btn');
+            btn.disabled = true;
+            btn.textContent = "Procesando...";
+
+            try {
+                // Rule fix: Since subcollections tech_cards and cases might be protected if they don't exist under matched rules,
+                // we'll explicitly add them to the parent verticalId to inherit access, or use Admin SDK. Note: The rules allow write if request.auth!=null.
+                for (const verticalId of Object.keys(data)) {
+                    log(`\\n--- Procesando Vertical: ${verticalId.toUpperCase()} ---`);
+                    const { techCards, cases } = data[verticalId];
+
+                    // 1. Tech Cards
+                    if (techCards) {
+                        for (const tech of techCards) {
+                            const ref = collection(db, 'verticals', verticalId, 'tech_cards');
+                            await addDoc(ref, {
+                                ...tech,
+                                createdAt: serverTimestamp()
+                            });
+                            log(`  ✅ Dispositivo añadido: ${tech.name}`);
+                        }
+                    }
+
+                    // 2. Cases
+                    if (cases) {
+                        for (const c of cases) {
+                            const ref = collection(db, 'verticals', verticalId, 'cases');
+                            await addDoc(ref, {
+                                ...c,
+                                createdAt: serverTimestamp()
+                            });
+                            log(`  ✅ Caso añadido: ${c.name}`);
+                        }
+                    }
+                }
+                
+                log("\\n🎉 MIGRACIÓN COMPLETADA CON ÉXITO.");
+                log("👉 Ya puedes volver a admin.html y verás todos los datos listos para editar.");
+            } catch (error) {
+                log("❌ ERROR: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Finalizado";
+            }
+        });
+    </script>
+</body>
+</html>

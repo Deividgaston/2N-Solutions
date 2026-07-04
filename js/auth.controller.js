@@ -114,7 +114,7 @@ class AuthController {
         } catch (error) {
             console.error('Google Login error:', error);
             if (errorEl) {
-                errorEl.textContent = 'Error al iniciar sesión con Google. Inténtalo de nuevo.';
+                errorEl.textContent = `Error (${error.code || 'unknown'}): Inténtalo de nuevo.`;
                 errorEl.classList.remove('hidden');
             }
         } finally {

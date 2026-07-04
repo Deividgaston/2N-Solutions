@@ -1,4 +1,9 @@
-/* Company Page Specific Styles */
+/* Company Page Specific Styles — vars provienen de theme.css */
+/* Alias para compatibilidad con variables antiguas */
+:root {
+    --bg-dark: #0D1117;    /* alias de --bg-section */
+    --text-gray: #9CA3AF;  /* alias de --text-muted */
+}
 
 /* --- Hero Title Redesign --- */
 .company-title {
