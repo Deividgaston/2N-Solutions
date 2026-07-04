@@ -1,6 +1,8 @@
 /**
  * 2N Presenter - Firebase Initialization
- * Project: nsoluciones-68554
+ * BD unificada: crm-obras-prod (colecciones web_* con lectura pública).
+ * El hosting sigue en nsoluciones-68554 (site specifications-solutions-2n);
+ * los assets multimedia antiguos siguen en el bucket de nsoluciones vía URLs absolutas.
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
@@ -10,12 +12,12 @@ import { getStorage } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-s
 
 // Firebase Configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyD9XyKSJrZuJgex0eLvoaJ9nzy_9YZbFgc",
-    authDomain: "nsoluciones-68554.firebaseapp.com",
-    projectId: "nsoluciones-68554",
-    storageBucket: "nsoluciones-68554.firebasestorage.app",
-    messagingSenderId: "492017983963",
-    appId: "1:492017983963:web:646417ff575251b57847fe"
+    apiKey: "AIzaSyBdTl2XXdo9ks-qqhBqDdXk8uLb65qyD-I",
+    authDomain: "crm-obras-prod.firebaseapp.com",
+    projectId: "crm-obras-prod",
+    storageBucket: "crm-obras-prod.firebasestorage.app",
+    messagingSenderId: "147718681002",
+    appId: "1:147718681002:web:6702ee35645e40c90e7bd3"
 };
 
 // Initialize Firebase

@@ -46,7 +46,7 @@ class AuthController {
 
                 // Redirect to login if on protected page
                 const currentPage = window.location.pathname;
-                if (currentPage.includes('admin.html') || currentPage.includes('presenter.html')) {
+                if (currentPage.includes('presenter.html')) {
                     window.location.href = 'login.html';
                 }
             }
@@ -60,34 +60,20 @@ class AuthController {
     }
 
     /**
-     * Load user role from Firestore
+     * Load user role. La administración de contenido vive ahora en Nexo,
+     * así que todo usuario autenticado de la web es prescriptor.
      */
     async loadUserRole(userId) {
-        try {
-            const userDoc = await getDoc(doc(db, 'users', userId));
-            if (userDoc.exists()) {
-                this.userRole = userDoc.data().role || 'prescriptor';
-            } else {
-                this.userRole = 'prescriptor';
-            }
-        } catch (error) {
-            console.error('Error loading user role:', error);
-            this.userRole = 'prescriptor';
-        }
+        this.userRole = 'prescriptor';
     }
 
     /**
-     * Redirect user based on their role (only called from login page)
+     * Redirect after login (only called from login page)
      */
     redirectByRole() {
         if (this.isRedirecting) return;
         this.isRedirecting = true;
-
-        if (this.userRole === 'admin') {
-            window.location.href = 'admin.html';
-        } else {
-            window.location.href = 'presenter.html';
-        }
+        window.location.href = 'presenter.html';
     }
 
     /**

@@ -41,7 +41,7 @@ class ContentService {
         
         this.remoteVersionPromise = (async () => {
             try {
-                const docRef = doc(db, 'metadata', 'last_update');
+                const docRef = doc(db, 'web_metadata', 'last_update');
                 const snap = await getDoc(docRef);
                 return snap.exists() ? snap.data().timestamp?.seconds || 0 : 0;
             } catch (e) {
@@ -59,7 +59,7 @@ class ContentService {
     async updateRemoteVersion() {
         this.remoteVersionPromise = null; // Clear local promise
         try {
-            const docRef = doc(db, 'metadata', 'last_update');
+            const docRef = doc(db, 'web_metadata', 'last_update');
             await setDoc(docRef, { timestamp: serverTimestamp() }, { merge: true });
         } catch (e) {
             console.warn('Error updating remote version', e);
@@ -170,7 +170,7 @@ class ContentService {
     async getSections(verticalId) {
         return this._fetchCached(`sections_${verticalId}`, async () => {
             try {
-                const sectionsRef = collection(db, 'verticals', verticalId, 'sections');
+                const sectionsRef = collection(db, 'web_verticals', verticalId, 'sections');
                 const sectionsQuery = query(sectionsRef);
 
                 const snapshot = await getDocs(sectionsQuery);
@@ -201,7 +201,7 @@ class ContentService {
     async getVerticalMeta(verticalId) {
         return this._fetchCached(`meta_${verticalId}`, async () => {
             try {
-                const docRef = doc(db, 'verticals', verticalId);
+                const docRef = doc(db, 'web_verticals', verticalId);
                 const snapshot = await getDoc(docRef);
                 return snapshot.exists() ? snapshot.data() : null;
             } catch (error) {
@@ -218,7 +218,7 @@ class ContentService {
      */
     async updateVerticalMeta(verticalId, data) {
         try {
-            const docRef = doc(db, 'verticals', verticalId);
+            const docRef = doc(db, 'web_verticals', verticalId);
             await setDoc(docRef, {
                 ...data,
                 updatedAt: serverTimestamp()
@@ -296,7 +296,7 @@ class ContentService {
      */
     async addSection(verticalId, data) {
         try {
-            const sectionsRef = collection(db, 'verticals', verticalId, 'sections');
+            const sectionsRef = collection(db, 'web_verticals', verticalId, 'sections');
 
             // Get current max order
             const q = query(sectionsRef, orderBy('order', 'desc'), limit(1));
@@ -334,7 +334,7 @@ class ContentService {
      */
     async updateSection(verticalId, sectionId, data) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'sections', sectionId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'sections', sectionId);
 
             // Clean undefined values
             const updateData = { ...data, updatedAt: serverTimestamp() };
@@ -354,7 +354,7 @@ class ContentService {
      */
     async updateSectionOrder(verticalId, sectionId, newOrder) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'sections', sectionId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'sections', sectionId);
             await updateDoc(docRef, { order: newOrder });
             this._clearCache(verticalId);
             await this.updateRemoteVersion();
@@ -367,7 +367,7 @@ class ContentService {
 
     async updateTechCardOrder(verticalId, cardId, newOrder) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'tech_cards', cardId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'tech_cards', cardId);
             await updateDoc(docRef, { order: newOrder });
             return true;
         } catch (error) {
@@ -378,7 +378,7 @@ class ContentService {
 
     async updateCaseOrder(verticalId, caseId, newOrder) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'cases', caseId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'cases', caseId);
             await updateDoc(docRef, { order: newOrder });
             return true;
         } catch (error) {
@@ -393,7 +393,7 @@ class ContentService {
     async cloneSection(sourceVerticalId, sectionId, targetVerticalIds) {
         try {
             // 1. Get original section data
-            const sourceDocRef = doc(db, 'verticals', sourceVerticalId, 'sections', sectionId);
+            const sourceDocRef = doc(db, 'web_verticals', sourceVerticalId, 'sections', sectionId);
             const sourceSnap = await getDoc(sourceDocRef);
 
             if (!sourceSnap.exists()) throw new Error('Source section not found');
@@ -404,7 +404,7 @@ class ContentService {
                 if (targetId === sourceVerticalId) return; // Skip same vertical
 
                 // Calculate next order for target vertical
-                const targetRef = collection(db, 'verticals', targetId, 'sections');
+                const targetRef = collection(db, 'web_verticals', targetId, 'sections');
                 const q = query(targetRef, orderBy('order', 'desc'), limit(1));
                 const snapshot = await getDocs(q);
                 let nextOrder = 0;
@@ -450,7 +450,7 @@ class ContentService {
             */
 
             // 2. Delete document from Firestore
-            const docRef = doc(db, 'verticals', verticalId, 'sections', sectionId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'sections', sectionId);
             await deleteDoc(docRef);
             this._clearCache(verticalId);
 
@@ -468,7 +468,7 @@ class ContentService {
     async getTechCards(verticalId) {
         return this._fetchCached(`tech_${verticalId}`, async () => {
             try {
-                const cardsRef = collection(db, 'verticals', verticalId, 'tech_cards');
+                const cardsRef = collection(db, 'web_verticals', verticalId, 'tech_cards');
                 const snapshot = await getDocs(query(cardsRef, orderBy('order', 'asc')));
                 return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             } catch (error) {
@@ -480,7 +480,7 @@ class ContentService {
 
     async addTechCard(verticalId, data) {
         try {
-            const cardsRef = collection(db, 'verticals', verticalId, 'tech_cards');
+            const cardsRef = collection(db, 'web_verticals', verticalId, 'tech_cards');
             const q = query(cardsRef, orderBy('order', 'desc'), limit(1));
             const snapshot = await getDocs(q);
             let nextOrder = 0;
@@ -502,7 +502,7 @@ class ContentService {
 
     async updateTechCard(verticalId, cardId, data) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'tech_cards', cardId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'tech_cards', cardId);
             const updateData = { ...data, updatedAt: serverTimestamp() };
             Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
             
@@ -516,7 +516,7 @@ class ContentService {
 
     async deleteTechCard(verticalId, cardId) {
         try {
-            await deleteDoc(doc(db, 'verticals', verticalId, 'tech_cards', cardId));
+            await deleteDoc(doc(db, 'web_verticals', verticalId, 'tech_cards', cardId));
             return true;
         } catch (error) {
             console.error('Error deleting tech card:', error);
@@ -531,7 +531,7 @@ class ContentService {
     async getCases(verticalId) {
         return this._fetchCached(`cases_legacy_${verticalId}`, async () => {
             try {
-                const casesRef = collection(db, 'verticals', verticalId, 'cases');
+                const casesRef = collection(db, 'web_verticals', verticalId, 'cases');
                 const snapshot = await getDocs(query(casesRef, orderBy('order', 'asc')));
                 return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             } catch (error) {
@@ -543,7 +543,7 @@ class ContentService {
 
     async addCase(verticalId, data) {
         try {
-            const casesRef = collection(db, 'verticals', verticalId, 'cases');
+            const casesRef = collection(db, 'web_verticals', verticalId, 'cases');
             const q = query(casesRef, orderBy('order', 'desc'), limit(1));
             const snapshot = await getDocs(q);
             let nextOrder = 0;
@@ -564,7 +564,7 @@ class ContentService {
 
     async updateCase(verticalId, caseId, data) {
         try {
-            const docRef = doc(db, 'verticals', verticalId, 'cases', caseId);
+            const docRef = doc(db, 'web_verticals', verticalId, 'cases', caseId);
             const updateData = { ...data, updatedAt: serverTimestamp() };
             Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
             
@@ -578,7 +578,7 @@ class ContentService {
 
     async deleteCase(verticalId, caseId) {
         try {
-            await deleteDoc(doc(db, 'verticals', verticalId, 'cases', caseId));
+            await deleteDoc(doc(db, 'web_verticals', verticalId, 'cases', caseId));
             return true;
         } catch (error) {
             console.error('Error deleting case:', error);
@@ -598,7 +598,7 @@ class ContentService {
         return this._fetchCached(`cases_${verticalId}`, async () => {
             try {
                 const { where, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-                const casesRef = collection(db, 'cases');
+                const casesRef = collection(db, 'web_cases');
                 // Filter by vertical in the array
                 const q = query(
                     casesRef, 
@@ -619,7 +619,7 @@ class ContentService {
     async getAllGlobalCases() {
         return this._fetchCached('all_global_cases', async () => {
             try {
-                const casesRef = collection(db, 'cases');
+                const casesRef = collection(db, 'web_cases');
                 const snapshot = await getDocs(query(casesRef, orderBy('createdAt', 'desc')));
                 return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             } catch (error) {
@@ -631,7 +631,7 @@ class ContentService {
 
     async addGlobalCase(data) {
         try {
-            const casesRef = collection(db, 'cases');
+            const casesRef = collection(db, 'web_cases');
             const docRef = await addDoc(casesRef, {
                 ...data,
                 createdAt: serverTimestamp()
@@ -645,7 +645,7 @@ class ContentService {
 
     async updateGlobalCase(caseId, data) {
         try {
-            const docRef = doc(db, 'cases', caseId);
+            const docRef = doc(db, 'web_cases', caseId);
             const updateData = { ...data, updatedAt: serverTimestamp() };
             Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
             await updateDoc(docRef, updateData);
@@ -658,7 +658,7 @@ class ContentService {
 
     async deleteGlobalCase(caseId) {
         try {
-            await deleteDoc(doc(db, 'cases', caseId));
+            await deleteDoc(doc(db, 'web_cases', caseId));
             return true;
         } catch (error) {
             console.error('Error deleting global case:', error);
@@ -730,66 +730,13 @@ class ContentService {
     }
 
     // ========================
-    // USER MANAGEMENT
-    // ========================
-
-    async getUsers() {
-        try {
-            const usersRef = collection(db, 'users');
-            const snapshot = await getDocs(usersRef);
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        } catch (error) {
-            console.error('Error getting users:', error);
-            throw error;
-        }
-    }
-
-    async addUser(userData) {
-        try {
-            const usersRef = collection(db, 'users');
-            const docRef = await addDoc(usersRef, {
-                ...userData,
-                createdAt: serverTimestamp()
-            });
-            return { id: docRef.id, ...userData };
-        } catch (error) {
-            console.error('Error adding user:', error);
-            throw error;
-        }
-    }
-
-    async updateUser(userId, userData) {
-        try {
-            const docRef = doc(db, 'users', userId);
-            await updateDoc(docRef, {
-                ...userData,
-                updatedAt: serverTimestamp()
-            });
-            return true;
-        } catch (error) {
-            console.error('Error updating user:', error);
-            throw error;
-        }
-    }
-
-    async deleteUser(userId) {
-        try {
-            await deleteDoc(doc(db, 'users', userId));
-            return true;
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            throw error;
-        }
-    }
-
-    // ========================
     // GLOBAL PRODUCTS
     // ========================
 
     async getAllProducts() {
         return this._fetchCached('all_products', async () => {
             try {
-                const productsRef = collection(db, 'products');
+                const productsRef = collection(db, 'web_products');
                 const snapshot = await getDocs(query(productsRef, orderBy('order', 'asc')));
                 return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             } catch (error) {
@@ -803,7 +750,7 @@ class ContentService {
         return this._fetchCached(`products_${verticalId}`, async () => {
             try {
                 const { where, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-                const productsRef = collection(db, 'products');
+                const productsRef = collection(db, 'web_products');
                 const q = query(productsRef, where('verticals', 'array-contains', verticalId));
                 const snapshot = await getDocs(q);
                 const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -817,7 +764,7 @@ class ContentService {
 
     async addProduct(data) {
         try {
-            const productsRef = collection(db, 'products');
+            const productsRef = collection(db, 'web_products');
             // Get next order
             const q = query(productsRef, orderBy('order', 'desc'), limit(1));
             const snapshot = await getDocs(q);
@@ -838,7 +785,7 @@ class ContentService {
 
     async updateProduct(productId, data) {
         try {
-            const docRef = doc(db, 'products', productId);
+            const docRef = doc(db, 'web_products', productId);
             const updateData = { ...data, updatedAt: serverTimestamp() };
             Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
             await updateDoc(docRef, updateData);
@@ -851,7 +798,7 @@ class ContentService {
 
     async deleteProduct(productId) {
         try {
-            await deleteDoc(doc(db, 'products', productId));
+            await deleteDoc(doc(db, 'web_products', productId));
             return true;
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -861,7 +808,7 @@ class ContentService {
 
     async updateProductOrder(productId, newOrder) {
         try {
-            const docRef = doc(db, 'products', productId);
+            const docRef = doc(db, 'web_products', productId);
             await updateDoc(docRef, { order: newOrder });
             return true;
         } catch (error) {
