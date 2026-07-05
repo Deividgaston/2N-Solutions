@@ -235,6 +235,10 @@
         .filter-btn { border-radius: 999px !important; }
         /* ── v3: tarjetas de caso como paneles fotográficos ── */
         .casos-premium-grid { gap: 16px; }
+        /* Centrar la sección en la página: las columnas de ancho fijo (auto-fill)
+           se alineaban a la izquierda dejando el sobrante a la derecha */
+        .casos-master-grid, .casos-premium-grid { justify-content: center; }
+        .filter-bar { justify-content: center; }
         .caso-premium-card {
             position: relative;
             min-height: 480px;
@@ -444,7 +448,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <span class="footer-wordmark" aria-hidden="true">2N</span>
+        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <div class="modal" id="contact-modal">

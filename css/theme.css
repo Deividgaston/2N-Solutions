@@ -176,6 +176,17 @@ html.gsap-on [data-reveal] { opacity: 0; }
 }
 .footer-bottom a { color: var(--text-hint); text-decoration: none; }
 .footer-bottom a:hover { color: var(--text-white); }
+.footer-wordmark-logo {
+    display: block;
+    width: min(70vw, 920px);
+    margin: 0 auto;
+    opacity: 0.22;
+    transform: translateY(30%);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .footer-wordmark {
     display: block;
     font-family: var(--font-expanded);

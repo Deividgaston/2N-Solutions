@@ -88,10 +88,21 @@ class ProductosRenderer {
                 ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" class="product-img" style="--base-scale: ${baseScale};">`
                 : `<i class="fa-solid fa-box-open" style="font-size:4rem;opacity:0.2;color:white;"></i>`;
 
-            // Construimos la lista de prestaciones de la Viñeta (siempre desde p.tags)
+            // Mini HOJA TÉCNICA: specs {label, value} de la BD; si no hay, los tags
             let featuresHtml = '';
-            if (p.tags && p.tags.length > 0) {
-                featuresHtml = p.tags.slice(0, 4).map(tag => `<li><i class="fa-solid fa-check"></i> ${tag}</li>`).join('');
+            const specs = (p.specs || []).filter(sp => sp && (sp.label || sp.value)).slice(0, 4);
+            if (specs.length > 0) {
+                featuresHtml = specs.map(sp => `
+                    <div class="spec-row">
+                        <span class="spec-label">${sp.label || ''}</span>
+                        <span class="spec-value">${sp.value || ''}</span>
+                    </div>`).join('');
+            } else if (p.tags && p.tags.length > 0) {
+                featuresHtml = p.tags.slice(0, 4).map(tag => `
+                    <div class="spec-row">
+                        <span class="spec-label"><i class="fa-solid fa-check"></i></span>
+                        <span class="spec-value">${tag}</span>
+                    </div>`).join('');
             }
 
             card.innerHTML = `
@@ -101,7 +112,7 @@ class ProductosRenderer {
                     <div class="product-name">${p.name}</div>
                     <p class="product-desc">${p.description || ''}</p>
                     
-                    ${featuresHtml ? `<ul class="product-features-list">${featuresHtml}</ul>` : ''}
+                    ${featuresHtml ? `<div class="product-specsheet">${featuresHtml}</div>` : ''}
                     
                     <div class="product-footer">
                         <span>Ver todos los detalles</span>

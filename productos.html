@@ -150,6 +150,31 @@
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
+        /* ── v3: mini hoja técnica en la tarjeta ── */
+        .product-specsheet {
+            margin: 0.9rem 0 0.2rem;
+            border-top: 1px solid var(--border);
+        }
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+        }
+        .spec-label {
+            color: var(--text-hint);
+            font-weight: 600;
+            font-size: 0.66rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .spec-label .fa-check { color: var(--primary-light); font-size: 0.7rem; }
+        .spec-value { color: var(--text-white); text-align: right; font-variant-numeric: tabular-nums; }
+
         /* ── v3: tarjetas de producto ── */
         .product-card {
             border-radius: 16px;
@@ -298,7 +323,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <span class="footer-wordmark" aria-hidden="true">2N</span>
+        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <div class="modal" id="contact-modal">
