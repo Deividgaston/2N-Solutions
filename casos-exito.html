@@ -218,7 +218,7 @@
                 linear-gradient(to top, var(--bg-deep) 5%, rgba(10,10,15,0.5) 45%, rgba(10,10,15,0.65) 100%),
                 url('assets/web/hero-casos.webp');
             background-size: cover;
-            background-position: center 65%;
+            background-position: center 35%;
         }
         .casos-hero::before { display: none; }
         .casos-hero .hero-container { grid-template-columns: 1fr; }
@@ -262,11 +262,14 @@
         }
         .caso-premium-photo-placeholder { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3.5rem; color: var(--border); }
         .caso-premium-vertical-badge {
-            position: absolute; top: 1.2rem; left: 1.3rem; z-index: 1;
-            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-            color: #fff; background: rgba(37,99,235,0.35); border: 1px solid rgba(96,150,255,0.5);
-            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-            padding: 0.3rem 0.65rem; border-radius: 999px;
+            position: absolute; top: 1.2rem; left: 50%; transform: translateX(-50%); z-index: 1;
+            white-space: nowrap;
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+            color: #fff; background: rgba(6,8,14,0.72);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-left: 3px solid var(--primary);
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+            padding: 0.42rem 0.9rem; border-radius: 3px;
         }
         .caso-premium-body { padding: 1.7rem; background: none; margin-top: auto; flex: 0 0 auto; }
         .caso-premium-name { font-family: var(--font-expanded); font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.08; }
@@ -275,8 +278,9 @@
         .caso-zigzag-tags { margin-top: 0.9rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
         .caso-zigzag-tag-item {
             font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-            color: var(--primary-light); border: 1px solid rgba(37,99,235,0.35);
-            background: rgba(6,8,14,0.4); border-radius: 999px; padding: 0.28rem 0.6rem;
+            color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.16);
+            border-left: 2px solid var(--primary);
+            background: rgba(6,8,14,0.55); border-radius: 3px; padding: 0.3rem 0.6rem;
         }
     </style>
 </head>

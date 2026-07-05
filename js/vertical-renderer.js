@@ -105,9 +105,10 @@ class VerticalRenderer {
                 // If meta has a quote, use it. Otherwise try to preserve existing or empty.
                 let quoteHTML = '';
                 if (meta.introQuote) {
+                    const q = String(meta.introQuote).trim().replace(/^["\u201C\u201D']+|["\u201C\u201D']+$/g, '');
                     quoteHTML = `
                         <div class="quote-block">
-                            <p>"${meta.introQuote}"</p>
+                            <p>\u201C${q}\u201D</p>
                         </div>
                     `;
                 } else if (quoteBlock) {
