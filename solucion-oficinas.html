@@ -58,11 +58,35 @@
         .intro-benefits, .benefits-grid { counter-reset: benefit; }
         .tech-section { background: var(--bg-deep); padding: 5rem 5%; border-top: 1px solid var(--border); }
         .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 1200px; margin: 0 auto; }
-        .tech-card { background: var(--bg-card); border: 0.5px solid var(--border); border-top: 2px solid var(--primary); border-radius: 8px; padding: 1.5rem; }
-        .tech-card-label { font-size: 0.65rem; font-weight: 600; color: var(--primary-light); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem; }
-        .tech-card-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.6rem; }
-        .tech-card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
-        .tech-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.85rem; }
+        .tech-card {
+            background: linear-gradient(180deg, rgba(37,99,235,0.06) 0%, rgba(37,99,235,0) 50%), var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .tech-card:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.45); box-shadow: 0 18px 44px rgba(0,0,0,0.4); }
+        .tech-card .tech-card-img {
+            background: radial-gradient(ellipse at 50% 42%, #1a2440 0%, #0d1322 72%) !important;
+            height: 190px !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--border);
+        }
+        .tech-card:hover .tech-card-img img { transform: scale(1.06); }
+        .tech-card-img img { transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+        .tech-card-label { font-size: 0.62rem; font-weight: 600; color: var(--primary-light); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .tech-card-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+        .tech-card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
+        .tech-card-tags { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tech-card-tags { margin-top: 1rem; }
+        .tech-tag {
+            font-size: 0.62rem !important; font-weight: 600 !important; letter-spacing: 0.08em !important; text-transform: uppercase !important;
+            color: rgba(255,255,255,0.85) !important; border: 1px solid rgba(255,255,255,0.16) !important;
+            border-left: 2px solid var(--primary) !important;
+            background: rgba(6,8,14,0.55) !important; border-radius: 3px !important; padding: 0.3rem 0.6rem !important;
+        }
         .tech-tag { font-size: 0.68rem; font-weight: 500; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); color: var(--primary-light); padding: 0.2rem 0.55rem; border-radius: 3px; }
         .casos-section { background: var(--bg-section); padding: 5rem 5%; border-top: 1px solid var(--border); }
         .casos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 1200px; margin: 0 auto; }
