@@ -1,3 +1,4 @@
 # Ignore large asset folders - use Firebase Storage instead
 assets/*/
 node_modules/
+scratch/nsoluciones-storage-backup/

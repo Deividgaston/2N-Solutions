@@ -57,10 +57,10 @@ class PptService {
         };
 
         // Load Static Slide Images (Using Direct Firebase URLs)
-        const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753951_Portada.png?alt=media&token=2566ea37-c62e-4a62-a078-445ee34504c8';
-        const innovationUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375754501_sobre_2n.png?alt=media&token=1b45b35a-1adf-4faa-bb2a-b64ea02d1a0e';
-        const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375752617_mapa_2n.png?alt=media&token=4b991682-1e43-4736-bf7e-e239cbe84d66';
-        const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/nsoluciones-68554.firebasestorage.app/o/multimedia%2F2N%2F1769375753424_porque_2n.png?alt=media&token=34739ddd-45c7-49a4-ba5a-6b204d3e6f92';
+        const coverUrl = 'https://firebasestorage.googleapis.com/v0/b/crm-obras-prod.firebasestorage.app/o/web%2Fmedia%2Fppt-portada.png?alt=media';
+        const innovationUrl = 'https://firebasestorage.googleapis.com/v0/b/crm-obras-prod.firebasestorage.app/o/web%2Fmedia%2Fppt-sobre-2n.png?alt=media';
+        const historyUrl = 'https://firebasestorage.googleapis.com/v0/b/crm-obras-prod.firebasestorage.app/o/web%2Fmedia%2Fppt-mapa-2n.png?alt=media';
+        const why2nUrl = 'https://firebasestorage.googleapis.com/v0/b/crm-obras-prod.firebasestorage.app/o/web%2Fmedia%2Fppt-porque-2n.png?alt=media';
 
         const [coverBg, innovationBg, historyBg, why2nBg] = await Promise.all([
             loadImgSafe(coverUrl),
