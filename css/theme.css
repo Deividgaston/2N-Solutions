@@ -3,8 +3,8 @@
    Aplicar en TODAS las páginas del proyecto.
    ═══════════════════════════════════════════════════════════ */
 
-/* Display font para titulares (el body sigue en Inter) */
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&display=swap');
+/* Display fonts para titulares (el body sigue en Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Archivo+Expanded:wght@600;700;800&display=swap');
 
 html {
     overflow-y: scroll;
@@ -24,6 +24,7 @@ html {
     --text-hint:      #6B7280;
     --font:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-display:   'Archivo', 'Inter', -apple-system, sans-serif;
+    --font-expanded:  'Archivo Expanded', 'Archivo', 'Inter', sans-serif;
 
     /* Legacy aliases (para que los archivos CSS viejos sigan funcionando) */
     --bg-black:       #0A0A0F;
@@ -50,6 +51,111 @@ body {
 h1, h2, h3, .section-title {
     font-family: var(--font-display);
     text-wrap: balance;
+}
+
+/* ── Lenguaje visual v3 (compartido por TODAS las páginas) ── */
+
+/* Titulares de héroe: display expandido en mayúsculas (como la portada) */
+.hero h1, .casos-hero h1, .solution-hero h1 {
+    font-family: var(--font-expanded);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+    line-height: 1.0;
+}
+.section-title {
+    font-family: var(--font-expanded);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+}
+/* Palabra "fantasma" en outline dentro de titulares */
+.ghost {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.34);
+}
+
+/* ── Footer v3 (compartido) ── */
+.footer {
+    background: #060608;
+    border-top: 1px solid var(--border);
+    padding: 3.5rem 5% 0;
+    overflow: hidden;
+}
+.footer-grid {
+    max-width: 1360px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.footer-brand img { height: 30px; margin-bottom: 1rem; }
+.footer-brand p { color: var(--text-hint); font-size: 0.82rem; line-height: 1.7; max-width: 34ch; }
+.footer-axis {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+}
+.footer-col h4 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    margin-bottom: 1rem;
+    font-family: var(--font);
+}
+.footer-col a {
+    display: block;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.84rem;
+    padding: 0.28rem 0;
+    transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--text-white); }
+.footer-bottom {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 1.4rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--text-hint);
+    font-size: 0.74rem;
+}
+.footer-bottom a { color: var(--text-hint); text-decoration: none; }
+.footer-bottom a:hover { color: var(--text-white); }
+.footer-wordmark {
+    display: block;
+    font-family: var(--font-expanded);
+    font-weight: 800;
+    font-size: clamp(6rem, 24vw, 22rem);
+    line-height: 0.78;
+    text-align: center;
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    transform: translateY(0.14em);
+}
+@media (max-width: 1024px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 /* ── NAVBAR ── */
@@ -454,26 +560,7 @@ h1, h2, h3, .section-title {
 }
 .btn-sidebar-outline:hover { border-color: var(--primary-light); color: var(--primary-light); }
 
-/* ── FOOTER ── */
-.footer {
-    background: #060608;
-    border-top: 1px solid var(--border);
-    padding: 2.5rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.footer-left { display: flex; align-items: center; gap: 1.5rem; }
-.footer-left img { height: 28px; opacity: 1; }
-.footer-left span { color: var(--text-hint); font-size: 0.78rem; }
-.footer-links { display: flex; gap: 1.5rem; }
-.footer-links a {
-    color: var(--text-hint);
-    text-decoration: none;
-    font-size: 0.78rem;
-    transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--text-white); }
+/* (El FOOTER v3 vive arriba, en "Lenguaje visual v3"; el footer legacy se retiró) */
 
 /* ── DOWNLOAD PDF BUTTON ── */
 #download-dossier-btn {

@@ -24,7 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Archivo:wght@500;600;700;800&family=Archivo+Expanded:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/theme.css?v=2.2">
+    <link rel="stylesheet" href="css/theme.css?v=2.3">
 
     <style>
         /* ══════════════════════════════════════════════════
@@ -530,69 +530,100 @@
         }
         .case-card {
             position: relative;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            min-height: 480px;
+            border-radius: 18px;
             overflow: hidden;
+            border: 1px solid var(--border);
             text-decoration: none;
             color: var(--text-white);
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
+            isolation: isolate;
             transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
-        .case-card:nth-child(2) { transform: translateY(26px); }
-        .case-card:hover { transform: translateY(-5px); border-color: rgba(59,130,246,0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.45); }
-        .case-card:nth-child(2):hover { transform: translateY(21px); }
+        .case-card:nth-child(2) { transform: translateY(30px); }
+        .case-card:hover { transform: translateY(-5px); border-color: rgba(59,130,246,0.5); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
+        .case-card:nth-child(2):hover { transform: translateY(25px); }
         .case-photo {
-            aspect-ratio: 16 / 11;
+            position: absolute;
+            inset: 0;
+            z-index: -1;
             background-size: cover;
             background-position: center;
             background-color: #0f1524;
+            transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
         }
+        .case-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(to top, rgba(6, 8, 14, 0.96) 12%, rgba(6, 8, 14, 0.45) 52%, rgba(6, 8, 14, 0.12) 100%);
+        }
+        .case-card:hover .case-photo { transform: scale(1.06); }
         .case-index {
             position: absolute;
-            top: 0.9rem;
-            left: 1.1rem;
+            top: 1.3rem;
+            right: 1.5rem;
             font-family: var(--font-expanded);
-            font-size: 1.6rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.65);
+            -webkit-text-stroke: 1px rgba(255,255,255,0.45);
             line-height: 1;
         }
-        .case-body { padding: 1.4rem 1.5rem 1.7rem; display: flex; flex-direction: column; flex: 1; }
-        .case-verticals { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .case-body { padding: 1.7rem 1.7rem 1.8rem; }
+        .case-verticals { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
         .case-vertical-chip {
             font-size: 0.58rem;
             font-weight: 600;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--primary-light);
-            background: rgba(37,99,235,0.1);
-            border: 1px solid rgba(37,99,235,0.28);
-            padding: 0.28rem 0.6rem;
+            color: #fff;
+            background: rgba(37,99,235,0.35);
+            border: 1px solid rgba(96,150,255,0.5);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            padding: 0.3rem 0.65rem;
             border-radius: 999px;
         }
         .case-card h3 {
-            font-family: var(--font-display);
-            font-size: 1.12rem;
-            font-weight: 600;
-            margin-bottom: 0.45rem;
+            font-family: var(--font-expanded);
+            font-size: 1.35rem;
+            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: -0.01em;
+            line-height: 1.08;
+            margin-bottom: 0.5rem;
         }
         .case-card p {
-            font-size: 0.83rem;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.78);
             line-height: 1.62;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            max-width: 46ch;
         }
+        .case-cta {
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
+        .case-card:hover .case-cta { opacity: 1; transform: translateY(0); }
         .case-skeleton {
-            border-radius: 16px;
+            border-radius: 18px;
             border: 1px solid var(--border);
-            min-height: 340px;
+            min-height: 480px;
             background: linear-gradient(100deg, var(--bg-card) 40%, #16203a 50%, var(--bg-card) 60%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
@@ -696,80 +727,6 @@
             line-height: 1.5;
         }
         .form-success.visible { display: block; }
-
-        /* ── FOOTER con wordmark gigante ── */
-        .footer {
-            background: #060608;
-            border-top: 1px solid var(--border);
-            padding: 3.5rem 0 0;
-            overflow: hidden;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
-            padding-bottom: 2.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .footer-brand img { height: 30px; margin-bottom: 1rem; }
-        .footer-brand p { color: var(--text-hint); font-size: 0.82rem; line-height: 1.7; max-width: 34ch; }
-        .footer-axis {
-            margin-top: 1.25rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-hint);
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 0.45rem 0.9rem;
-        }
-        .footer-col h4 {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--text-hint);
-            margin-bottom: 1rem;
-        }
-        .footer-col a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.84rem;
-            padding: 0.28rem 0;
-            transition: color 0.2s;
-        }
-        .footer-col a:hover { color: var(--text-white); }
-        .footer-bottom {
-            padding: 1.4rem 0;
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-            color: var(--text-hint);
-            font-size: 0.74rem;
-        }
-        .footer-bottom a { color: var(--text-hint); text-decoration: none; }
-        .footer-bottom a:hover { color: var(--text-white); }
-        .footer-wordmark {
-            display: block;
-            font-family: var(--font-expanded);
-            font-weight: 800;
-            font-size: clamp(6rem, 24vw, 22rem);
-            line-height: 0.78;
-            text-align: center;
-            letter-spacing: -0.02em;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.14);
-            -webkit-user-select: none;
-            user-select: none;
-            pointer-events: none;
-            transform: translateY(0.14em);
-        }
 
         /* ── Reveals (solo si GSAP carga) ── */
         html.gsap-on [data-reveal] { opacity: 0; }
@@ -1107,39 +1064,37 @@
 
     <!-- ── FOOTER ── -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-                    <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
-                    <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
-                </div>
-                <div class="footer-col">
-                    <h4>Soluciones</h4>
-                    <a href="solucion-bts.html">Residencial BTS</a>
-                    <a href="solucion-btr.html">Residencial BTR</a>
-                    <a href="solucion-oficinas.html">Oficinas</a>
-                    <a href="solucion-hoteles.html">Hoteles</a>
-                    <a href="solucion-retail.html">Retail</a>
-                    <a href="solucion-seguridad.html">Infraestructura crítica</a>
-                </div>
-                <div class="footer-col">
-                    <h4>2N</h4>
-                    <a href="company.html">Sobre 2N</a>
-                    <a href="casos-exito.html">Casos de éxito</a>
-                    <a href="productos.html">Productos</a>
-                    <a href="login.html">Área prescriptores</a>
-                    <a href="https://www.2n.com" target="_blank" rel="noopener">2N.com</a>
-                </div>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="assets/2N_Logo_RGB_White.png" alt="2N">
+                <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
+                <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
             </div>
-            <div class="footer-bottom">
-                <span data-i18n="footer_copyright">© 2026 2N Telekomunikace a.s. · Parte de Axis Communications</span>
-                <span>
-                    <a href="https://www.2n.com/es_ES/proteccion-de-datos-personales" target="_blank" rel="noopener">Privacidad</a>
-                    &nbsp;·&nbsp;
-                    <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
-                </span>
+            <div class="footer-col">
+                <h4>Soluciones</h4>
+                <a href="solucion-bts.html">Residencial BTS</a>
+                <a href="solucion-btr.html">Residencial BTR</a>
+                <a href="solucion-oficinas.html">Oficinas</a>
+                <a href="solucion-hoteles.html">Hoteles</a>
+                <a href="solucion-retail.html">Retail</a>
+                <a href="solucion-seguridad.html">Infraestructura crítica</a>
             </div>
+            <div class="footer-col">
+                <h4>2N</h4>
+                <a href="company.html">Sobre 2N</a>
+                <a href="casos-exito.html">Casos de éxito</a>
+                <a href="productos.html">Productos</a>
+                <a href="login.html">Área prescriptores</a>
+                <a href="https://www.2n.com" target="_blank" rel="noopener">2N.com</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 2N Telekomunikace a.s. · Parte de Axis Communications</span>
+            <span>
+                <a href="https://www.2n.com/es_ES/proteccion-de-datos-personales" target="_blank" rel="noopener">Privacidad</a>
+                &nbsp;·&nbsp;
+                <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
+            </span>
         </div>
         <span class="footer-wordmark" aria-hidden="true">2N</span>
     </footer>

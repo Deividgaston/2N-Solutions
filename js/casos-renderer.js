@@ -138,7 +138,7 @@ class CasosRenderer {
 
 // Global scope for closing modal (linked to close buttons in HTML)
 window.closeModal = () => {
-    document.getElementById('modalOverlay').classList.remove('open');
+    document.getElementById('modalOverlay').classList.remove('active');
     document.body.style.overflow = '';
 };
 

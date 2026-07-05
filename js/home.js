@@ -166,6 +166,11 @@
                 body.appendChild(p);
             }
 
+            var cta = document.createElement('span');
+            cta.className = 'case-cta';
+            cta.textContent = 'Ver proyecto \u27F6';
+            body.appendChild(cta);
+
             card.appendChild(body);
             grid.appendChild(card);
         });
