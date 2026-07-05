@@ -1,12 +1,6 @@
 {
-    "firestore": {
-        "rules": "firestore.rules"
-    },
-    "storage": {
-        "rules": "storage.rules"
-    },
     "hosting": {
-        "site": "specifications-solutions-2n",
+        "site": "soluciones-2n",
         "predeploy": [
             "bash scripts/optimize-assets.sh"
         ],
@@ -23,7 +17,10 @@
             "**/*.pptx",
             "SPEC_WEB_2N_Prescripciones.md",
             "package.json",
-            "package-lock.json"
+            "package-lock.json",
+            "firebase-debug.log*",
+            "*.log",
+            ".firebaserc"
         ],
         "cleanUrls": true,
         "trailingSlash": false,

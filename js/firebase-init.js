@@ -1,8 +1,8 @@
 /**
  * 2N Presenter - Firebase Initialization
  * BD unificada: crm-obras-prod (colecciones web_* con lectura pública).
- * El hosting sigue en nsoluciones-68554 (site specifications-solutions-2n);
- * los assets multimedia antiguos siguen en el bucket de nsoluciones vía URLs absolutas.
+ * Hosting: site soluciones-2n en crm-obras-prod (todo unificado).
+ * 
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
