@@ -163,14 +163,16 @@ class VerticalRenderer {
                 heroSection.style.backgroundImage = 'none';
                 heroSection.style.backgroundColor = '#111';
             }
-        } else if (meta.heroImageUrl) {
+        } else {
+            // Sin imagen en la BD -> foto por defecto de la vertical (assets/web)
+            const heroUrl = meta.heroImageUrl || `assets/web/vertical-${this.verticalId}.webp`;
             const bgDiv = heroSection.querySelector('.solution-hero-bg');
             if (bgDiv) {
-                bgDiv.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                bgDiv.style.backgroundImage = `url('${heroUrl}')`;
                 bgDiv.style.backgroundPosition = `${meta.heroPosX || 50}% ${meta.heroPosY || 50}%`;
                 bgDiv.classList.add('dynamic-bg');
             } else {
-                heroSection.style.backgroundImage = `url('${meta.heroImageUrl}')`;
+                heroSection.style.backgroundImage = `url('${heroUrl}')`;
                 heroSection.style.backgroundPosition = `${meta.heroPosX || 50}% ${meta.heroPosY || 50}%`;
                 heroSection.classList.add('dynamic-bg');
             }

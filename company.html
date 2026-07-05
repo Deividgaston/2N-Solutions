@@ -150,10 +150,35 @@
             .hero-subtitle { margin: 0 auto; }
             .nav-links { display: none; }
         }
+    
+        /* ── v3: hero fotográfico ── */
+        .hero {
+            min-height: 78dvh;
+            align-items: flex-end;
+            background-image:
+                linear-gradient(to top, var(--bg-deep) 5%, rgba(10,10,15,0.55) 45%, rgba(10,10,15,0.65) 100%),
+                url('assets/web/hero-company.webp');
+            background-size: cover;
+            background-position: center;
+            padding-bottom: 4.5rem;
+        }
+        .hero::before { display: none; }
+        .hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); margin-bottom: 1.2rem; }
+        .hero .hero-badge {
+            border-radius: 999px;
+            background: rgba(10,10,15,0.45);
+            border-color: rgba(255,255,255,0.16);
+            color: #fff;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
     </style>
 </head>
 
 <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
     <!-- ── NAVBAR ── -->
     <nav class="navbar" id="navbar">
         <a href="/" class="logo">
@@ -200,9 +225,9 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-badge">Estándar Mundial en Intercomunicación IP</div>
-                <h1>Nuestra Misión:<br><span class="blue">Prescribir Excelencia.</span></h1>
-                <p class="hero-subtitle">Desde 1991, 2N lidera la innovación en control de acceso. Como parte estratégica de Axis Communications, definimos el futuro de la seguridad arquitectónica.</p>
+                <div class="hero-badge" data-reveal>Estándar Mundial en Intercomunicación IP</div>
+                <h1 data-reveal>Nuestra Misión:<br><span class="blue">Prescribir Excelencia.</span></h1>
+                <p class="hero-subtitle" data-reveal>Desde 1991, 2N lidera la innovación en control de acceso. Como parte estratégica de Axis Communications, definimos el futuro de la seguridad arquitectónica.</p>
             </div>
             <div style="text-align: right; opacity: 0.15; pointer-events: none;">
                 <img src="assets/2N_Logo_RGB_White.png" alt="2N" style="width: 100%; max-width: 450px;">
@@ -370,5 +395,8 @@
 
     <script type="module" src="js/i18n.js"></script>
     <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="js/v3.js?v=1.0"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>Casos de Éxito | 2N Solutions Portal</title>
     <link rel="stylesheet" href="css/theme.css?v=2.3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/solutions.css?v=2.0">
+    <link rel="stylesheet" href="css/solutions.css?v=3.1">
     <style>
         /* ── REPLICANDO HERO DEL INDEX ── */
         .casos-hero { 
@@ -209,9 +209,81 @@
             border-radius: 999px;
             padding: 0.3rem 0.65rem;
         }
+    
+        /* ── v3: hero fotográfico ── */
+        .casos-hero {
+            min-height: 78dvh;
+            align-items: flex-end;
+            background-image:
+                linear-gradient(to top, var(--bg-deep) 5%, rgba(10,10,15,0.5) 45%, rgba(10,10,15,0.65) 100%),
+                url('assets/web/hero-casos.webp');
+            background-size: cover;
+            background-position: center 65%;
+        }
+        .casos-hero::before { display: none; }
+        .casos-hero .hero-container { grid-template-columns: 1fr; }
+        .casos-hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); margin-bottom: 1.2rem; }
+        .casos-hero .hero-badge {
+            border-radius: 999px;
+            background: rgba(10,10,15,0.45);
+            border-color: rgba(255,255,255,0.16);
+            color: #fff;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        /* ── v3: filtros como pills ── */
+        .filter-btn { border-radius: 999px !important; }
+        /* ── v3: tarjetas de caso como paneles fotográficos ── */
+        .casos-premium-grid { gap: 16px; }
+        .caso-premium-card {
+            position: relative;
+            min-height: 480px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            cursor: pointer;
+            isolation: isolate;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .caso-premium-card:hover { transform: translateY(-5px); border-color: rgba(59,130,246,0.5); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
+        .caso-premium-photo { position: absolute; inset: 0; z-index: -1; height: auto; }
+        .caso-premium-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+        .caso-premium-card:hover .caso-premium-photo img { transform: scale(1.06); }
+        .caso-premium-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(to top, rgba(6,8,14,0.97) 18%, rgba(6,8,14,0.55) 60%, rgba(6,8,14,0.18) 100%);
+        }
+        .caso-premium-photo-placeholder { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3.5rem; color: var(--border); }
+        .caso-premium-vertical-badge {
+            position: absolute; top: 1.2rem; left: 1.3rem; z-index: 1;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+            color: #fff; background: rgba(37,99,235,0.35); border: 1px solid rgba(96,150,255,0.5);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+            padding: 0.3rem 0.65rem; border-radius: 999px;
+        }
+        .caso-premium-body { padding: 1.7rem; background: none; margin-top: auto; flex: 0 0 auto; }
+        .caso-premium-name { font-family: var(--font-expanded); font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.08; }
+        .caso-premium-location { margin-top: 0.35rem; font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+        .caso-premium-description { margin-top: 0.6rem; font-size: 0.85rem; color: rgba(255,255,255,0.78); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .caso-zigzag-tags { margin-top: 0.9rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .caso-zigzag-tag-item {
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--primary-light); border: 1px solid rgba(37,99,235,0.35);
+            background: rgba(6,8,14,0.4); border-radius: 999px; padding: 0.28rem 0.6rem;
+        }
     </style>
 </head>
 <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
     <nav class="navbar" id="navbar">
         <a href="/" class="logo">
             <img src="assets/2N_Logo_RGB_White.png" alt="2N">
@@ -259,12 +331,9 @@
     <header class="casos-hero">
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-badge">Referencia Mundial en Intercomunicación</div>
-                <h1>Casos de Éxito:<br><span style="color: var(--primary-light);">Proyectos Reales.</span></h1>
-                <p class="hero-subtitle">Descubre cómo arquitectos y promotores de todo el mundo utilizan la tecnología 2N para elevar la seguridad y el diseño de sus edificios más emblemáticos.</p>
-            </div>
-            <div style="text-align: right; opacity: 0.1; pointer-events: none;">
-                <i class="fa-solid fa-earth-americas" style="font-size: 25rem;"></i>
+                <div class="hero-badge" data-reveal>Referencia Mundial en Intercomunicación</div>
+                <h1 data-reveal>Casos de Éxito:<br><span style="color: var(--primary-light);">Proyectos Reales.</span></h1>
+                <p class="hero-subtitle" data-reveal>Descubre cómo arquitectos y promotores de todo el mundo utilizan la tecnología 2N para elevar la seguridad y el diseño de sus edificios más emblemáticos.</p>
             </div>
         </div>
     </header>
@@ -393,5 +462,8 @@
     <script type="module" src="js/casos-renderer.js?v=2.0"></script>
     <script type="module" src="js/i18n.js"></script>
     <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="js/v3.js?v=1.0"></script>
 </body>
 </html>

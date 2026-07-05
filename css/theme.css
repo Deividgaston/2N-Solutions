@@ -76,6 +76,43 @@ h1, h2, h3, .section-title {
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.34);
 }
 
+/* Grano de textura (páginas v3) */
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Barra de progreso de scroll */
+.scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--primary);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    z-index: 1200;
+    pointer-events: none;
+}
+/* Eyebrow editorial */
+.sec-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+}
+.sec-eyebrow::before { content: ''; width: 42px; height: 1px; background: var(--primary); }
+/* Reveals: ocultos solo si GSAP toma el control */
+html.gsap-on [data-reveal] { opacity: 0; }
+
 /* ── Footer v3 (compartido) ── */
 .footer {
     background: #060608;

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
     <link rel="stylesheet" href="css/theme.css?v=2.3">
-    <link rel="stylesheet" href="css/solutions.css?v=2.0">
+    <link rel="stylesheet" href="css/solutions.css?v=3.1">
     <style>
         .content-wrapper { max-width: 1200px; margin: 0 auto; }
         .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-bottom: 4rem; }
@@ -47,6 +47,9 @@
     </style>
 </head>
 <body data-vertical="retail">
+    <div class="grain" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
 
     <nav class="navbar" id="navbar">
         <a href="/" class="logo">
@@ -213,5 +216,8 @@
     <script type="module" src="js/pdf-handler.js"></script>
     <script type="module" src="js/i18n.js"></script>
     <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="js/v3.js?v=1.0"></script>
 </body>
 </html>
