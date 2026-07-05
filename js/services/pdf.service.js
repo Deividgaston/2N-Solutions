@@ -14,7 +14,17 @@ class PDFService {
 
     async generateDossier(verticalName, data) {
         console.count("PDF_ENGINE_V11_START");
-        if (typeof html2pdf === 'undefined') return alert('Error: Dependencia html2pdf no detectada.');
+        if (typeof html2pdf === 'undefined') {
+            // Carga perezosa: 885KB que solo se descargan si el usuario pide el PDF
+            await new Promise((resolve, reject) => {
+                const sc = document.createElement('script');
+                sc.src = 'js/html2pdf.bundle.min.js';
+                sc.onload = resolve;
+                sc.onerror = () => reject(new Error('No se pudo cargar el generador de PDF'));
+                document.head.appendChild(sc);
+            }).catch(() => null);
+        }
+        if (typeof html2pdf === 'undefined') return alert('Error: no se pudo cargar el generador de PDF. Revisa tu conexión.');
 
         const curtain = this.showLoading();
         const title = (verticalName || '2N').toUpperCase();

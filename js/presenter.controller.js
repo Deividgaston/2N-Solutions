@@ -3,7 +3,8 @@
  * Handles building and viewing slides
  */
 
-import { auth, db } from './firebase-init.js';
+import { db } from './firebase-init.js';
+import { auth } from './firebase-auth-init.js';
 import {
     collection,
     getDocs,

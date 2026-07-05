@@ -3,7 +3,8 @@
  * Handles login, logout, and session management
  */
 
-import { auth, db } from './firebase-init.js';
+import { db } from './firebase-init.js';
+import { auth } from './firebase-auth-init.js';
 import {
     signInWithEmailAndPassword,
     signOut,

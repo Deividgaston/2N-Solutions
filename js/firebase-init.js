@@ -6,9 +6,7 @@
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getAuth, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import { getFirestore, enableIndexedDbPersistence } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-import { getStorage } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -22,12 +20,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Auth with persistence
-const auth = getAuth(app);
-setPersistence(auth, browserLocalPersistence).catch((err) => {
-    console.warn("Auth persistence not available:", err.code || err);
-});
 
 // Firestore with offline persistence
 const db = getFirestore(app);
@@ -43,9 +35,7 @@ enableIndexedDbPersistence(db).catch((err) => {
     }
 });
 
-// Storage
-const storage = getStorage(app);
-
-// Export Firebase services
-export { app, auth, db, storage };
+// Auth y Storage NO se cargan aquí (regla de rendimiento): las páginas
+// públicas solo necesitan Firestore. login/presenter usan firebase-auth-init.js.
+export { app, db };
 export default app;
