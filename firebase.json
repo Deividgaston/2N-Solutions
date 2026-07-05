@@ -16,7 +16,14 @@
             "**/.*",
             "**/node_modules/**",
             "README.md",
-            "firestore.rules"
+            "firestore.rules",
+            "storage.rules",
+            "scratch/**",
+            "scripts/**",
+            "**/*.pptx",
+            "SPEC_WEB_2N_Prescripciones.md",
+            "package.json",
+            "package-lock.json"
         ],
         "cleanUrls": true,
         "trailingSlash": false,

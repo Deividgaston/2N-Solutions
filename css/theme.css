@@ -1,7 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   THEME.CSS — 2N B2B Design System (v1.3)
+   THEME.CSS — 2N B2B Design System (v1.4)
    Aplicar en TODAS las páginas del proyecto.
    ═══════════════════════════════════════════════════════════ */
+
+/* Display font para titulares (el body sigue en Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&display=swap');
 
 html {
     overflow-y: scroll;
@@ -20,6 +23,7 @@ html {
     --text-muted:     #9CA3AF;
     --text-hint:      #6B7280;
     --font:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display:   'Archivo', 'Inter', -apple-system, sans-serif;
 
     /* Legacy aliases (para que los archivos CSS viejos sigan funcionando) */
     --bg-black:       #0A0A0F;
@@ -41,6 +45,11 @@ body {
     color: var(--text-white);
     line-height: 1.6;
     overflow-x: hidden;
+}
+
+h1, h2, h3, .section-title {
+    font-family: var(--font-display);
+    text-wrap: balance;
 }
 
 /* ── NAVBAR ── */
