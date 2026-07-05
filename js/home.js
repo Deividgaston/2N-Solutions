@@ -1,8 +1,10 @@
 /**
- * 2N Presenter — Home (landing)
- * - Motion con GSAP + ScrollTrigger (respeta prefers-reduced-motion)
- * - Casos destacados desde Firestore (REST, sin SDK: la landing no carga Firebase)
- * - Formulario de prescripción -> colección web_leads (create público validado por reglas)
+ * 2N Presenter — Home v3 (landing editorial/cinemática)
+ * - Coreografía GSAP + ScrollTrigger: reveal de líneas del hero, parallax,
+ *   galería horizontal pinneada de soluciones, count-ups, reveals.
+ *   Respeta prefers-reduced-motion (todo visible, sin pin).
+ * - Casos destacados desde Firestore por REST (la landing no carga el SDK).
+ * - Formulario de prescripción -> colección web_leads (create público validado).
  */
 (function () {
     'use strict';
@@ -12,57 +14,93 @@
     var API_KEY = 'AIzaSyBdTl2XXdo9ks-qqhBqDdXk8uLb65qyD-I';
     var FS_BASE = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents';
 
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var gsapOk = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+
     /* ────────────────────────────────
        MOTION (GSAP)
     ──────────────────────────────── */
-    var gsapOk = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
     if (gsapOk) {
         gsap.registerPlugin(ScrollTrigger);
         document.documentElement.classList.add('gsap-on');
 
+        // Barra de progreso de lectura
+        var progress = document.getElementById('scroll-progress');
+        if (progress) {
+            gsap.to(progress, {
+                scaleX: 1,
+                ease: 'none',
+                scrollTrigger: { start: 0, end: 'max', scrub: 0.4 },
+            });
+        }
+
         var mm = gsap.matchMedia();
 
         mm.add('(prefers-reduced-motion: no-preference)', function () {
-            // Entrada del hero: cascada
-            gsap.fromTo('.hero [data-reveal]',
-                { opacity: 0, y: 24 },
-                { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.15 }
-            );
+            // Intro del hero: líneas del titular + badge + pie, y "ken burns" de la foto
+            var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+            tl.fromTo('.hero-media img', { scale: 1.18 }, { scale: 1.08, duration: 2.4, ease: 'power2.out' }, 0)
+              .to('.hero .hero-badge', { opacity: 1, y: 0, duration: 0.7 }, 0.15)
+              .to('.hero h1 .line-inner', { y: 0, duration: 1.05, stagger: 0.12 }, 0.25)
+              .to('.hero .hero-foot [data-reveal]', { opacity: 1, y: 0, duration: 0.8, stagger: 0.12 }, 0.8);
+            gsap.set('.hero .hero-badge', { y: 16 });
+            gsap.set('.hero .hero-foot [data-reveal]', { y: 20 });
 
-            // Parallax suave de la foto del hero
-            gsap.to('[data-parallax]', {
-                yPercent: 8,
+            // Parallax sutil de la foto al hacer scroll
+            gsap.to('.hero-media img', {
+                yPercent: 10,
                 ease: 'none',
-                scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+                scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
             });
 
-            // Reveals al hacer scroll (todo lo que no es hero)
+            // Galería horizontal pinneada (solo desktop)
+            var track = document.getElementById('htrack');
+            var hwrap = document.getElementById('hscroll');
+            if (track && hwrap && window.innerWidth >= 1024) {
+                var dist = function () { return Math.max(0, track.scrollWidth - window.innerWidth); };
+                gsap.to(track, {
+                    x: function () { return -dist(); },
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: hwrap,
+                        start: 'top top',
+                        end: function () { return '+=' + dist(); },
+                        scrub: 1,
+                        pin: true,
+                        anticipatePin: 1,
+                        invalidateOnRefresh: true,
+                    },
+                });
+            }
+
+            // Reveals genéricos al hacer scroll (fuera del hero)
             gsap.utils.toArray('section [data-reveal]').forEach(function (el) {
                 gsap.fromTo(el,
-                    { opacity: 0, y: 28 },
+                    { opacity: 0, y: 26 },
                     {
                         opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-                        scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-                    }
+                        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+                    },
                 );
             });
 
-            // Count-up de la trust bar
+            // Count-up de las cifras
             gsap.utils.toArray('[data-count]').forEach(function (el) {
                 var target = parseInt(el.getAttribute('data-count'), 10);
                 var obj = { v: 0 };
                 gsap.to(obj, {
                     v: target,
-                    duration: 1.4,
+                    duration: 1.5,
                     ease: 'power2.out',
                     scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-                    onUpdate: function () { el.textContent = Math.round(obj.v); }
+                    onUpdate: function () { el.textContent = Math.round(obj.v); },
                 });
             });
         });
 
         mm.add('(prefers-reduced-motion: reduce)', function () {
             gsap.set('[data-reveal]', { opacity: 1, y: 0 });
+            gsap.set('.hero h1 .line-inner', { y: 0 });
         });
     }
 
@@ -87,7 +125,7 @@
         var grid = document.getElementById('cases-grid');
         if (!grid) return;
         grid.innerHTML = '';
-        cases.forEach(function (c) {
+        cases.forEach(function (c, i) {
             var card = document.createElement('a');
             card.className = 'case-card';
             card.href = 'casos-exito.html';
@@ -99,6 +137,11 @@
                 photo.style.backgroundImage = "url('" + url.replace(/'/g, "%27") + "')";
             }
             card.appendChild(photo);
+
+            var idx = document.createElement('span');
+            idx.className = 'case-index';
+            idx.textContent = String(i + 1).padStart(2, '0');
+            card.appendChild(idx);
 
             var body = document.createElement('div');
             body.className = 'case-body';
@@ -127,13 +170,13 @@
             grid.appendChild(card);
         });
 
-        if (gsapOk && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (gsapOk && !reducedMotion) {
             gsap.fromTo(grid.children,
-                { opacity: 0, y: 24 },
+                { opacity: 0, y: 26 },
                 {
-                    opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power3.out',
-                    scrollTrigger: { trigger: grid, start: 'top 88%', once: true }
-                }
+                    opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out',
+                    scrollTrigger: { trigger: grid, start: 'top 88%', once: true },
+                },
             );
         }
     }
