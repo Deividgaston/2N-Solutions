@@ -205,8 +205,24 @@ class ContentService {
     }
 
     /**
+     * Textos editables desde Nexo (web_metadata/textos):
+     * { why: [{title,desc}], dossier: { m1v,m1l,m2v,m2l,m3v,m3l,alianza } }
+     */
+    async getWebTextos() {
+        return this._fetchCached('web_textos', async () => {
+            try {
+                const snapshot = await getDoc(doc(db, 'web_metadata', 'textos'));
+                return snapshot.exists() ? snapshot.data() : null;
+            } catch (error) {
+                console.error('Error getting web textos:', error);
+                return null;
+            }
+        });
+    }
+
+    /**
      * Update vertical metadata
-     * @param {string} verticalId 
+     * @param {string} verticalId
      * @param {Object} data { introTitle, introText, benefits }
      */
     async updateVerticalMeta(verticalId, data) {

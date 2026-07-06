@@ -38,6 +38,16 @@ class ExportHandler {
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando ${type.toUpperCase()}...`;
 
+        // La ventana del dossier debe abrirse EN el gesto del clic (síncrono) o
+        // el bloqueador de popups la corta; el contenido se escribe después.
+        let printWin = null;
+        if (type === 'pdf') {
+            printWin = window.open('', '_blank');
+            if (printWin) {
+                printWin.document.write('<!doctype html><meta charset="utf-8"><title>Generando…</title><body style="font:15px system-ui;padding:2rem;color:#334155">Generando el dossier…</body>');
+            }
+        }
+
         try {
             // Refresh names from DOM now that it's fully rendered
             let realTitle = document.querySelector('h1')?.textContent || '';
@@ -66,19 +76,14 @@ class ExportHandler {
             };
 
             if (type === 'pdf') {
-                // The engine uses the first arg for both cover title AND filename
-                // To avoid Dossier_2N_2N_DOSSIER title, we will adapt the engine call if needed
-                // But following the engine's current save logic: 
-                // pdf.save(`Dossier_2N_${title.replace(/\s+/g, '_')}.pdf`);
-                // If title is "BTS", filename is Dossier_2N_BTS.pdf.
-                // So we want title to be what's on the cover.
-                await pdfGodEngine.generateDossier(this.verticalName, data);
+                await pdfGodEngine.generateDossier(this.verticalName, data, printWin);
             } else {
                 await pptService.exportFullPresentation(fileName, data.dynamicSections, data.metadata);
             }
 
         } catch (error) {
             console.error(`Error in ${type.toUpperCase()} Export:`, error);
+            if (printWin) { try { printWin.close(); } catch (_) { /* noop */ } }
             alert(`No se pudo generar el ${type.toUpperCase()}. Inténtalo de nuevo.`);
         } finally {
             btn.disabled = false;
@@ -105,10 +110,11 @@ class ExportHandler {
         }
 
         // 3. Fetch dynamic content from Firebase
-        const [allSections, techCards, cases] = await Promise.all([
+        const [allSections, techCards, cases, textos] = await Promise.all([
             contentService.getSections(this.verticalId),
             contentService.getGlobalProductsByVertical(this.verticalId),
-            contentService.getGlobalCasesByVertical(this.verticalId)
+            contentService.getGlobalCasesByVertical(this.verticalId),
+            contentService.getWebTextos()
         ]);
 
         // 4. Capture current Hero Image
@@ -136,7 +142,8 @@ class ExportHandler {
             dynamicSections: allSections.filter(s => s.isVisible !== false),
             techCards: techCards,
             cases: cases,
-            heroImageUrl: heroImageUrl
+            heroImageUrl: heroImageUrl,
+            textos: textos || null
         };
     }
 }

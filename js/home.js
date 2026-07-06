@@ -186,6 +186,27 @@
         }
     }
 
+    // "Por qué 2N" editable desde Nexo (web_metadata/textos.why).
+    // El contenido del HTML queda como fallback si el doc no existe.
+    fetch(FS_BASE + '/web_metadata/textos?key=' + API_KEY)
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (docu) {
+            var vals = docu && docu.fields && docu.fields.why && docu.fields.why.arrayValue && docu.fields.why.arrayValue.values;
+            if (!vals || !vals.length) return;
+            var rows = document.querySelectorAll('.why-list .why-row');
+            vals.forEach(function (v, i) {
+                var f = v.mapValue && v.mapValue.fields;
+                if (!f || !rows[i]) return;
+                var t = f.title && f.title.stringValue;
+                var d = f.desc && f.desc.stringValue;
+                var h3 = rows[i].querySelector('h3');
+                var p = rows[i].querySelector('p');
+                if (t && h3) h3.textContent = t;
+                if (d && p) p.textContent = d;
+            });
+        })
+        .catch(function () { /* estático como fallback */ });
+
     fetch(FS_BASE + '/web_cases?pageSize=50&key=' + API_KEY)
         .then(function (r) { return r.json(); })
         .then(function (json) {

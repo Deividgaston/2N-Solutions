@@ -5,94 +5,68 @@
  */
 
 class PDFEngineV13 {
-    async generateDossier(verticalName, data) {
-        console.log("🔥 PDF Engine v19.3: FINAL PIXEL-PARITY...");
-        const curtain = this.showLoading();
+    /**
+     * v24 VECTORIAL: mismo diseño (buildPages intacto) pero impreso desde una
+     * ventana con @page al tamaño exacto de las páginas (794×1123 px ≈ A4).
+     * Texto seleccionable y nítido, fichero ligero, sin html2canvas/jsPDF.
+     * `win` debe abrirse en el gesto del clic (popup blocker) — lo hace el handler.
+     */
+    async generateDossier(verticalName, data, win) {
+        console.log("🖨️ PDF Engine v24: VECTOR PRINT...");
         const title = (verticalName || 'SOLUCIÓN 2N').toUpperCase();
         // Hook = subtítulo real de la vertical si existe; si no, los genéricos.
         const hook = (data && data.hook) || ((verticalName || '').toLowerCase().includes('bts') ?
             "Eleva el valor de venta. Garantiza la excelencia tecnológica." :
             "Sistemas de acceso que definen el estatus del proyecto.");
 
+        const w = win || window.open('', '_blank');
+        if (!w) {
+            alert('Permite las ventanas emergentes para generar el dossier.');
+            return;
+        }
+
         try {
-            await this.ensureLibraries();
-            let jsPDFLib = window.jspdf ? (window.jspdf.jsPDF || window.jsPDF) : window.jsPDF;
-            if (!jsPDFLib) throw new Error("jsPDF Missing");
+            const pagesHTML = this.buildPages(title, hook, data).filter(p => p && p.trim().length > 100);
+            const docTitle = title.replace(/[.,;:!?\s]+$/, '').replace(/\s+/g, '_');
 
-            const pdf = new jsPDFLib('p', 'mm', 'a4');
-            const rawPages = this.buildPages(title, hook, data);
-            const pagesHTML = rawPages.filter(p => p && p.trim().length > 100);
-            
-            for (let i = 0; i < pagesHTML.length; i++) {
-                const tempDiv = document.createElement('div');
-                tempDiv.style.cssText = `
-                    position: fixed; top: 0; left: -15000px;
-                    width: 794px; height: 1123px;
-                    background: #ffffff; overflow: hidden !important;
-                    margin: 0 !important; padding: 0 !important;
-                    z-index: -999; pointer-events: none;
-                `;
-                tempDiv.innerHTML = pagesHTML[i];
-                document.body.appendChild(tempDiv);
-
-                await this.waitForContent(tempDiv);
-
-                const canvas = await html2canvas(tempDiv, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    width: 794,
-                    height: 1123,
-                    logging: false
-                });
-
-                const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                if (i > 0) pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-                tempDiv.remove();
-            }
-
-            pdf.save(`${title.replace(/[.,;:!?\s]+$/, '').replace(/\s+/g, '_')}.pdf`);
-
+            w.document.open();
+            w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>${docTitle}</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Página del PDF = tamaño EXACTO de las páginas de buildPages (≈A4). */
+  @page { size: 794px 1123px; margin: 0; }
+  html, body { margin: 0; padding: 0; background: #f1f5f9; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .p-page { page-break-after: always; margin: 0 auto; box-shadow: 0 2px 14px rgba(0,0,0,0.18); }
+  .p-page:last-child { page-break-after: auto; }
+  @media print { body { background: #fff; } .p-page { box-shadow: none; } }
+</style></head><body>${pagesHTML.join('\n')}
+<script>
+  // Imprimir cuando carguen TODAS las imágenes y las fuentes (tope 8 s).
+  (function () {
+    var done = false;
+    function go() { if (done) return; done = true; window.focus(); window.print(); }
+    var pending = [].slice.call(document.images).filter(function (i) { return !i.complete; });
+    var left = pending.length;
+    function one() { if (--left <= 0) ready(); }
+    var fontsOk = false, imgsOk = pending.length === 0;
+    function ready() { imgsOk = true; if (fontsOk) setTimeout(go, 400); }
+    pending.forEach(function (i) { i.addEventListener('load', one); i.addEventListener('error', one); });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+      fontsOk = true; if (imgsOk) setTimeout(go, 400);
+    });
+    setTimeout(go, 8000);
+  })();
+</script>
+</body></html>`);
+            w.document.close();
         } catch (e) {
             console.error(e);
+            try { w.close(); } catch (_) { /* noop */ }
             alert(`Error: ${e.message}`);
-        } finally {
-            curtain.remove();
         }
-    }
-
-    async ensureLibraries() {
-        // Libs servidas en LOCAL (js/vendor): sin dependencia del CDN al hacer clic.
-        if (typeof html2canvas === 'undefined') {
-            await this.loadScript('js/vendor/html2canvas.min.js');
-        }
-        if (!window.jspdf && !window.jsPDF) {
-            await this.loadScript('js/vendor/jspdf.umd.min.js');
-        }
-    }
-
-    loadScript(url) {
-        return new Promise((r, j) => {
-            const s = document.createElement('script'); s.src = url; s.onload = r; s.onerror = j; document.head.appendChild(s);
-        });
-    }
-
-    async waitForContent(el) {
-        const imgs = Array.from(el.querySelectorAll('img'));
-        await Promise.all(imgs.map(img => {
-            if (img.complete) return Promise.resolve();
-            return new Promise(r => { img.onload = r; img.onerror = r; });
-        }));
-        await new Promise(r => setTimeout(r, 1500));
-    }
-
-    showLoading() {
-        const c = document.createElement('div');
-        c.style.cssText = 'position:fixed; inset:0; background:#fff; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        c.innerHTML = `<div style="font-weight:900; color:#2563eb; letter-spacing:10px;">FINALIZANDO v19.3...</div>`;
-        document.body.appendChild(c);
-        return c;
     }
 
     buildPages(title, hook, data) {
@@ -101,6 +75,8 @@ class PDFEngineV13 {
         if (introText.length > 240) introText = introText.slice(0, 237).replace(/\s+\S*$/, '') + '…';
         const benefits = data.benefits || [];
         const hero = data.heroImageUrl || 'assets/pdf_cover.png';
+        // Métricas de la pág. 2 editables desde Nexo (web_metadata/textos.dossier).
+        const tx = (data.textos && data.textos.dossier) || {};
 
         const style = `
             <style>
@@ -168,20 +144,20 @@ class PDFEngineV13 {
                 <div class="right" style="padding: 60px 40px;">
                     <div style="display: flex; flex-direction: column; gap: 20px; height: 100%;">
                         <div style="background: rgba(37,99,235,0.1); border-left: 4px solid #2563eb; padding: 30px; border-radius: 4px;">
-                            <div class="m-val" style="font-size: 65px;">#01</div>
-                            <div class="m-lab" style="color:#2563eb;">LÍDER MUNDIAL EN IP</div>
+                            <div class="m-val" style="font-size: 65px;">${tx.m1v || '#01'}</div>
+                            <div class="m-lab" style="color:#2563eb;">${tx.m1l || 'LÍDER MUNDIAL EN IP'}</div>
                         </div>
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 4px;">
-                            <div class="m-val" style="color:#fff;">+30</div>
-                            <div class="m-lab">AÑOS DE EXPERIENCIA</div>
+                            <div class="m-val" style="color:#fff;">${tx.m2v || '+30'}</div>
+                            <div class="m-lab">${tx.m2l || 'AÑOS DE EXPERIENCIA'}</div>
                         </div>
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 4px;">
-                            <div class="m-val" style="color:#fff;">130</div>
-                            <div class="m-lab">PAÍSES PRESENTES</div>
+                            <div class="m-val" style="color:#fff;">${tx.m3v || '130'}</div>
+                            <div class="m-lab">${tx.m3l || 'PAÍSES PRESENTES'}</div>
                         </div>
-                        
+
                         <div style="margin-top: auto; background: #2563eb; padding: 30px; border-radius: 4px; color: #fff;">
-                            <p style="font-size: 13px; font-weight: 700; line-height: 1.5;">Infraestructura blindada por la alianza tecnológica entre 2N, Axis y el Grupo Canon para proyectos de alto rendimiento.</p>
+                            <p style="font-size: 13px; font-weight: 700; line-height: 1.5;">${tx.alianza || 'Infraestructura blindada por la alianza tecnológica entre 2N, Axis y el Grupo Canon para proyectos de alto rendimiento.'}</p>
                         </div>
                     </div>
                 </div>
