@@ -26,7 +26,11 @@ class PDFEngineV13 {
         }
 
         try {
-            const pagesHTML = this.buildPages(title, hook, data).filter(p => p && p.trim().length > 100);
+            // Los WebP remotos se re-encodean a JPEG: el PDF de Chromium
+            // transcodifica WebP a imagen SIN pérdida (un dossier pasaba de
+            // ~3MB a ~29MB); con JPEG se incrusta tal cual.
+            const prepared = await this.prepareImages(data);
+            const pagesHTML = this.buildPages(title, hook, prepared).filter(p => p && p.trim().length > 100);
             const docTitle = title.replace(/[.,;:!?\s]+$/, '').replace(/\s+/g, '_');
 
             w.document.open();
@@ -40,7 +44,10 @@ class PDFEngineV13 {
   html, body { margin: 0; padding: 0; background: #f1f5f9; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .p-page { page-break-after: always; margin: 0 auto; box-shadow: 0 2px 14px rgba(0,0,0,0.18); }
-  .p-page:last-child { page-break-after: auto; }
+  /* last-of-type y no last-child: el último hijo del body es el <script> de
+     impresión, y con last-child la última página conservaba su salto →
+     página en blanco al final. */
+  .p-page:last-of-type { page-break-after: auto; }
   @media print { body { background: #fff; } .p-page { box-shadow: none; } }
 </style></head><body>${pagesHTML.join('\n')}
 <script>
@@ -67,6 +74,45 @@ class PDFEngineV13 {
             try { w.close(); } catch (_) { /* noop */ }
             alert(`Error: ${e.message}`);
         }
+    }
+
+    /** Re-encodea una imagen remota a JPEG dataURL (máx 1600px, fondo blanco). */
+    async toJpegDataUrl(url, maxEdge = 1600, quality = 0.82) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('img ' + res.status);
+        const bmp = await createImageBitmap(await res.blob());
+        const s = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(bmp.width * s));
+        canvas.height = Math.max(1, Math.round(bmp.height * s));
+        const ctx2 = canvas.getContext('2d');
+        ctx2.fillStyle = '#fff';
+        ctx2.fillRect(0, 0, canvas.width, canvas.height);
+        ctx2.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+        if (bmp.close) bmp.close();
+        return canvas.toDataURL('image/jpeg', quality);
+    }
+
+    /** Devuelve una copia de data con las imágenes remotas como JPEG dataURL. */
+    async prepareImages(data) {
+        const out = {
+            ...data,
+            dynamicSections: (data.dynamicSections || []).map(s => ({ ...s })),
+            techCards: (data.techCards || []).map(c => ({ ...c })),
+            cases: (data.cases || []).map(c => ({ ...c })),
+        };
+        const jobs = [];
+        const swap = (obj, key) => {
+            const u = obj[key];
+            if (!u || !/^https?:\/\//.test(u)) return; // assets locales (logos png) se quedan
+            jobs.push(this.toJpegDataUrl(u).then(d => { obj[key] = d; }).catch(() => { /* se deja la URL */ }));
+        };
+        swap(out, 'heroImageUrl');
+        out.dynamicSections.forEach(s => swap(s, 'imageUrl'));
+        out.techCards.forEach(c => swap(c, 'imageUrl'));
+        out.cases.forEach(c => swap(c, 'imageUrl'));
+        await Promise.all(jobs);
+        return out;
     }
 
     buildPages(title, hook, data) {
@@ -113,11 +159,12 @@ class PDFEngineV13 {
 
         const pages = [];
 
-        // 1. Portada
+        // 1. Portada — foto al 54% para que el bloque de texto respire y no
+        // quede pegado al borde inferior de la página.
         pages.push(`${style}<div class="p-page bg-d">
-            <div style="height: 62%; background: url('${hero}') center center / cover no-repeat;"></div>
-            <div class="inner" style="padding-top: 45px;">
-                <img src="assets/2N_Logo_RGB_White.png" style="width: 175px; margin-bottom: 45px;">
+            <div style="height: 54%; background: url('${hero}') center center / cover no-repeat;"></div>
+            <div class="inner" style="padding-top: 55px; padding-bottom: 0;">
+                <img src="assets/2N_Logo_RGB_White.png" style="width: 175px; margin-bottom: 38px;">
                 <h1 class="h1">${title}</h1>
                 <p class="hook">${hook}</p>
             </div>
