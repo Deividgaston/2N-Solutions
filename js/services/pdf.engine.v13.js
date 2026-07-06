@@ -9,9 +9,10 @@ class PDFEngineV13 {
         console.log("🔥 PDF Engine v19.3: FINAL PIXEL-PARITY...");
         const curtain = this.showLoading();
         const title = (verticalName || 'SOLUCIÓN 2N').toUpperCase();
-        const hook = (verticalName || '').toLowerCase().includes('bts') ? 
-            "Eleva el valor de venta. Garantiza la excelencia tecnológica." : 
-            "Sistemas de acceso que definen el estatus del proyecto.";
+        // Hook = subtítulo real de la vertical si existe; si no, los genéricos.
+        const hook = (data && data.hook) || ((verticalName || '').toLowerCase().includes('bts') ?
+            "Eleva el valor de venta. Garantiza la excelencia tecnológica." :
+            "Sistemas de acceso que definen el estatus del proyecto.");
 
         try {
             await this.ensureLibraries();
@@ -51,7 +52,7 @@ class PDFEngineV13 {
                 tempDiv.remove();
             }
 
-            pdf.save(`${title.replace(/\s+/g, '_')}.pdf`);
+            pdf.save(`${title.replace(/[.,;:!?\s]+$/, '').replace(/\s+/g, '_')}.pdf`);
 
         } catch (e) {
             console.error(e);
@@ -62,11 +63,12 @@ class PDFEngineV13 {
     }
 
     async ensureLibraries() {
+        // Libs servidas en LOCAL (js/vendor): sin dependencia del CDN al hacer clic.
         if (typeof html2canvas === 'undefined') {
-            await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+            await this.loadScript('js/vendor/html2canvas.min.js');
         }
         if (!window.jspdf && !window.jsPDF) {
-            await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+            await this.loadScript('js/vendor/jspdf.umd.min.js');
         }
     }
 
@@ -94,7 +96,9 @@ class PDFEngineV13 {
     }
 
     buildPages(title, hook, data) {
-        const introText = (data.mainIntroText || 'Desde 1991, 2N define el estándar de acceso premium. Nuestra arquitectura abierta se integra en los ecosistemas más exigentes del mundo.');
+        // Intro real de la vertical (recortada: la caja de la pág. 2 es fija).
+        let introText = (data.mainIntroText || 'Desde 1991, 2N define el estándar de acceso premium. Nuestra arquitectura abierta se integra en los ecosistemas más exigentes del mundo.');
+        if (introText.length > 240) introText = introText.slice(0, 237).replace(/\s+\S*$/, '') + '…';
         const benefits = data.benefits || [];
         const hero = data.heroImageUrl || 'assets/pdf_cover.png';
 

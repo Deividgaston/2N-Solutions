@@ -127,6 +127,11 @@ class ExportHandler {
             techTitle: techTitle,
             casesTitle: casesTitle,
             mainIntro: paragraphs,
+            // Fix: el engine v13 lee mainIntroText; sin esto la página 2 caía
+            // SIEMPRE al texto genérico de relleno e ignoraba la intro real.
+            mainIntroText: (paragraphs[0] || '').trim(),
+            // Hook de portada = subtítulo real del hero de la vertical.
+            hook: document.querySelector('.solution-subtitle')?.textContent?.trim() || '',
             benefits: benefits,
             dynamicSections: allSections.filter(s => s.isVisible !== false),
             techCards: techCards,
