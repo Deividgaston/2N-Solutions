@@ -32,6 +32,16 @@
         }
         .hero-subtitle { font-size: 1.1rem; color: var(--text-muted); line-height: 1.75; max-width: 540px; }
 
+        /* Móvil: el hero de 2 columnas colapsa a 1 y el titular se reduce para
+           que quepa (antes se apretaba en la columna y desbordaba). */
+        @media (max-width: 768px) {
+            .hero { padding: 6.5rem 5% 2.5rem; min-height: auto; }
+            .hero-container { grid-template-columns: 1fr; gap: 2rem; }
+            .hero h1 { font-size: clamp(1.9rem, 8vw, 2.4rem); }
+            .hero-subtitle { font-size: 1rem; max-width: 100%; }
+            .filter-wrap { top: 56px; }
+        }
+
         .filter-wrap {
             background: var(--bg-deep); padding: 2rem 5%; border-bottom: 1px solid var(--border);
             position: sticky; top: 70px; z-index: 100; backdrop-filter: blur(20px);

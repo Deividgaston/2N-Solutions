@@ -639,9 +639,10 @@ html.gsap-on [data-reveal] { opacity: 0; }
 }
 
 @media (max-width: 768px) {
-    /* Menu hamburguesa display base */
-    .mobile-menu-btn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: none; background: transparent; color: white; font-size: 1.5rem; cursor: pointer; z-index: 1001; }
-    
+    /* Menu hamburguesa: SIEMPRE visible y a la derecha (margin-left:auto), con
+       fondo semitransparente para contraste sobre cualquier hero. */
+    .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; margin-left: auto; width: 44px; height: 44px; border: none; color: #fff; background: rgba(15,17,23,0.35); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-radius: 10px; font-size: 1.5rem; cursor: pointer; z-index: 1002; }
+
     /* Nav base state on mobile (hidde links and actions by default) */
     .nav-links { display: none; }
     .nav-actions { display: none; }
@@ -672,6 +673,17 @@ html.gsap-on [data-reveal] { opacity: 0; }
     /* Hero */
     .solution-hero { padding: 7rem 5% 3.5rem; }
     .solution-hero h1 { font-size: 2rem; }
+
+    /* Hero genérico (index/productos/casos): que el titular QUEPA (antes se
+       salía por la derecha porque .hero h1 mantenía el tamaño de escritorio). */
+    .hero h1, .casos-hero h1 { font-size: clamp(1.9rem, 8.5vw, 2.6rem) !important; line-height: 1.12; }
+    .hero-subtitle, .hero-content p, .hero-container p { font-size: 1rem; }
+    .hero-content, .hero-container, .hero-inner { padding-left: 5%; padding-right: 5%; max-width: 100%; }
+    /* Heros de 2 columnas (grid) → 1 columna en móvil para no apretar/desbordar. */
+    .hero-container, .hero-inner { grid-template-columns: 1fr !important; gap: 2rem !important; }
+    h1, h2, h3 { overflow-wrap: break-word; }
+    /* Anti-desborde horizontal global de la página. */
+    html, body { overflow-x: hidden; max-width: 100%; }
 
     /* Content */
     .solution-content { padding: 3rem 5%; }
