@@ -7,19 +7,19 @@
     <meta name="google-site-verification" content="TGAn5_BkmPo5Y1yKfYi4iJgWBkFWNEBLUactYIOCwNA" />
     <title>2N | Soluciones de Control de Acceso IP | España</title>
     <meta name="description"
-        content="Intercomunicadores IP, videoporteros Full HD y control de acceso WaveKey para arquitectos, ingenieros y promotores. Red Dot Award. Certificado Axis Communications.">
+        content="Videoporteros IP y control de acceso 2N para arquitectura, ingeniería y promotoras. Solicita especificaciones, documentación BIM y asesoramiento para tu proyecto.">
 
     <!-- Open Graph (LinkedIn / WhatsApp) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="2N | Prescribe el futuro. Diseña el acceso.">
-    <meta property="og:description" content="Soluciones IP certificadas para proyectos residenciales, corporativos y hospitality. Red Dot Award Design.">
-    <meta property="og:image" content="https://soluciones-2n.web.app/assets/web/hero-style-361.webp">
+    <meta property="og:description" content="Videoporteros IP y control de acceso para proyectos residenciales, oficinas y hoteles. Documentación técnica y apoyo a la prescripción.">
+    <meta property="og:image" content="https://soluciones-2n.web.app/assets/innovation_bg.jpg">
     <meta property="og:url" content="https://soluciones-2n.web.app/">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link rel="icon" type="image/png" href="assets/web/favicon.png">
+    <link rel="icon" type="image/png" href="assets/2N_Logo_RGB_Blue.png">
 
-    <link rel="preload" as="image" href="assets/web/hero-style-361.webp">
+    <link rel="preload" as="image" href="assets/innovation_bg.jpg">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -434,23 +434,12 @@
             padding-right: 1rem;
         }
         .sol-intro p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.75; max-width: 38ch; }
-        .sol-hint {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.68rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--text-hint);
-        }
-        .sol-hint::after { content: '⟶'; color: var(--primary-light); font-size: 1rem; }
 
         /* Fallback vertical (móvil / reduced motion / sin JS) */
         @media (max-width: 1023px) {
             .htrack { flex-direction: column; width: auto; padding: 0 5% 4rem; }
             .sol-panel { width: 100%; min-height: 420px; }
             .sol-intro { width: 100%; min-height: 0; padding: 0 0 1rem; }
-            .sol-hint::after { content: '↓'; }
         }
 
         /* ── POR QUÉ 2N: índice editorial ── */
@@ -623,15 +612,6 @@
             transition: opacity 0.25s, transform 0.25s;
         }
         .case-card:hover .case-cta { opacity: 1; transform: translateY(0); }
-        .case-skeleton {
-            border-radius: 18px;
-            border: 1px solid var(--border);
-            min-height: 480px;
-            background: linear-gradient(100deg, var(--bg-card) 40%, #16203a 50%, var(--bg-card) 60%);
-            background-size: 200% 100%;
-            animation: shimmer 1.4s infinite;
-        }
-        @keyframes shimmer { to { background-position: -200% 0; } }
         @media (max-width: 900px) {
             .cases-grid { grid-template-columns: 1fr; }
             .case-card:nth-child(2), .case-card:nth-child(2):hover { transform: none; }
@@ -748,9 +728,11 @@
             .trust-stat { border-right: none; border-bottom: 1px solid var(--border); padding: 1.4rem 0; }
         }
     </style>
+    <link rel="stylesheet" href="css/prescripcion.css?v=0128">
 </head>
 
 <body>
+    <a class="skip-link" href="#perfiles">Ir a los perfiles profesionales</a>
 
     <div class="grain" aria-hidden="true"></div>
     <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
@@ -799,7 +781,7 @@
     <!-- ── HERO ── -->
     <header class="hero">
         <div class="hero-media" data-hero-media>
-            <img src="assets/web/hero-style-361.webp" alt="Videoportero 2N IP Style instalado en un edificio residencial premium" fetchpriority="high">
+            <img src="assets/innovation_bg.jpg" alt="Acceso a un edificio con videoportero 2N y teléfono móvil" width="1024" height="768" fetchpriority="high">
         </div>
         <p class="scroll-cue">Scroll</p>
         <div class="hero-inner">
@@ -807,6 +789,7 @@
                 <span class="dot"></span>
                 Red Dot Award · Product Design
             </div>
+            <p class="hero-audience">Arquitectura · Ingeniería · Promotoras / Real estate</p>
             <h1>
                 <span class="line"><span class="line-inner">Prescribe</span></span>
                 <span class="line"><span class="line-inner">el futuro<span class="accent">.</span></span></span>
@@ -814,42 +797,57 @@
             </h1>
             <div class="hero-foot">
                 <p class="hero-subtitle" data-reveal>
-                    Soluciones IP certificadas para proyectos <strong>residenciales, corporativos y hospitality</strong>. Videoporteros Full HD, acceso móvil WaveKey y tecnología respaldada por Axis Communications.
+                    Videoporteros IP y control de acceso para <strong>viviendas, oficinas y hoteles</strong>. Define el acceso desde el primer plano, con documentación técnica y apoyo a la prescripción.
                 </p>
                 <div class="hero-ctas" data-reveal>
-                    <a href="#contacto" class="btn-primary">
+                    <a href="?perfil=arquitectura#contacto" class="btn-primary" data-lead-profile="arquitectura">
                         Solicitar especificación técnica
                         <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem;"></i>
                     </a>
-                    <a href="#solutions" class="btn-secondary">Soluciones por sector</a>
+                    <a href="#perfiles" class="btn-secondary">Encuentra tu perfil</a>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Entradas por perfil: enlaces útiles con o sin JavaScript. -->
+    <section class="profiles-section" id="perfiles" aria-labelledby="profiles-title">
+        <div class="container">
+            <div class="sec-head">
+                <p class="sec-eyebrow">De la idea a la especificación</p>
+                <h2 class="sec-title" id="profiles-title">Tu proyecto. <span class="ghost">Tu punto de partida.</span></h2>
+            </div>
+            <div class="profiles-grid">
+                <article class="profile-card">
+                    <span class="profile-number" aria-hidden="true">01 / ARQUITECTURA</span>
+                    <h3>Arquitectos y estudios</h3>
+                    <p>Integra el acceso en el diseño. Define acabados, ubicación de equipos y documentación BIM desde las primeras decisiones.</p>
+                    <a href="?perfil=arquitectura#contacto" data-lead-profile="arquitectura">Solicitar especificación técnica →</a>
+                </article>
+                <article class="profile-card">
+                    <span class="profile-number" aria-hidden="true">02 / INGENIERÍA</span>
+                    <h3>Ingenierías e integradores</h3>
+                    <p>Concreta la arquitectura IP, los protocolos y las interfaces con otros sistemas. Revisa la compatibilidad para tu instalación.</p>
+                    <a href="?perfil=ingenieria#contacto" data-lead-profile="ingenieria">Consultar una integración →</a>
+                </article>
+                <article class="profile-card">
+                    <span class="profile-number" aria-hidden="true">03 / REAL ESTATE</span>
+                    <h3>Promotoras y gestores</h3>
+                    <p>Planifica accesos de residentes, visitas y mantenimiento. Compara las necesidades de venta, alquiler y explotación del edificio.</p>
+                    <a href="?perfil=promotora#contacto" data-lead-profile="promotora">Solicitar asesoramiento →</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
     <!-- ── CIFRAS ── -->
-    <section class="trust-band" aria-label="2N en cifras">
+    <section class="trust-band" aria-label="Recursos para tu proyecto">
         <div class="trust-inner">
-            <div class="trust-stat">
-                <div class="trust-num"><span data-count="30">30</span><span class="unit">+</span></div>
-                <div class="trust-label" data-i18n="stat_years">Años de innovación</div>
-            </div>
-            <div class="trust-stat">
-                <div class="trust-num"><span data-count="100">100</span><span class="unit">+</span></div>
-                <div class="trust-label" data-i18n="stat_countries">Países instalados</div>
-            </div>
-            <div class="trust-stat">
-                <div class="trust-num"><span data-count="5">5</span><span class="unit">M+</span></div>
-                <div class="trust-label" data-i18n="stat_users">Usuarios diarios</div>
-            </div>
-            <div class="trust-stat">
-                <div class="trust-num"><span data-count="500">500</span><span class="unit">k+</span></div>
-                <div class="trust-label" data-i18n="stat_devices">Dispositivos globales</div>
-            </div>
-            <div class="trust-stat">
-                <div class="trust-num"><span data-count="5">5</span> <span class="unit" style="font-size:0.55em;">años</span></div>
-                <div class="trust-label" data-i18n="stat_warranty">Garantía estándar</div>
-            </div>
+            <div class="trust-stat"><div class="trust-num">2N + Axis</div><div class="trust-label">Parte de Axis Communications</div></div>
+            <div class="trust-stat"><div class="trust-num">Red Dot</div><div class="trust-label">Diseño de producto</div></div>
+            <div class="trust-stat"><div class="trust-num">BIM</div><div class="trust-label">Apoyo a la especificación</div></div>
+            <div class="trust-stat"><div class="trust-num">IP</div><div class="trust-label">SIP · ONVIF · APIs</div></div>
+            <div class="trust-stat"><div class="trust-num">Casos</div><a class="trust-label" href="casos-exito.html">Explorar proyectos reales →</a></div>
         </div>
     </section>
 
@@ -861,7 +859,7 @@
         </div>
     </div>
 
-    <!-- ── SOLUCIONES: galería horizontal ── -->
+    <!-- ── SOLUCIONES: todas las verticales a la vista ── -->
     <section class="solutions-section" id="solutions">
         <div class="container sec-head">
             <p class="sec-eyebrow" data-reveal>Soluciones por vertical</p>
@@ -870,66 +868,55 @@
         <div class="hscroll" id="hscroll">
             <div class="htrack" id="htrack">
                 <div class="sol-intro">
-                    <p>Seis verticales, una misma plataforma IP. Elige tu sector y descubre la solución completa: equipos, arquitectura del sistema y argumentos de prescripción.</p>
-                    <p class="sol-hint">Sigue haciendo scroll</p>
+                    <p>Del portal residencial al acceso de servicio. Elige el uso del edificio para revisar equipos, gestión e integraciones con el equipo de prescripción.</p>
                 </div>
                 <a href="solucion-bts.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-bts.webp')"></div>
+                    <div class="sol-photo"></div>
                     <span class="sol-index">01</span>
                     <div class="sol-body">
                         <p class="sol-tag">Residencial · Venta</p>
                         <h3>Residencial BTS</h3>
-                        <p>Build-to-Sell. El videoportero que ayuda a vender viviendas: diseño premium que se nota en la visita al piso piloto.</p>
+                        <p>Videoportero, acabados y atención de visitas integrados en el diseño de cada promoción.</p>
                         <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
                     </div>
                 </a>
                 <a href="solucion-btr.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-btr.webp')"></div>
+                    <div class="sol-photo"></div>
                     <span class="sol-index">02</span>
                     <div class="sol-body">
                         <p class="sol-tag">Residencial · Inversión</p>
                         <h3>Residencial BTR</h3>
-                        <p>Build-to-Rent. Gestión remota de accesos y rotación de inquilinos sin llaves físicas.</p>
+                        <p>Altas, bajas y permisos de acceso para residentes, visitas y mantenimiento.</p>
                         <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
                     </div>
                 </a>
                 <a href="solucion-oficinas.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-office.webp')"></div>
+                    <div class="sol-photo"></div>
                     <span class="sol-index">03</span>
                     <div class="sol-body">
                         <p class="sol-tag">Corporativo</p>
                         <h3>Oficinas</h3>
-                        <p>Sedes corporativas, coworking y parques empresariales.</p>
+                        <p>Coordina recepción, empleados y visitas con la infraestructura IP del edificio.</p>
                         <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
                     </div>
                 </a>
                 <a href="solucion-hoteles.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-hotel.webp')"></div>
+                    <div class="sol-photo"></div>
                     <span class="sol-index">04</span>
                     <div class="sol-body">
                         <p class="sol-tag">Hospitality</p>
                         <h3>Hoteles</h3>
-                        <p>Resorts, cadenas hoteleras y espacios boutique.</p>
-                        <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
-                    </div>
-                </a>
-                <a href="solucion-retail.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-retail.webp')"></div>
-                    <span class="sol-index">05</span>
-                    <div class="sol-body">
-                        <p class="sol-tag">Comercial</p>
-                        <h3>Retail</h3>
-                        <p>Centros comerciales, flagship stores y retail parks.</p>
+                        <p>Atiende llegadas y organiza accesos de huéspedes, personal y proveedores.</p>
                         <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
                     </div>
                 </a>
                 <a href="solucion-seguridad.html" class="sol-panel">
-                    <div class="sol-photo" style="background-image:url('assets/web/vertical-security.webp')"></div>
-                    <span class="sol-index">06</span>
+                    <div class="sol-photo"></div>
+                    <span class="sol-index">05</span>
                     <div class="sol-body">
                         <p class="sol-tag">Seguridad</p>
                         <h3>Infraestructura Crítica</h3>
-                        <p>Instalaciones gubernamentales, educación y sanidad. Acceso multifactor con auditoría completa.</p>
+                        <p>Interfonía y control de acceso para educación, sanidad e instalaciones con requisitos específicos.</p>
                         <span class="sol-cta">Ver solución <span class="arrow">⟶</span></span>
                     </div>
                 </a>
@@ -948,49 +935,49 @@
                 <div class="why-row" data-reveal>
                     <span class="why-num">01</span>
                     <h3 data-i18n="prop_design_title">Diseño Red Dot Award</h3>
-                    <p data-i18n="prop_design_desc">Estética premium que eleva la percepción de valor. Materiales nobles, acabados impecables en cada instalación.</p>
+                    <p data-i18n="prop_design_desc">Define acabados, montaje y ubicación del videoportero en coherencia con la entrada del edificio.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-gem"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">02</span>
-                    <h3 data-i18n="prop_security_title">Seguridad sin compromisos</h3>
-                    <p data-i18n="prop_security_desc">Encriptación end-to-end, autenticación multi-factor ISO 27001 y cumplimiento GDPR en todos los dispositivos.</p>
+                    <h3 data-i18n="prop_security_title">Funciones de ciberseguridad</h3>
+                    <p data-i18n="prop_security_desc">Funciones disponibles en los equipos, como 802.1X y SIPS, según modelo y configuración. Revísalas con el responsable de la red.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-fingerprint"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">03</span>
                     <h3 data-i18n="prop_mobile_title">WaveKey — Acceso móvil</h3>
-                    <p data-i18n="prop_mobile_desc">Abre puertas con el smartphone vía Bluetooth. Sin tarjetas físicas. Compatible con Apple Watch.</p>
+                    <p data-i18n="prop_mobile_desc">WaveKey permite acceso móvil en lectores compatibles y videoporteros con módulo Bluetooth. No está disponible en la manilla ni el cilindro Fortis.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">04</span>
-                    <h3 data-i18n="prop_integration_title">Integración total</h3>
-                    <p data-i18n="prop_integration_desc">SIP, ONVIF y APIs abiertas. Integración nativa con los principales sistemas de control de acceso del mercado.</p>
+                    <h3 data-i18n="prop_integration_title">Integraciones que se definen en proyecto</h3>
+                    <p data-i18n="prop_integration_desc">SIP, ONVIF y APIs abiertas permiten plantear integraciones. Hay que verificar equipos, versiones y licencias en cada proyecto.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-puzzle-piece"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">05</span>
                     <h3 data-i18n="prop_cloud_title">Gestión cloud con My2N</h3>
-                    <p data-i18n="prop_cloud_desc">Administra dispositivos y videollamadas en remoto desde la nube: configuración, actualizaciones y soporte sin desplazamientos.</p>
+                    <p data-i18n="prop_cloud_desc">My2N permite gestionar equipos y videollamadas en remoto. Se reciben el 99,98 % de las llamadas que llegan a la app; es un dato de recepción, no de disponibilidad del servicio.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-cloud"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">06</span>
-                    <h3 data-i18n="prop_warranty_title">5 años de garantía</h3>
-                    <p data-i18n="prop_warranty_desc">Confianza total respaldada por la garantía extendida estándar de 2N, líder en el sector IP.</p>
+                    <h3 data-i18n="prop_warranty_title">Planifica el mantenimiento</h3>
+                    <p data-i18n="prop_warranty_desc">Define con el equipo de prescripción el soporte, las actualizaciones y las condiciones de garantía aplicables a los equipos elegidos.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-medal"></i></span>
                 </div>
                 <div class="why-row" data-reveal>
                     <span class="why-num">07</span>
-                    <h3 data-i18n="prop_roi_title">ROI demostrable</h3>
-                    <p data-i18n="prop_roi_desc">Reduce costes de mantenimiento y aumenta el valor percibido del inmueble con tecnología IP certificada.</p>
+                    <h3 data-i18n="prop_roi_title">Decisiones para la explotación</h3>
+                    <p data-i18n="prop_roi_desc">Compara gestión de credenciales, atención de visitas y mantenimiento para elegir una arquitectura adecuada al uso del inmueble.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-euro-sign"></i></span>
                 </div>
                 <a href="https://www.2n.com/es-ES/instaladores-certificados/mapa-instalador-certificado/" target="_blank" rel="noopener" class="why-row" data-reveal>
                     <span class="why-num">08</span>
                     <h3 data-i18n="prop_installers_title">Instaladores certificados</h3>
-                    <p data-i18n="prop_installers_desc">Red global de partners formados y certificados directamente por 2N en toda España.</p>
+                    <p data-i18n="prop_installers_desc">Consulta la red de instaladores certificados de 2N para planificar la puesta en marcha del proyecto.</p>
                     <span class="why-icon" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
                 </a>
             </div>
@@ -1007,10 +994,11 @@
                 </div>
                 <a href="casos-exito.html" class="section-link" data-reveal>Todos los casos <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;"></i></a>
             </div>
-            <div class="cases-grid" id="cases-grid">
-                <div class="case-skeleton"></div>
-                <div class="case-skeleton"></div>
-                <div class="case-skeleton"></div>
+            <div class="case-fallback" id="cases-fallback">
+                <p>Explora los proyectos de referencia de 2N para ver aplicaciones en edificios residenciales, oficinas y hoteles.</p>
+                <a href="casos-exito.html">Consultar los casos de éxito →</a>
+            </div>
+            <div class="cases-grid" id="cases-grid" hidden>
             </div>
         </div>
     </section>
@@ -1020,7 +1008,7 @@
         <div class="container cta-inner">
             <div class="cta-copy" data-reveal>
                 <h2>¿Tienes un proyecto <span class="ghost">en mente?</span></h2>
-                <p>Solicita una consultoría gratuita con el equipo de prescripción 2N España. Te preparamos la especificación técnica, mediciones y documentación BIM para tu proyecto.</p>
+                <p>Cuéntanos qué estás diseñando. El equipo de prescripción 2N España te ayuda con la especificación técnica, las integraciones y la documentación de proyecto.</p>
                 <p class="cta-direct">
                     O escríbenos directamente:
                     <a href="mailto:gaston@2n.com">gaston@2n.com</a> · <a href="tel:+34660204003">+34 660 204 003</a>
@@ -1036,17 +1024,19 @@
                     </label>
                 </div>
                 <div class="form-row">
-                    <label>Empresa / Estudio
+                    <label>Empresa / Estudio (opcional)
                         <input type="text" name="company" maxlength="160" autocomplete="organization">
                     </label>
-                    <label>Tipo de proyecto
+                    <label>Perfil o tipo de proyecto
                         <select name="projectType" required>
                             <option value="" selected disabled>Selecciona…</option>
                             <option value="bts">Residencial BTS</option>
                             <option value="btr">Residencial BTR</option>
                             <option value="office">Oficinas</option>
                             <option value="hotel">Hotel</option>
-                            <option value="retail">Retail</option>
+                            <option value="arquitectura">Arquitectura / Estudio</option>
+                            <option value="ingenieria">Ingeniería / Integración</option>
+                            <option value="promotora">Promotora / Real estate</option>
                             <option value="security">Infraestructura crítica</option>
                             <option value="otro">Otro</option>
                         </select>
@@ -1055,8 +1045,9 @@
                 <label>Cuéntanos sobre el proyecto (opcional)
                     <textarea name="message" maxlength="2000" placeholder="Nº de viviendas / accesos, ubicación, fase del proyecto…"></textarea>
                 </label>
-                <p class="form-error" id="form-error">Revisa el nombre, el email y el tipo de proyecto.</p>
-                <p class="form-success" id="form-success">Solicitud recibida. Te contactamos en menos de 24 h laborables.</p>
+                <p class="form-error" id="form-error" role="alert">Revisa el nombre, el email y el perfil o tipo de proyecto.</p>
+                <p class="form-success" id="form-success" role="status">Solicitud recibida. El equipo de prescripción se pondrá en contacto contigo.</p>
+                <p class="form-note">Usaremos estos datos para responder a tu solicitud. <a href="https://www.2n.com/es_ES/proteccion-de-datos-personales" target="_blank" rel="noopener">Información de privacidad</a>.</p>
                 <button type="submit" class="btn-primary" id="lead-submit" style="justify-content:center;">
                     Enviar solicitud
                     <i class="fa-solid fa-paper-plane" style="font-size: 0.8rem;"></i>
@@ -1070,7 +1061,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-                <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
+                <p>Interfonía IP y control de acceso para proyectos residenciales, oficinas y hoteles.</p>
                 <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
             </div>
             <div class="footer-col">
@@ -1079,7 +1070,6 @@
                 <a href="solucion-btr.html">Residencial BTR</a>
                 <a href="solucion-oficinas.html">Oficinas</a>
                 <a href="solucion-hoteles.html">Hoteles</a>
-                <a href="solucion-retail.html">Retail</a>
                 <a href="solucion-seguridad.html">Infraestructura crítica</a>
             </div>
             <div class="footer-col">
@@ -1099,7 +1089,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
+        <img src="assets/2N_Logo_RGB_White.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <!-- ── CONTACT MODAL ── -->
@@ -1128,12 +1118,12 @@
 
     <script type="module" src="js/i18n.js"></script>
     <script type="module" src="js/share.js"></script>
-    <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="js/nav-controller.js?v=0128"></script>
 
     <!-- GSAP (motion) -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-    <script src="js/home.js?v=3.0"></script>
+    <script src="js/home.js?v=0128"></script>
 
 </body>
 

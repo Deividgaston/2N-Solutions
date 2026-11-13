@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Residencial BTR | Build-to-Rent | 2N Soluciones de Acceso IP</title>
-    <meta name="description" content="Control de acceso IP 2N para edificios Build-to-Rent. Gestión multi-edificio, WaveKey y My2N para propietarios institucionales. Integración PMS. Caso: Propia Sants y Terrassa.">
-    <link rel="preload" as="image" href="assets/web/vertical-btr.webp">
+    <meta name="description" content="Interfonía IP y gestión de accesos para edificios de alquiler. Planifica permisos para residentes, visitas y mantenimiento con el equipo de prescripción.">
+    <link rel="preload" as="image" href="assets/innovation_bg.jpg">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,6 +119,7 @@
         @media (max-width: 1024px) { .intro-grid { grid-template-columns: 1fr; } .tech-grid { grid-template-columns: repeat(2, 1fr); } .casos-grid { grid-template-columns: repeat(2, 1fr); } .benefits-cards { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .tech-grid, .casos-grid { grid-template-columns: 1fr; } }
     </style>
+    <link rel="stylesheet" href="css/prescripcion.css?v=0128">
 </head>
 
 <body data-vertical="btr">
@@ -172,9 +173,12 @@
         <div class="solution-hero-content">
             <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a soluciones</a>
             <span class="solution-badge">RESIDENCIAL · BUILD TO RENT Y ALQUILER</span>
-            <h1>...</h1>
-            <p class="solution-subtitle" style="max-width:680px;">...</p>
+            <h1>Accesos para un edificio que sigue cambiando.</h1>
+            <p class="solution-subtitle">Planifica altas, bajas y permisos de residentes, visitas y mantenimiento en promociones de alquiler y carteras residenciales.</p>
+            <div class="solution-actions">
+            <a href="index.html?tipo=btr&amp;origen=solucion-btr#contacto" class="cta-primary">Consultar este proyecto →</a>
             <button id="download-dossier-btn"><i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF BTR</button>
+            </div>
         </div>
     </section>
 
@@ -182,28 +186,27 @@
         <div class="content-wrapper">
             <div class="intro-grid">
                 <div class="intro-text">
-                    <h2>...</h2>
-                    <p>...</p>
+                    <h2>Pensado para la operación diaria</h2>
+                    <p>Separa los accesos comunes de las zonas de servicio y define quién gestiona cada credencial. Revisa la arquitectura IP y las integraciones con el software de gestión antes de especificar los equipos.</p>
                 </div>
                 <div>
                     <div class="benefits-cards">
-                        <!-- Dynamic Benefits -->
+                        <div class="benefit-card"><h4>Gestión</h4><p>Define permisos según el uso de cada espacio.</p></div>
+                        <div class="benefit-card"><h4>Rotación</h4><p>Planifica el alta y la retirada de credenciales.</p></div>
+                        <div class="benefit-card"><h4>Fortis</h4><p>Manilla y cilindro sin acceso móvil Bluetooth; anunciados por 2N para 2026.</p></div>
                     </div>
                 </div>
             </div>
 
             <div id="dynamic-sections-container" class="dynamic-sections-container"></div>
+            <p class="content-status" id="content-status" role="status"></p>
 
-            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones para BTR</h3>
+            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones a estudiar para BTR</h3>
+            <p class="integration-note">Posibilidades de integración sujetas a equipos, versiones, licencias e interfaces del tercero. Confirma el alcance con el integrador.</p>
             <div class="integrations-row">
-                <span class="integration-tag">PMS Residencial (Mews, etc)</span>
-                <span class="integration-tag">Software de gestión BTR</span>
-                <span class="integration-tag">Taquillas inteligentes</span>
-                <span class="integration-tag">Domótica (KNX, BACnet)</span>
-                <span class="integration-tag">CCTV ONVIF</span>
-                <span class="integration-tag">Node-RED automatizaciones</span>
-                <span class="integration-tag">APIs REST abiertas</span>
-                <span class="integration-tag">Sistemas de incendios</span>
+                <span class="integration-tag">Telefonía SIP</span>
+                <span class="integration-tag">Vídeo ONVIF</span>
+                <span class="integration-tag">APIs abiertas</span>
             </div>
         </div>
     </section>
@@ -232,7 +235,7 @@
         <h2>¿Tienes un proyecto BTR?</h2>
         <p>Te ayudamos a definir la arquitectura de accesos para toda tu cartera. Generamos especificaciones técnicas, planos de integración y versiones adaptadas a cada tipología de edificio.</p>
         <div class="cta-buttons">
-            <a href="mailto:gaston@2n.com?subject=Solicitud de información técnica - Residencial BTR&body=Hola David,%0D%0A%0D%0ASolicito información para saber de las soluciones de 2N para mis proyectos BTR. Me gustaría recibir una especificación técnica detallada y conocer cómo vuestra tecnología puede elevar el valor de mis obras.%0D%0A%0D%0ARuego se pongan en contacto conmigo para ampliar detalles.%0D%0A%0D%0ASaludos cordiales." class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
+            <a href="index.html?tipo=btr&amp;origen=solucion-btr#contacto" class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
             <a href="/" class="cta-secondary">Ver otras soluciones</a>
         </div>
     </section>
@@ -241,7 +244,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-                <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
+                <p>Interfonía IP y control de acceso para proyectos residenciales, oficinas y hoteles.</p>
                 <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
             </div>
             <div class="footer-col">
@@ -250,7 +253,6 @@
                 <a href="solucion-btr.html">Residencial BTR</a>
                 <a href="solucion-oficinas.html">Oficinas</a>
                 <a href="solucion-hoteles.html">Hoteles</a>
-                <a href="solucion-retail.html">Retail</a>
                 <a href="solucion-seguridad.html">Infraestructura crítica</a>
             </div>
             <div class="footer-col">
@@ -270,7 +272,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
+        <img src="assets/2N_Logo_RGB_White.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <div class="modal" id="contact-modal">
@@ -288,10 +290,10 @@
         </div>
     </div>
     <script type="module" src="js/firebase-init.js"></script>
-    <script type="module" src="js/vertical-renderer.js?v=2.0"></script>
+    <script type="module" src="js/vertical-renderer.js?v=0128"></script>
     <script type="module" src="js/pdf-handler.js"></script>
     <script type="module" src="js/i18n.js"></script>
-    <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="js/nav-controller.js?v=0128"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="js/v3.js?v=1.0"></script>

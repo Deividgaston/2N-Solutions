@@ -1,8 +1,8 @@
 /**
  * 2N Presenter — Home v3 (landing editorial/cinemática)
  * - Coreografía GSAP + ScrollTrigger: reveal de líneas del hero, parallax,
- *   galería horizontal pinneada de soluciones, count-ups, reveals.
- *   Respeta prefers-reduced-motion (todo visible, sin pin).
+ *   reveals. La navegación por perfiles y sectores no depende de la animación.
+ *   Respeta prefers-reduced-motion (todo visible).
  * - Casos destacados desde Firestore por REST (la landing no carga el SDK).
  * - Formulario de prescripción -> colección web_leads (create público validado).
  */
@@ -53,26 +53,6 @@
                 scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
             });
 
-            // Galería horizontal pinneada (solo desktop)
-            var track = document.getElementById('htrack');
-            var hwrap = document.getElementById('hscroll');
-            if (track && hwrap && window.innerWidth >= 1024) {
-                var dist = function () { return Math.max(0, track.scrollWidth - window.innerWidth); };
-                gsap.to(track, {
-                    x: function () { return -dist(); },
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: hwrap,
-                        start: 'top top',
-                        end: function () { return '+=' + dist(); },
-                        scrub: 1,
-                        pin: true,
-                        anticipatePin: 1,
-                        invalidateOnRefresh: true,
-                    },
-                });
-            }
-
             // Reveals genéricos al hacer scroll (fuera del hero)
             gsap.utils.toArray('section [data-reveal]').forEach(function (el) {
                 gsap.fromTo(el,
@@ -84,18 +64,6 @@
                 );
             });
 
-            // Count-up de las cifras
-            gsap.utils.toArray('[data-count]').forEach(function (el) {
-                var target = parseInt(el.getAttribute('data-count'), 10);
-                var obj = { v: 0 };
-                gsap.to(obj, {
-                    v: target,
-                    duration: 1.5,
-                    ease: 'power2.out',
-                    scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-                    onUpdate: function () { el.textContent = Math.round(obj.v); },
-                });
-            });
         });
 
         mm.add('(prefers-reduced-motion: reduce)', function () {
@@ -125,6 +93,9 @@
         var grid = document.getElementById('cases-grid');
         if (!grid) return;
         grid.innerHTML = '';
+        grid.hidden = false;
+        var fallback = document.getElementById('cases-fallback');
+        if (fallback) fallback.hidden = true;
         cases.forEach(function (c, i) {
             var card = document.createElement('a');
             card.className = 'case-card';
@@ -226,14 +197,12 @@
             if (featured.length) {
                 renderCases(featured);
             } else {
-                var section = document.getElementById('casos');
-                if (section) section.style.display = 'none';
+                document.getElementById('cases-grid').hidden = true;
             }
         })
         .catch(function () {
-            // Sin datos: ocultamos la sección en vez de dejar esqueletos infinitos
-            var section = document.getElementById('casos');
-            if (section) section.style.display = 'none';
+            // El enlace a las referencias sigue disponible cuando no llegan los datos.
+            document.getElementById('cases-grid').hidden = true;
         });
 
     /* ────────────────────────────────
@@ -241,58 +210,99 @@
     ──────────────────────────────── */
     var form = document.getElementById('lead-form');
     if (form) {
+        var selector = form.elements.namedItem('projectType');
+        var params = new URLSearchParams(window.location.search);
+        var origins = ['solucion-bts', 'solucion-btr', 'solucion-oficinas',
+            'solucion-hoteles', 'solucion-seguridad', 'productos', 'casos-exito'];
+        var origin = params.get('origen');
+        var source = origins.indexOf(origin) >= 0 ? origin : 'landing';
+        var requested = params.get('perfil') || params.get('tipo');
+        var sending = false;
+
+        function selectProject(value) {
+            var option = Array.from(selector.options).find(function (opt) {
+                return opt.value === value && !opt.disabled;
+            });
+            if (option) selector.value = option.value;
+        }
+        selectProject(requested);
+
+        document.querySelectorAll('[data-lead-profile]').forEach(function (link) {
+            link.addEventListener('click', function (ev) {
+                if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+                ev.preventDefault();
+                selectProject(link.dataset.leadProfile);
+                form.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+                form.elements.namedItem('name').focus({ preventScroll: true });
+            });
+        });
+
         form.addEventListener('submit', function (ev) {
             ev.preventDefault();
+            if (sending) return;
             var errorEl = document.getElementById('form-error');
             var successEl = document.getElementById('form-success');
             var submitBtn = document.getElementById('lead-submit');
             errorEl.classList.remove('visible');
+            successEl.classList.remove('visible');
+            errorEl.textContent = 'Revisa el nombre, el email y el perfil o tipo de proyecto.';
 
-            var data = {
-                name: form.name.value.trim(),
-                email: form.email.value.trim(),
-                company: form.company.value.trim(),
-                projectType: form.projectType.value,
-                message: form.message.value.trim()
-            };
-
+            var data = {};
+            ['name', 'email', 'company', 'projectType', 'message'].forEach(function (key) {
+                data[key] = form.elements.namedItem(key).value.trim();
+            });
             var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email);
-            if (!data.name || !emailOk || !data.projectType) {
+            var knownProject = Array.from(selector.options).some(function (opt) {
+                return opt.value === data.projectType && !opt.disabled;
+            });
+            var limits = { name: 200, email: 200, company: 200, projectType: 50, message: 2000 };
+            var lengthsOk = Object.keys(limits).every(function (key) {
+                return data[key].length <= limits[key];
+            });
+            if (!data.name || !emailOk || !knownProject || !lengthsOk || !form.checkValidity()) {
                 errorEl.classList.add('visible');
+                form.reportValidity();
                 return;
             }
 
+            sending = true;
             submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
+            form.setAttribute('aria-busy', 'true');
 
+            // El contrato público de web_leads admite exactamente estos siete campos.
             var fields = {
                 name: { stringValue: data.name },
                 email: { stringValue: data.email },
                 projectType: { stringValue: data.projectType },
-                source: { stringValue: 'landing' },
+                source: { stringValue: source },
                 createdAt: { timestampValue: new Date().toISOString() }
             };
             if (data.company) fields.company = { stringValue: data.company };
             if (data.message) fields.message = { stringValue: data.message };
 
+            var controller = new AbortController();
+            var requestTimeout = setTimeout(function () { controller.abort(); }, 12000);
             fetch(FS_BASE + '/web_leads?key=' + API_KEY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
                 body: JSON.stringify({ fields: fields })
             })
                 .then(function (r) {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
                     form.reset();
                     successEl.classList.add('visible');
-                    submitBtn.style.display = 'none';
+                    submitBtn.hidden = true;
                 })
                 .catch(function () {
-                    errorEl.textContent = 'No se pudo enviar. Escríbenos a gaston@2n.com o inténtalo de nuevo.';
+                    errorEl.textContent = 'No se pudo confirmar el envío. Escríbenos a gaston@2n.com o inténtalo de nuevo.';
                     errorEl.classList.add('visible');
                 })
                 .finally(function () {
+                    clearTimeout(requestTimeout);
+                    sending = false;
                     submitBtn.disabled = false;
-                    submitBtn.style.opacity = '';
+                    form.setAttribute('aria-busy', 'false');
                 });
         });
     }

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oficinas y Corporativo | 2N Soluciones de Acceso IP</title>
-    <meta name="description" content="Control de acceso IP 2N para sedes corporativas, coworking y parques empresariales. Integración SIP nativa, ONVIF, APIs abiertas ISO 27001. Caso: Oficinas Caser.">
-    <link rel="preload" as="image" href="assets/web/vertical-office.webp">
+    <meta name="description" content="Interfonía IP y control de acceso para oficinas. Revisa arquitectura de red, atención de visitas e integración mediante protocolos y APIs.">
+    <link rel="preload" as="image" href="assets/innovation_bg.jpg">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,6 +112,7 @@
         @media (max-width: 1024px) { .intro-grid { grid-template-columns: 1fr; } .tech-grid { grid-template-columns: repeat(2, 1fr); } .casos-grid { grid-template-columns: repeat(2, 1fr); } .benefits-cards { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .tech-grid, .casos-grid { grid-template-columns: 1fr; } }
     </style>
+    <link rel="stylesheet" href="css/prescripcion.css?v=0128">
 </head>
 
 <body data-vertical="office">
@@ -165,9 +166,12 @@
         <div class="solution-hero-content">
             <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a soluciones</a>
             <span class="solution-badge">CORPORATIVO · OFICINAS Y PARQUES EMPRESARIALES</span>
-            <h1>...</h1>
-            <p class="solution-subtitle" style="max-width:680px;">...</p>
+            <h1>Recepción, empleados y visitas. Un acceso bien pensado.</h1>
+            <p class="solution-subtitle">Interfonía IP y control de acceso para oficinas, coworking y sedes corporativas. Coordina los equipos con la red y los sistemas del edificio.</p>
+            <div class="solution-actions">
+            <a href="index.html?tipo=office&amp;origen=solucion-oficinas#contacto" class="cta-primary">Consultar este proyecto →</a>
             <button id="download-dossier-btn"><i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF Oficinas</button>
+            </div>
         </div>
     </section>
 
@@ -175,32 +179,29 @@
         <div class="content-wrapper">
             <div class="intro-grid">
                 <div class="intro-text">
-                    <h2>...</h2>
-                    <p>...</p>
+                    <h2>Integra el acceso en tu infraestructura</h2>
+                    <p>Define zonas, horarios y atención de visitas junto con el equipo de IT. Revisa interfaces, versiones y licencias para conectar interfonía, vídeo y gestión de accesos.</p>
                 </div>
                 <div>
                     <div class="benefits-cards">
-                        <!-- Dynamic Benefits -->
+                        <div class="benefit-card"><h4>Recepción</h4><p>Atención de visitas desde los puntos previstos en el proyecto.</p></div>
+                        <div class="benefit-card"><h4>Fichajes</h4><p>Integración con Factorial o cualquier sistema con API abierta, previa validación.</p></div>
+                        <div class="benefit-card"><h4>Red</h4><p>Funciones como 802.1X y SIPS, según equipo y configuración.</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- DYNAMIC SECTIONS CONTAINER -->
             <div id="dynamic-sections-container" class="dynamic-sections-container"></div>
+            <p class="content-status" id="content-status" role="status"></p>
 
-            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones certificadas</h3>
+            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones a estudiar</h3>
+            <p class="integration-note">Posibilidades de integración sujetas a equipos, versiones, licencias e interfaces del tercero. Confirma el alcance con el integrador.</p>
             <div class="integrations-row">
-                <span class="integration-tag">Microsoft Teams</span>
-                <span class="integration-tag">Cisco CUCM / WebEx</span>
-                <span class="integration-tag">Avaya</span>
-                <span class="integration-tag">3CX</span>
-                <span class="integration-tag">ONVIF (VMS/PSIM)</span>
-                <span class="integration-tag">Milestone / Genetec</span>
-                <span class="integration-tag">Lenel / Software House</span>
-                <span class="integration-tag">BMS (Siemens, Johnson)</span>
-                <span class="integration-tag">Node-RED automatizaciones</span>
-                <span class="integration-tag">REST APIs abiertas</span>
-                <span class="integration-tag">Active Directory / LDAP</span>
+                <span class="integration-tag">Telefonía SIP</span>
+                <span class="integration-tag">Vídeo ONVIF</span>
+                <span class="integration-tag">APIs abiertas</span>
+                <span class="integration-tag">Factorial / sistemas con API abierta</span>
             </div>
         </div>
     </section>
@@ -227,9 +228,9 @@
 
     <section class="cta-section">
         <h2>¿Tienes un proyecto de oficinas?</h2>
-        <p>Nuestro equipo técnico analiza tu arquitectura IT existente y diseña la integración de control de accesos sin interrumpir los sistemas en producción. Documentación técnica y asistencia en obra incluidas.</p>
+        <p>Revisamos contigo la arquitectura IP y las interfaces de integración para preparar la especificación de accesos del edificio.</p>
         <div class="cta-buttons">
-            <a href="mailto:gaston@2n.com?subject=Solicitud de información técnica - Oficinas&body=Hola David,%0D%0A%0D%0ASolicito información para saber de las soluciones de 2N para mis proyectos de Oficinas. Me gustaría recibir una especificación técnica detallada y conocer cómo vuestra tecnología puede elevar el valor de mis obras.%0D%0A%0D%0ARuego se pongan en contacto conmigo para ampliar detalles.%0D%0A%0D%0ASaludos cordiales." class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
+            <a href="index.html?tipo=office&amp;origen=solucion-oficinas#contacto" class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
             <a href="/" class="cta-secondary">Ver otras soluciones</a>
         </div>
     </section>
@@ -238,7 +239,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-                <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
+                <p>Interfonía IP y control de acceso para proyectos residenciales, oficinas y hoteles.</p>
                 <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
             </div>
             <div class="footer-col">
@@ -247,7 +248,6 @@
                 <a href="solucion-btr.html">Residencial BTR</a>
                 <a href="solucion-oficinas.html">Oficinas</a>
                 <a href="solucion-hoteles.html">Hoteles</a>
-                <a href="solucion-retail.html">Retail</a>
                 <a href="solucion-seguridad.html">Infraestructura crítica</a>
             </div>
             <div class="footer-col">
@@ -267,7 +267,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
+        <img src="assets/2N_Logo_RGB_White.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <div class="modal" id="contact-modal">
@@ -285,10 +285,10 @@
         </div>
     </div>
     <script type="module" src="js/firebase-init.js"></script>
-    <script type="module" src="js/vertical-renderer.js?v=2.0"></script>
+    <script type="module" src="js/vertical-renderer.js?v=0128"></script>
     <script type="module" src="js/pdf-handler.js"></script>
     <script type="module" src="js/i18n.js"></script>
-    <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="js/nav-controller.js?v=0128"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="js/v3.js?v=1.0"></script>

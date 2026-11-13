@@ -6,6 +6,10 @@
 
 import { contentService } from './services/content.service.js';
 
+const imageAlt = value => String(value || '').replace(/[&"<>]/g, char => ({
+    '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;'
+}[char]));
+
 class VerticalRenderer {
     constructor() {
         this.dynamicContainer = document.getElementById('dynamic-sections-container');
@@ -23,10 +27,8 @@ class VerticalRenderer {
     }
 
     async init() {
-        // Visual Debugging
-        if (this.container) {
-            this.container.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;" class="debug-loader"><i class="fa-solid fa-spinner fa-spin"></i> Cargando contenidos dinámicos...</div>';
-        }
+        const status = document.getElementById('content-status');
+        this.container.setAttribute('aria-busy', 'true');
 
         try {
             console.log('VerticalRenderer: Fetching for', this.verticalId);
@@ -41,21 +43,25 @@ class VerticalRenderer {
 
             console.log('VerticalRenderer: Data received', { sections: sections?.length, meta, techCards: techCards?.length, cases: cases?.length });
 
-            // Clear loader from fallback container
-            if (this.container) this.container.innerHTML = '';
-
             this.renderIntro(meta);
             this.updateSEO(meta);
             this.renderSections(sections);
             this.renderTechCards(techCards);
             this.renderCases(cases);
             this.initScrollAnimations();
+            if (status && !sections?.length) {
+                status.textContent = 'Consulta con el equipo de prescripción la documentación y los equipos para tu proyecto.';
+            }
 
         } catch (error) {
             console.error('Error loading content:', error);
-            if (this.container) {
-                this.container.innerHTML = `<div style="padding: 20px; color: #ff4444; border: 1px solid #ff4444; border-radius: 8px;">Error cargando contenido: ${error.message}<br>Intenta recargar la página.</div>`;
+            if (status) {
+                status.textContent = 'No se ha podido cargar el contenido ampliado. Puedes consultar el resumen y solicitar asesoramiento para tu proyecto.';
             }
+            document.querySelector('.tech-section')?.setAttribute('hidden', '');
+            document.querySelector('.casos-section')?.setAttribute('hidden', '');
+        } finally {
+            this.container.setAttribute('aria-busy', 'false');
         }
     }
 
@@ -165,8 +171,8 @@ class VerticalRenderer {
                 heroSection.style.backgroundColor = '#111';
             }
         } else {
-            // Sin imagen en la BD -> foto por defecto de la vertical (assets/web)
-            const heroUrl = meta.heroImageUrl || `assets/web/vertical-${this.verticalId}.webp`;
+            // Recurso ya incluido en Git; las fotos por vertical llegarán en otro encargo.
+            const heroUrl = meta.heroImageUrl || 'assets/innovation_bg.jpg';
             const bgDiv = heroSection.querySelector('.solution-hero-bg');
             if (bgDiv) {
                 bgDiv.style.backgroundImage = `url('${heroUrl}')`;
@@ -216,9 +222,6 @@ class VerticalRenderer {
 
     renderSections(sections) {
         if (!sections || sections.length === 0) {
-             if (this.container) {
-                this.container.innerHTML = '<div style="padding: 40px; text-align: center; color: #555;">No hay bloques destacados configurados.<br><small>Añade contenidos desde el panel de administración.</small></div>';
-            }
             return;
         }
 
@@ -226,9 +229,6 @@ class VerticalRenderer {
         const visibleSections = sections.filter(s => s.isVisible !== false && s.isActive !== false);
 
         if (visibleSections.length === 0) {
-            if (this.container) {
-                this.container.innerHTML = '<div style="padding: 40px; text-align: center; color: #555;">No hay bloques visibles configurados.</div>';
-            }
             return;
         }
 
@@ -248,9 +248,9 @@ class VerticalRenderer {
             const pillsSpan = (section.tags || []).map(t => `<span class="feature-pill">${t}</span>`).join('');
 
             sectionEl.innerHTML = `
-                <div class="feature-img">
-                    <img src="${section.imageUrl || ''}" alt="${section.title || ''}" loading="lazy">
-                </div>
+                ${section.imageUrl ? `<div class="feature-img">
+                    <img src="${section.imageUrl || ''}" alt="${imageAlt(section.title)}" loading="lazy">
+                </div>` : ''}
                 <div class="feature-body">
                     <div class="feature-eyebrow">${section.eyebrow || ''}</div>
                     <div class="feature-title">${section.title || ''}</div>
@@ -282,7 +282,10 @@ class VerticalRenderer {
     }
 
     renderTechCards(cards) {
-        if (!cards || cards.length === 0) return;
+        if (!cards || cards.length === 0) {
+            document.querySelector('.tech-section')?.setAttribute('hidden', '');
+            return;
+        }
         let grid = document.querySelector('.tech-grid');
         if (!grid) return;
         
@@ -316,7 +319,7 @@ class VerticalRenderer {
                 <div class="tech-card">
                     ${card.imageUrl ? `
                     <div class="tech-card-img" style="width:100%; height:140px; background:rgba(255,255,255,0.03); margin-bottom:1.5rem; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:10px;">
-                        <img src="${card.imageUrl}" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));" loading="lazy">
+                        <img src="${card.imageUrl}" alt="${imageAlt(card.name || 'Equipo 2N')}" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));" loading="lazy">
                     </div>
                     ` : ''}
                     <div class="tech-card-label">${label}</div>
@@ -332,7 +335,10 @@ class VerticalRenderer {
     }
 
     renderCases(cases) {
-        if (!cases || cases.length === 0) return;
+        if (!cases || cases.length === 0) {
+            document.querySelector('.casos-section')?.setAttribute('hidden', '');
+            return;
+        }
         let grid = document.querySelector('.casos-grid');
         if (!grid) return;
         
@@ -362,7 +368,7 @@ class VerticalRenderer {
                         </div>
                     </div>
                     <div class="caso-zigzag-image">
-                        <img src="${c.imageUrl || 'assets/placeholder-case.jpg'}" alt="${c.name}" loading="lazy">
+                        ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${imageAlt(c.name || 'Proyecto 2N')}" loading="lazy">` : ''}
                     </div>
                 </div>
             `;

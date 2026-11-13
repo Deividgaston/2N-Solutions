@@ -10,6 +10,10 @@ html {
     overflow-y: scroll;
 }
 
+/* Retail queda fuera de los menús públicos hasta disponer de su argumentario. */
+.navbar a[href$="solucion-retail.html"],
+.footer a[href$="solucion-retail.html"] { display: none; }
+
 /* ── Variables ── */
 :root {
     --primary:        #2563EB;

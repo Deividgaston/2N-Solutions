@@ -19,6 +19,14 @@ class NavController {
     init() {
         if (!this.navbar) return;
 
+        // Retail permanece fuera de la navegación, también en páginas sin modificar.
+        document.querySelectorAll('a[href]').forEach(link => {
+            const url = new URL(link.href, window.location.href);
+            if (url.origin === window.location.origin && url.pathname.endsWith('/solucion-retail.html')) {
+                link.remove();
+            }
+        });
+
         // Scroll Effect
         window.addEventListener('scroll', () => {
             this.navbar.classList.toggle('scrolled', window.scrollY > 50);
@@ -26,12 +34,39 @@ class NavController {
 
         // Mobile Menu Button Injection
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'mobile-menu-btn';
+        btn.setAttribute('aria-label', 'Abrir menú');
+        btn.setAttribute('aria-expanded', 'false');
+        const navLinks = this.navbar.querySelector('.nav-links');
+        if (navLinks) {
+            navLinks.id = 'primary-navigation';
+            btn.setAttribute('aria-controls', navLinks.id);
+        }
         btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
         this.navbar.appendChild(btn);
 
+        const closeMenu = () => {
+            document.body.classList.remove('mobile-open');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Abrir menú');
+            btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+        };
+
+        this.navbar.querySelectorAll('a[href]').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && document.body.classList.contains('mobile-open')) {
+                closeMenu();
+                btn.focus();
+            }
+        });
+
         btn.addEventListener('click', () => {
             const isOpen = document.body.classList.contains('mobile-open');
+            btn.setAttribute('aria-expanded', String(!isOpen));
+            btn.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
             if (isOpen) {
                 document.body.classList.remove('mobile-open');
                 btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
@@ -44,6 +79,7 @@ class NavController {
         // Contact Modal Logic
         if (this.contactBtn && this.contactModal) {
             this.contactBtn.addEventListener('click', () => {
+                closeMenu();
                 this.contactModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             });

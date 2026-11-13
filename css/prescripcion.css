@@ -1,0 +1,126 @@
+/* Prescripción B2B: se carga después de los estilos de cada página pública. */
+:root {
+    --primary: #e8002d;
+    --primary-dark: #b80024;
+    --primary-light: #ff8fa3;
+    --text-hint: #a9b1c0;
+    --border: #293140;
+}
+
+html { scroll-padding-top: 7rem; }
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+    outline: 3px solid #ffb3c1;
+    outline-offset: 4px;
+}
+.skip-link {
+    position: fixed; top: 1rem; left: 1rem; z-index: 1400;
+    padding: .8rem 1.2rem; background: #fff; color: #111827;
+    transform: translateY(-200%);
+}
+.skip-link:focus { transform: translateY(0); }
+.ghost, .sec-title .ghost, .cta-copy h2 .ghost {
+    color: #b4bdcc; -webkit-text-stroke: 0;
+}
+.btn-primary, .btn-secondary, .cta-primary, .cta-secondary,
+.btn-sidebar, #download-dossier-btn { border-radius: 8px; }
+.solution-badge {
+    color: #ffd4dc; background: rgba(80, 0, 16, .8);
+    border-color: rgba(255, 143, 163, .5);
+}
+.solution-hero {
+    background: linear-gradient(100deg, #0a0a0f 10%, rgba(10,10,15,.78) 65%, rgba(10,10,15,.55)),
+        url('../assets/innovation_bg.jpg') center / cover;
+}
+.solution-hero-content { max-width: 960px; }
+.solution-hero h1 { font-size: clamp(2rem, 4.5vw, 3.7rem); max-width: 22ch; }
+.solution-subtitle { max-width: 62ch; }
+.solution-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+.solution-actions #download-dossier-btn { margin: 0; background: transparent; border: 1px solid #727b8b; }
+.solution-actions .cta-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: .85rem 1.5rem; background: var(--primary); color: #fff;
+    text-decoration: none; font-weight: 600; font-size: .9rem;
+}
+.integration-note, .content-status { color: #b4bdcc; font-size: .88rem; margin: .8rem 0 1.5rem; }
+.content-status:empty { display: none; }
+.content-status a { color: var(--primary-light); }
+.benefit-card-icon { color: var(--primary-light); }
+.cert-badge { color: var(--primary-light); font-size: 1rem; font-weight: 700; }
+
+/* La entrada por perfil funciona también sin JavaScript. */
+.profiles-section { padding: 4.5rem 0; border-bottom: 1px solid var(--border); }
+.profiles-section .sec-head { padding: 0 0 2rem; }
+.profiles-section .sec-title { max-width: 28ch; font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+.profiles-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.profile-card {
+    padding: 1.8rem; border: 1px solid var(--border); border-top: 3px solid var(--primary);
+    border-radius: 12px; background: var(--bg-card); display: flex; flex-direction: column;
+}
+.profile-number { color: var(--primary-light); font-size: .72rem; letter-spacing: .15em; margin-bottom: 1.5rem; }
+.profile-card h3 { font-size: 1.3rem; line-height: 1.2; margin-bottom: .8rem; }
+.profile-card p { color: #b4bdcc; font-size: .92rem; line-height: 1.7; margin-bottom: 1.5rem; }
+.profile-card a { color: #fff; font-weight: 600; font-size: .9rem; margin-top: auto; text-underline-offset: 5px; }
+.profile-card a:hover { color: var(--primary-light); }
+
+/* Todas las verticales son accesibles sin depender de GSAP ni de un pin horizontal. */
+.hscroll { overflow: visible; min-height: 0; display: block; }
+.htrack {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+    width: auto; max-width: 1360px; margin: 0 auto; padding: 0 5% 4.5rem; gap: 1rem;
+}
+.sol-intro { grid-column: 1 / -1; width: auto; min-height: 0; padding: 0 0 1rem; }
+.sol-intro p { max-width: 72ch; }
+.sol-panel { grid-column: span 2; width: auto; min-height: 350px; border-radius: 12px; }
+.sol-panel:nth-last-child(-n+2) { grid-column: span 3; }
+.sol-photo { background-image: url('../assets/innovation_bg.jpg'); }
+.sol-panel:nth-of-type(odd) .sol-photo { background-image: url('../assets/extracted_main_image.png'); }
+.sol-panel p { color: #d1d7e1; }
+.sol-panel h3 { font-size: 1.4rem; }
+.sol-index { color: #fff; -webkit-text-stroke: 0; font-size: 1.4rem; }
+.sol-panel:focus-visible { outline-offset: 4px; }
+.case-fallback { padding: 2rem; border: 1px solid var(--border); border-radius: 12px; color: #b4bdcc; }
+.case-fallback a { color: var(--primary-light); display: inline-block; margin-top: .8rem; }
+.case-fallback[hidden] { display: none; }
+.case-cta { opacity: 1; transform: none; }
+.lead-form label { color: #c3cbd8; }
+.lead-form input, .lead-form select, .lead-form textarea { min-width: 0; border-color: #596477; }
+.lead-form input::placeholder, .lead-form textarea::placeholder { color: #a9b1c0; }
+.form-note { color: #b4bdcc; font-size: .78rem; line-height: 1.6; }
+.form-note a { color: var(--primary-light); }
+.lead-form :disabled { cursor: wait; }
+.lead-form [hidden], .cases-grid[hidden], section[hidden] { display: none; }
+.trust-num { font-size: clamp(1.3rem, 2.4vw, 2rem); overflow-wrap: anywhere; }
+.trust-label { color: #b4bdcc; }
+.feature-block:not(:has(.feature-img)) { grid-template-columns: 1fr; }
+.hero-content > .cta-primary {
+    display: inline-block; margin-top: 1.5rem; padding: .85rem 1.4rem;
+    background: var(--primary); color: #fff; border-radius: 8px;
+    text-decoration: none; font-weight: 600;
+}
+.hero-audience { color: #ffb3c1; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
+
+@media (max-width: 900px) {
+    .profiles-grid { grid-template-columns: 1fr; }
+    .profile-card { padding: 1.4rem; }
+    .profile-number { margin-bottom: .75rem; }
+    .htrack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sol-panel, .sol-panel:nth-last-child(-n+2) { grid-column: auto; }
+    .sol-panel:last-child { grid-column: 1 / -1; }
+    .sol-body { padding: 1.4rem; }
+}
+@media (max-width: 600px) {
+    .profiles-section { padding: 3rem 0; }
+    .htrack { grid-template-columns: minmax(0, 1fr); }
+    .sol-panel { min-height: 320px; }
+    .lead-form { padding: 1.3rem; }
+    .solution-actions { align-items: stretch; flex-direction: column; }
+    .solution-actions a, .solution-actions button { text-align: center; }
+    .hero-ctas { width: 100%; }
+    .hero-ctas a { width: 100%; justify-content: center; padding: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html.gsap-on [data-reveal] { opacity: 1; transform: none; }
+}

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Residencial BTS | Build-to-Sell | 2N Soluciones de Acceso IP</title>
-    <meta name="description" content="Soluciones 2N para promociones residenciales de venta. Videoportero IP Style Red Dot Award, WaveKey y My2N para promotores BTS. Casos: Dunique, Torres Matiricos, Las Rosas Plaza.">
-    <link rel="preload" as="image" href="assets/web/vertical-bts.webp">
+    <meta name="description" content="Videoporteros IP y control de acceso para promociones residenciales de venta. Acabados, atención de visitas y documentación para la prescripción.">
+    <link rel="preload" as="image" href="assets/innovation_bg.jpg">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,6 +112,7 @@
         @media (max-width: 1024px) { .intro-grid { grid-template-columns: 1fr; } .tech-grid { grid-template-columns: repeat(2, 1fr); } .casos-grid { grid-template-columns: repeat(2, 1fr); } .benefits-cards { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .tech-grid, .casos-grid { grid-template-columns: 1fr; } }
     </style>
+    <link rel="stylesheet" href="css/prescripcion.css?v=0128">
 </head>
 
 <body data-vertical="bts">
@@ -164,9 +165,12 @@
         <div class="solution-hero-content">
             <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a soluciones</a>
             <span class="solution-badge">RESIDENCIAL · OBRA NUEVA Y REHABILITACIÓN</span>
-            <h1>...</h1>
-            <p class="solution-subtitle" style="max-width:680px;">...</p>
+            <h1>Residencial BTS: el acceso forma parte del proyecto.</h1>
+            <p class="solution-subtitle">Videoporteros IP, atención de visitas y credenciales de acceso para promociones de vivienda en venta. Define equipos y acabados desde el diseño de la entrada.</p>
+            <div class="solution-actions">
+            <a href="index.html?tipo=bts&amp;origen=solucion-bts#contacto" class="cta-primary">Consultar este proyecto →</a>
             <button id="download-dossier-btn"><i class="fa-solid fa-file-pdf"></i> Descargar Dossier PDF Residencial</button>
+            </div>
         </div>
     </section>
 
@@ -174,31 +178,28 @@
         <div class="content-wrapper">
             <div class="intro-grid">
                 <div class="intro-text">
-                    <h2>...</h2>
-                    <p>...</p>
+                    <h2>Del plano al portal</h2>
+                    <p>Coordina la ubicación del videoportero, las unidades interiores y los accesos comunes con la arquitectura de la promoción. El equipo de prescripción te ayuda a preparar la documentación técnica.</p>
                 </div>
                 <div>
                     <div class="benefits-cards">
-                        <!-- Dynamic Benefits -->
+                        <div class="benefit-card"><h4>Diseño</h4><p>Acabados y montaje acordes con el portal.</p></div>
+                        <div class="benefit-card"><h4>Visitas</h4><p>Llamadas a la vivienda y opciones de atención desde la app My2N.</p></div>
+                        <div class="benefit-card"><h4>Acceso móvil</h4><p>WaveKey en lectores compatibles y videoporteros con módulo Bluetooth.</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- DYNAMIC SECTIONS CONTAINER -->
             <div id="dynamic-sections-container" class="dynamic-sections-container"></div>
+            <p class="content-status" id="content-status" role="status"></p>
 
-            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones disponibles</h3>
+            <h3 style="margin-top:2.5rem;font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--text-white);">Integraciones a estudiar</h3>
+            <p class="integration-note">Posibilidades de integración sujetas a equipos, versiones, licencias e interfaces del tercero. Confirma el alcance con el integrador.</p>
             <div class="integrations-row">
-                <span class="integration-tag"><i class="fa-solid fa-building"></i> PMS Residencial</span>
-                <span class="integration-tag">Domótica (KNX, Z-Wave)</span>
-                <span class="integration-tag">Control4 / Savant</span>
-                <span class="integration-tag">Node-RED (Automatizaciones)</span>
-                <span class="integration-tag">VMS / CCTV ONVIF</span>
-                <span class="integration-tag">Sistemas contra incendios</span>
-                <span class="integration-tag">Ascensores (Schindler, KONE)</span>
-                <span class="integration-tag">Garaje robotizado</span>
-                <span class="integration-tag">Amazon Alexa / Google Home</span>
-                <span class="integration-tag">SDKs y APIs abiertas</span>
+                <span class="integration-tag">Telefonía SIP</span>
+                <span class="integration-tag">Vídeo ONVIF</span>
+                <span class="integration-tag">APIs abiertas</span>
             </div>
         </div>
     </section>
@@ -227,7 +228,7 @@
         <h2>¿Tienes un proyecto residencial?</h2>
         <p>Nuestro equipo de prescripción técnica te ayuda a definir la arquitectura de accesos, integraciones y memoria técnica para la dirección de obra.</p>
         <div class="cta-buttons">
-            <a href="mailto:gaston@2n.com?subject=Solicitud de información técnica - Residencial BTS&body=Hola David,%0D%0A%0D%0ASolicito información para saber de las soluciones de 2N para mis proyectos residenciales. Me gustaría recibir una especificación técnica detallada y conocer cómo vuestra tecnología puede elevar el valor de mis obras.%0D%0A%0D%0ARuego se pongan en contacto conmigo para ampliar detalles.%0D%0A%0D%0ASaludos cordiales." class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
+            <a href="index.html?tipo=bts&amp;origen=solucion-bts#contacto" class="cta-primary"><i class="fa-solid fa-file-lines"></i> Solicitar especificación técnica</a>
             <a href="/" class="cta-secondary">Ver otras soluciones</a>
         </div>
     </section>
@@ -236,7 +237,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <img src="assets/2N_Logo_RGB_White.png" alt="2N">
-                <p>Líder europeo en intercomunicación IP y control de acceso para proyectos residenciales, corporativos y hospitality.</p>
+                <p>Interfonía IP y control de acceso para proyectos residenciales, oficinas y hoteles.</p>
                 <span class="footer-axis"><i class="fa-solid fa-circle-nodes"></i> Parte de Axis Communications</span>
             </div>
             <div class="footer-col">
@@ -245,7 +246,6 @@
                 <a href="solucion-btr.html">Residencial BTR</a>
                 <a href="solucion-oficinas.html">Oficinas</a>
                 <a href="solucion-hoteles.html">Hoteles</a>
-                <a href="solucion-retail.html">Retail</a>
                 <a href="solucion-seguridad.html">Infraestructura crítica</a>
             </div>
             <div class="footer-col">
@@ -265,7 +265,7 @@
                 <a href="mailto:gaston@2n.com">Contacto de prescripción</a>
             </span>
         </div>
-        <img src="assets/web/logo-wordmark.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
+        <img src="assets/2N_Logo_RGB_White.png" class="footer-wordmark-logo" alt="" aria-hidden="true">
     </footer>
 
     <div class="modal" id="contact-modal">
@@ -283,10 +283,10 @@
         </div>
     </div>
     <script type="module" src="js/firebase-init.js"></script>
-    <script type="module" src="js/vertical-renderer.js?v=2.0"></script>
+    <script type="module" src="js/vertical-renderer.js?v=0128"></script>
     <script type="module" src="js/pdf-handler.js"></script>
     <script type="module" src="js/i18n.js"></script>
-    <script src="js/nav-controller.js?v=2.0"></script>
+    <script src="js/nav-controller.js?v=0128"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="js/v3.js?v=1.0"></script>
