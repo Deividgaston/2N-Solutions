@@ -186,7 +186,7 @@ test('la respuesta remota conserva prioridad y usa una imagen local si no trae f
     await app.instance.init();
     assert.equal(app.nodes.title.textContent, 'Título remoto');
     assert.equal(app.nodes.subtitle.textContent, 'Subtítulo remoto');
-    assert.match(app.nodes.hero.style.backgroundImage, /assets\/innovation_bg.jpg/);
+    assert.match(app.nodes.hero.style.backgroundImage, /assets\/web\/vertical-btr.webp/);
     assert.deepEqual(calls, [['sections','btr'],['meta','btr'],['products','btr'],['cases','btr']]);
 });
 
@@ -213,14 +213,28 @@ test('Retail fuera de portada, formulario y menús de las páginas autorizadas',
     assert.doesNotMatch(read('index.html'), /value="retail"/);
     assert.match(read('css/theme.css'), /\.footer a\[href\$="solucion-retail\.html"\]/);
 });
-test('recursos locales referenciados por las páginas tocadas existen', () => {
+test('el CSS nuevo no sustituye las fotografías de las verticales ni del hero', () => {
+    for (const [, selector, declarations] of read('css/prescripcion.css').matchAll(/(?:^|\})\s*([^{}]+)\{([^{}]*)\}/g)) {
+        if (/\.sol-photo\b|\.solution-hero\b/.test(selector)) {
+            assert.doesNotMatch(declarations, /\bbackground(?:-image)?\s*:/, selector);
+        }
+    }
+});
+test('recursos locales existen o están ignorados deliberadamente; imágenes con alt', () => {
+    const checkResource = (file, resource) => {
+        if (fs.existsSync(path.join(root, resource))) return;
+        // Las fotos de publicación están fuera de Git por decisión del proyecto.
+        // 0128-assets.sh contrasta además cada ruta con el commit base.
+        assert.match(read('.gitignore'), /^assets\/\*\/$/m);
+        assert.match(resource, /^assets\/[^/]+\//, `${file}: ${resource}`);
+    };
     for (const file of ['index.html','productos.html','casos-exito.html',...verticals.map(v => `solucion-${v}.html`)]) {
         const html = read(file);
         for (const match of html.matchAll(/(?:src|href)="((?:assets|css|js)\/[^"?#]+)(?:[?#][^"]*)?"/g)) {
-            assert.ok(fs.existsSync(path.join(root, match[1])), `${file}: ${match[1]}`);
+            checkResource(file, match[1]);
         }
         for (const match of html.matchAll(/url\(['"]?(assets\/[^'"()]+)['"]?\)/g)) {
-            assert.ok(fs.existsSync(path.join(root, match[1])), `${file}: fondo ${match[1]}`);
+            checkResource(file, match[1]);
         }
         for (const match of html.matchAll(/<img\b[^>]*>/g)) assert.match(match[0], /\balt="[^"]*"/);
     }

@@ -10,7 +10,7 @@ Implementación local en `encargo/0128-web-soluciones-diseno`, desde `ff2c6fa956
 - Las cinco verticales tienen titular, introducción y beneficios reales de respaldo; se mantienen si el contenido remoto falla. CTA superior y final al formulario con tipo y origen. Se conserva la descarga de dossier existente.
 - Productos: selección técnica y CTA de consulta. Casos: tono concreto, acceso a consulta y filtro Retail retirado. Los casos remotos existentes siguen siendo la prueba social; no se inventan clientes, logotipos ni resultados.
 - Retail: solo se elimina su enlace del pie de `solucion-retail.html`; el resto de ese fichero permanece idéntico. La regla compartida en `css/theme.css` también oculta el enlace del pie de `company.html` sin modificar esa página, incluso sin JS. `nav-controller.js` retira esos enlaces del DOM y cierra el menú móvil al navegar o pulsar Escape, con estado ARIA.
-- `assets/web/` no existe en este checkout y está ignorado por Git. En las páginas autorizadas se sustituyen sus referencias por **recursos ya versionados**, sin crear imágenes: `assets/innovation_bg.jpg`, `assets/extracted_main_image.png`, logos blanco/azul. Las fotografías específicas de cada vertical quedan para otro encargo. Las imágenes decorativas tienen alt vacío; las de contenido, descripción.
+- Se conservan las rutas originales de `assets/web/` y demás subcarpetas de `assets/`, ignoradas deliberadamente por Git y disponibles en el equipo de publicación. Incluye hero, preload, `og:image`, favicon, wordmark, fotos por vertical y fondos de casos/productos. El CSS nuevo no sustituye esas fotos. Las imágenes decorativas tienen alt vacío; las de contenido, descripción. La sustitución por fotos genéricas de la vuelta 1 queda corregida en la vuelta 2.
 
 ## Formulario y contrato
 
@@ -170,13 +170,13 @@ Se retiran o se generalizan, sin inventar sustitutos técnicos: Full HD, certifi
 
 - Revisar y publicar por separado, con autorización, `web_metadata/textos.why`, metadatos/beneficios/introQuote y secciones de `web_verticals`, `web_products` y `web_cases`. Los textos remotos pueden volver a mostrar afirmaciones antiguas y prevalecen sobre estos respaldos.
 - Confirmar y aplicar `isActive: false` de Retail en contenido remoto desde NEXO. Aquí se retira la navegación local, sin modificar datos ni su ficha.
-- Fotografías por sección: flujo Drive → biblioteca NEXO o nuevos recursos versionados en otro encargo. Las dos fotografías locales reutilizadas aquí no se presentan como instalaciones de clientes concretos.
+- Nuevas fotografías por sección: flujo Drive → biblioteca NEXO o recursos en otro encargo. Este encargo conserva las fotografías originales de publicación; no añade ni sustituye imágenes.
 - No se han consultado leads reales ni se ha enviado ningún contacto a producción. Los casos de las pruebas son ficticios.
 - El `firestore.rules` de este repo no contiene `web_leads`; no se modifica ni se intenta desplegar. El contrato usado es el autorizado expresamente en el encargo. Reglas desplegadas y escritura real: NO VERIFICADAS sin red.
 
 ## Verificación
 
-`js/tests/0128.test.cjs` ejecuta controladores reales en VM con DOM y respuestas simuladas, sin red ni dependencias añadidas. Comprueba perfiles, contrato y límites, validación, error HTTP/offline, timeout, bloqueo de doble clic, respaldos, prioridad remota, menú móvil, textos y recursos locales.
+`js/tests/0128.test.cjs` ejecuta controladores reales en VM con DOM y respuestas simuladas, sin red ni dependencias añadidas. Comprueba perfiles, contrato y límites, validación, error HTTP/offline, timeout, bloqueo de doble clic, respaldos, prioridad remota, menú móvil, textos y recursos locales (admitiendo los recursos de publicación ignorados deliberadamente). La comprobación `js/tests/0128-assets.sh` contrasta las rutas con el commit base, sin requerir esas imágenes en el checkout.
 
 `js/tests/0128.browser.cjs` deja preparado el recorrido Playwright de ocho páginas a 320, 390 y 1440 px, perfiles/formulario/menú y respaldos. Intercepta **todas** las peticiones: datos ficticios, SDK de Firebase y exportador PDF sustituidos; ningún acceso real a Firebase ni CDNs. Las capturas se escribirían en `/tmp/nexo-0128-e2e`. Exportación PDF y animaciones con CDN real quedan fuera de esta prueba.
 
@@ -194,4 +194,23 @@ PLAYWRIGHT_MODULE_PATH=/ruta/al/playwright/ya/instalado timeout 2m node js/tests
 
 La revisión de nivel 1 corresponde a Claude después de la entrega. Esta rama no se integra ni se publica. Rollback: descartar la rama mediante el flujo de Dirección.
 
-Resultados de esta vuelta: suite Node **31/31**, 0 fallos, 0 omitidas; sintaxis JS **5/5**; estructura HTML **8/8** e IDs únicos; parseo CSS de ambos ficheros tocados y estilos inline de ocho páginas correcto. Contrastes principales calculados: blanco/rojo **4,70:1**, texto secundario/tarjeta **9,37:1**, enlaces/tarjeta **8,20:1**, etiquetas/tarjeta **10,86:1**, placeholder/campo **8,59:1**. Control de alcance: **17 ficheros permitidos**, Retail solo un enlace eliminado, archivos prohibidos intactos y `git diff --check` limpio. Tras retirar los estilos inline de las fotos de las tarjetas, se revalida únicamente la comprobación de recursos locales (1/1). Log de la suite: `/tmp/nexo-0128-tests.log`. La prueba visual permanece sin confirmar por el aislamiento indicado arriba.
+Resultados históricos de la vuelta 1 (no repetidos salvo la suite final tras la corrección): suite Node **31/31**, 0 fallos, 0 omitidas; sintaxis JS **5/5**; estructura HTML **8/8** e IDs únicos; parseo CSS de ambos ficheros tocados y estilos inline de ocho páginas correcto. Contrastes principales calculados: blanco/rojo **4,70:1**, texto secundario/tarjeta **9,37:1**, enlaces/tarjeta **8,20:1**, etiquetas/tarjeta **10,86:1**, placeholder/campo **8,59:1**. Control de alcance: **17 ficheros permitidos**, Retail solo un enlace eliminado, archivos prohibidos intactos y `git diff --check` limpio. Tras retirar los estilos inline de las fotos de las tarjetas, se revalida únicamente la comprobación de recursos locales (1/1). Log de la suite: `/tmp/nexo-0128-tests.log`. La prueba visual permanece sin confirmar por el aislamiento indicado arriba.
+
+
+## Vuelta 2 · Restauración de recursos de publicación
+
+Corrección solicitada por Dirección el 13/11 a las 22:10, sobre `653cce2`:
+
+- `index.html`: restaurados `assets/web/hero-style-361.webp` en hero, preload y `og:image`; `assets/web/favicon.png`; `assets/web/logo-wordmark.png`; y las cinco fotos `vertical-bts/btr/office/hotel/security.webp` en sus tarjetas. El alt y las dimensiones del hero vuelven a los originales, pues las dimensiones añadidas describían otra imagen.
+- Las cinco verticales: restaurados el preload específico y el wordmark. `js/vertical-renderer.js` recupera exactamente el respaldo `assets/web/vertical-${this.verticalId}.webp`.
+- `productos.html` y `casos-exito.html`: recuperados `hero-productos.webp`, `hero-casos.webp` y sus wordmarks.
+- `css/prescripcion.css`: retirados los fondos genéricos de `.solution-hero`, `.sol-photo` y la variante de tarjetas impares. Se mantienen el diseño y los textos de la vuelta 1. BIM y la garantía en casos no cambian.
+- Regresión nueva: `timeout 60s bash js/tests/0128-assets.sh` compara todas las referencias `assets/<subcarpeta>/` de los HTML/CSS/JS modificados con `ff2c6fa`. La única referencia retirada corresponde a la tarjeta Retail, que sigue eliminada por encargo; no hay rutas sustituidas ni añadidas. El script falla ante la versión anterior en `casos-exito.html` (esperaba `hero-casos.webp` y `logo-wordmark.png`). Se utiliza Bash para leer Git porque los procesos hijos de Node están bloqueados en A5.
+- Se corrige la premisa de la prueba de recursos: no exigir existencia física a las subcarpetas de imágenes ignoradas expresamente mediante `assets/*/`. Se comprueba esa regla y se exige existencia al resto de recursos. La prueba nueva contra Git protege además las rutas exactas originales.
+
+La prueba focal anterior al arreglo detectó el fondo genérico del renderizador y la sobrescritura CSS. Después del arreglo: **3/3** en verde. Log: `/tmp/nexo-0128-v2-focal.log`. Comparación con base: **14 ficheros, 27 referencias originales conservadas**, única baja autorizada: foto de la tarjeta Retail retirada.
+
+No se repiten las comprobaciones de estructura y contraste ya verdes en el checkpoint. Las fotografías ignoradas no están disponibles en este checkout: su contenido visual queda NO VERIFICADO. El recorrido Playwright preparado requiere esos recursos del equipo de publicación; no se crean sustitutos para obtener capturas.
+
+
+Verificación final de la vuelta 2: `timeout 60s node js/tests/0128.test.cjs` → **32/32**, 0 fallos, 0 omitidas (`/tmp/nexo-0128-v2-tests.log`). Sintaxis de los dos JS modificados y del nuevo Bash: **3/3**, salida vacía/exit 0. `timeout 30s git diff --check` → salida vacía/exit 0. Sin tipos ni build configurados. El error de aislamiento `spawnSync git EPERM` de la primera versión de la prueba se resolvió separando la lectura de Git en Bash; la comprobación completa ya pasa. Playwright conserva el fallo por aislamiento registrado en el checkpoint de la vuelta 1, sin repetirlo ni afirmar capturas nuevas.

@@ -171,8 +171,8 @@ class VerticalRenderer {
                 heroSection.style.backgroundColor = '#111';
             }
         } else {
-            // Recurso ya incluido en Git; las fotos por vertical llegarán en otro encargo.
-            const heroUrl = meta.heroImageUrl || 'assets/innovation_bg.jpg';
+            // Sin imagen en la BD -> foto por defecto de la vertical (assets/web)
+            const heroUrl = meta.heroImageUrl || `assets/web/vertical-${this.verticalId}.webp`;
             const bgDiv = heroSection.querySelector('.solution-hero-bg');
             if (bgDiv) {
                 bgDiv.style.backgroundImage = `url('${heroUrl}')`;
