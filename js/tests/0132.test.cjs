@@ -202,6 +202,104 @@ test('el lead lleva solo los campos permitidos por las reglas de web_leads y den
     assert.match(sin.message.stringValue, /32\.740 € con monitor, 20\.180 € solo app/);
 });
 
+// ── Interfaz con un DOM de mentira (no hay navegador en el host): recorre los 4 pasos, el Excel y el lead ──
+function domFalso() {
+    const els = {};
+    const nuevo = (id) => {
+        const e = {
+            id, innerHTML: '', textContent: '', hidden: false, style: {}, dataset: {}, disabled: false, value: '', handlers: {}, attrs: {},
+            classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } },
+            addEventListener(t, f) { (this.handlers[t] = this.handlers[t] || []).push(f); },
+            setAttribute(k, v) { this.attrs[k] = v; }, scrollIntoView() {}, reset() {}, querySelector() { return { disabled: false }; }, querySelectorAll() { return []; },
+            elements: { name: { value: '', setAttribute() {} }, email: { value: '', setAttribute() {} }, company: { value: '' } }
+        };
+        return e;
+    };
+    const get = (id) => (els[id] = els[id] || nuevo(id));
+    const descargas = [];
+    const doc = {
+        readyState: 'complete', getElementById: get, querySelectorAll() { return []; },
+        createElement() { const a = { click() { descargas.push({ href: a.href, download: a.download }); }, remove() {} }; return a; },
+        body: { appendChild() {} }, addEventListener() {}
+    };
+    return { doc, get, descargas };
+}
+function click(root, sel, dataset) {
+    const t = { id: '', closest: (q) => (q === sel ? Object.assign({ dataset: dataset || {} }, {}) : null) };
+    root.handlers.click.forEach(h => h({ target: t }));
+}
+
+test('interfaz: 4 pasos, coste a PVP en pantalla, descarga del Excel y lead a web_leads', async () => {
+    const { doc, get, descargas } = domFalso();
+    const peticiones = [];
+    const prev = { document: global.document, fetch: global.fetch, URL_c: URL.createObjectURL, URL_r: URL.revokeObjectURL };
+    global.document = doc;
+    URL.createObjectURL = () => 'blob:falso'; URL.revokeObjectURL = () => {};
+    global.fetch = async (url, opts) => { peticiones.push({ url, body: JSON.parse(opts.body) }); return { ok: true, status: 200 }; };
+    try {
+        const ruta = path.join(ROOT, 'js', 'configurador.js');
+        delete require.cache[ruta];
+        require(ruta); // con document definido, arranca la interfaz
+        const root = get('configurador');
+        assert.ok(get('opts').innerHTML.includes('Residencial BTS') && get('opts').innerHTML.includes('Seguridad crítica'));
+        click(root, '.cz-type', { t: 'bts' });
+        assert.equal(get('cz2').hidden, false);
+        assert.ok(get('cznums').innerHTML.includes('value="40"'));
+        click(root, '[data-cz]', { cz: '3' });
+        assert.equal(get('cz3').hidden, false);
+        assert.equal(get('czlevels').innerHTML.split('class="cz-lv"').length - 1, 3);
+        click(root, '[data-cz]', { cz: '4' });
+        assert.equal(get('cz4').hidden, false);
+        assert.ok(get('czzones').innerHTML.includes('Portales'));
+        assert.ok(get('czcoste').innerHTML.includes('32.740 €') && get('czcoste').innerHTML.includes('20.180 €'));
+        assert.ok(get('czcoste').innerHTML.includes('Solo app'));
+        assert.ok(get('cztot').innerHTML.includes('unidades'));
+        // cambiar de nivel desde el resumen repinta
+        click(root, '[data-lv]', { lv: '2' });
+        assert.ok(get('czsum').innerHTML.includes('Premium'));
+
+        // formulario: validación
+        const f = get('f');
+        const enviar = () => f.handlers.submit[0].call(f, { preventDefault() {} });
+        enviar();
+        assert.equal(get('e-name').textContent, 'Escribe tu nombre.');
+        assert.equal(peticiones.length, 0);
+        f.elements.name.value = 'Ana Prueba'; f.elements.email.value = 'ana@ejemplo.invalid'; f.elements.company.value = 'Estudio X';
+        enviar();
+        await new Promise(r => setTimeout(r, 20));
+        assert.equal(descargas.length, 1);
+        assert.match(descargas[0].download, /^Mediciones 2N - Residencial BTS - Premium\.xlsx$/);
+        assert.equal(peticiones.length, 1);
+        assert.match(peticiones[0].url, /\/documents\/web_leads\?key=/);
+        const campos = peticiones[0].body.fields;
+        assert.deepEqual(Object.keys(campos).sort(), ['company', 'createdAt', 'email', 'message', 'name', 'projectType', 'source']);
+        assert.equal(campos.source.stringValue, 'configurador');
+        assert.equal(campos.projectType.stringValue, 'bts');
+        assert.ok(get('ok').classList.contains('on'));
+
+        // empezar de nuevo
+        click(root, '#cznew');
+        assert.equal(get('cz1').hidden, false);
+        assert.equal(get('ok').classList.contains('on'), false);
+
+        // si el lead falla, el usuario lo ve y el Excel ya se ha descargado
+        global.fetch = async () => ({ ok: false, status: 403 });
+        const errores = []; const ce = console.error; console.error = (...a) => errores.push(a);
+        click(root, '.cz-type', { t: 'hot' }); click(root, '[data-cz]', { cz: '4' });
+        f.elements.name.value = 'Ana'; f.elements.email.value = 'ana@ejemplo.invalid';
+        enviar();
+        await new Promise(r => setTimeout(r, 20));
+        console.error = ce;
+        assert.equal(descargas.length, 2);
+        assert.match(get('ferr').textContent, /no hemos podido avisar al equipo/);
+        assert.equal(errores.length, 1);
+    } finally {
+        global.document = prev.document; global.fetch = prev.fetch;
+        URL.createObjectURL = prev.URL_c; URL.revokeObjectURL = prev.URL_r;
+        if (prev.document === undefined) delete global.document;
+    }
+});
+
 // ── Productos: ficheros enlazados ──
 test('las fotos y fichas que enlaza productos existen en media/productos y fichas', () => {
     const src = fs.readFileSync(path.join(ROOT, 'js', 'productos-renderer.js'), 'utf8');

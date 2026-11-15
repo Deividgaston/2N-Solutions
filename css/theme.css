@@ -225,8 +225,10 @@ html.gsap-on [data-reveal] { opacity: 0; }
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
+/* Con el enlace «Configurador» el menú lleva 6 entradas: las dos columnas laterales pasan de 320 a 260 px
+   (el logo ocupa ~85 px y los botones ~250) para que el menú siga cabiendo a 1280 px. */
 .logo { 
-    flex: 0 0 320px;
+    flex: 0 0 260px;
     display: flex; 
     align-items: center; 
 }
@@ -238,12 +240,12 @@ html.gsap-on [data-reveal] { opacity: 0; }
     display: flex; 
     align-items: center; 
     gap: 0.5rem;
-    flex: 0 0 320px;
+    flex: 0 0 260px;
     justify-content: flex-end; 
 }
 .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     list-style: none;
     margin: 0 auto;
     align-items: center;
