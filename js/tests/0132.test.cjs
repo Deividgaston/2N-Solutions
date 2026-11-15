@@ -315,6 +315,41 @@ test('las fotos y fichas que enlaza productos existen en media/productos y ficha
     assert.equal(src.split('\n').filter(l => /re: \/(indoor talk|access unit qr)\//.test(l)).length, 2);
 });
 
+// ── Renderer de productos (módulo ES con import de red: se carga sin él) ──
+function cargaRenderer() {
+    let src = fs.readFileSync(path.join(ROOT, 'js', 'productos-renderer.js'), 'utf8');
+    src = src.replace(/^import .*\n/m, '').replace(/document\.addEventListener\('DOMContentLoaded'[\s\S]*$/, '');
+    return new Function('contentService', src + '\nreturn { ProductosRenderer, mediaFor, fichaLink };')({});
+}
+test('productos: fotos y fichas por nombre, Mobile Video con fundido, y escape de lo que viene de Firestore', () => {
+    const { ProductosRenderer, mediaFor, fichaLink } = cargaRenderer();
+    const foto = (p) => ProductosRenderer.prototype.photoHtml.call({}, p, mediaFor(p.name), 'product-photo', true);
+    // foto normalizada por nombre (con y sin ®, con variantes de nombre)
+    assert.match(foto({ name: '2N® IP Verso 2.0', imageUrl: 'https://x.invalid/a.png' }), /src="media\/productos\/pn_verso\.jpg"/);
+    assert.match(foto({ name: 'IP Force', imageUrl: '' }), /pn_force\.jpg/);
+    assert.match(foto({ name: '2N® Indoor Clip' }), /pn_clip\.jpg/);
+    assert.match(foto({ name: '2N® Access Unit QR' }), /pn_auqr\.jpg/);
+    assert.match(foto({ name: '2N® Access Unit M' }), /pn_aum\.jpg/);
+    assert.match(foto({ name: '2N® Access Unit 2.0' }), /pn_au2\.jpg/);
+    // sin foto normalizada: su imageUrl, y IP Solo con más aire
+    const solo = foto({ name: '2N® IP Solo', imageUrl: 'https://x.invalid/solo.png' });
+    assert.match(solo, /pstage small/); assert.match(solo, /https:\/\/x\.invalid\/solo\.png/);
+    assert.match(foto({ name: '2N® Indoor Touch 2.0', imageUrl: 'https://x.invalid/t.png' }), /x\.invalid\/t\.png/);
+    // Mobile Video: reloj + imageUrl con fundido
+    const mv = foto({ name: '2N® Mobile Video', imageUrl: 'https://x.invalid/movil.png' });
+    assert.match(mv, /pstage light swap/); assert.match(mv, /pn_my2n\.jpg/); assert.match(mv, /pimg-b/);
+    // fichas: locales y de 2n.com, y ninguna para Indoor Talk ni Access Unit QR
+    assert.match(fichaLink(mediaFor('2N® IP Style')), /href="fichas\/2N_Ficha-tecnica_IP-Style_ES\.pdf" download/);
+    assert.match(fichaLink(mediaFor('2N® Clip')), /href="https:\/\/www\.2n\.com\/es_ES\/documents/);
+    assert.equal(fichaLink(mediaFor('2N® Indoor Talk')), '');
+    assert.equal(fichaLink(mediaFor('2N® Access Unit QR')), '');
+    assert.equal(fichaLink(mediaFor('2N® Indoor Touch 2.0')), '');
+    // XSS: ni el nombre ni la URL rompen el atributo
+    const mal = foto({ name: 'IP Style" onload="alert(1)', imageUrl: 'x" onerror="alert(2)' });
+    assert.ok(!/" (onload|onerror)=/.test(mal), mal); // una comilla sin escapar seguida del atributo sería la ruptura
+    assert.match(mal, /&quot;/);
+});
+
 // ── Alcance ──
 test('el diff no cambia ninguna ruta assets/<subcarpeta>/ respecto a ff2c6fa', () => {
     const git = (...a) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8' });

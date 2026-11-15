@@ -16,7 +16,7 @@ Se conserva el diseño actual (variables y componentes de `css/theme.css`); del 
 | `css/theme.css` | Logo más grande; columnas laterales del menú de 320 a 260 px y separación de 2,5 a 2 rem para que quepan 6 entradas. Versión `theme.css?v=2.4` en las páginas del alcance. |
 | `media/productos/` (nuevo) | 17 fotos `pn_*.jpg` copiadas de `docs/web-fotos-generadas/` (sin convertir ni recomprimir). |
 | `fichas/` (nuevo) | 10 PDF de `docs/fichas-tecnicas-es/` (sin tocar). |
-| `js/tests/0132.test.cjs` (nuevo) | 14 pruebas `node:test`. Se ejecutan con `node --test js/tests/0132.test.cjs`. |
+| `js/tests/0132.test.cjs` (nuevo) | 15 pruebas `node:test`. Se ejecutan con `node --test js/tests/0132.test.cjs`. |
 
 ### Configurador
 - 6 verticales (BTS, BTR, oficinas, hoteles, retail, seguridad crítica), 4 pasos, 3 niveles, interruptores y reglas de `docs/W03_configurador_reglas_v10.md` con los cambios v11 a v20. Las reglas, referencias y textos están portados **sin cambios** del bloque del configurador de `docs/W03_boceto/tpl20.html`.
@@ -59,7 +59,7 @@ Buscado en `*.html`, `*.js`, `*.md` y `*.css` (sin `scratch/`, `scripts/` ni `js
 
 ## Pruebas
 - `node --check` de `js/configurador.js`, `js/productos-renderer.js` y `js/tests/0132.test.cjs`.
-- `node --test js/tests/0132.test.cjs`: 14 pruebas. BTS estándar de 40 viviendas (32.740 € con monitor, 20.180 € solo app, redondeo a 10 €), hotel desatendido (916201 + 91550947 en marco 9155012 y caja 9155015), Access Commander con 91379601, 9137424E y 11202601 en todas las combinaciones, redacción de partidas, precio y descripción de todas las referencias, XLSX como zip válido (CRC, directorio central, hojas, y `unzip -t`), lead solo con campos permitidos y dentro de sus límites, interfaz completa con un DOM de mentira (4 pasos, descarga, lead, error del lead, empezar de nuevo), ficheros de fotos y fichas existentes y ninguna ruta `assets/<subcarpeta>/` cambiada respecto a `ff2c6fa` (ni nada de lo prohibido).
+- `node --test js/tests/0132.test.cjs`: 15 pruebas. BTS estándar de 40 viviendas (32.740 € con monitor, 20.180 € solo app, redondeo a 10 €), hotel desatendido (916201 + 91550947 en marco 9155012 y caja 9155015), Access Commander con 91379601, 9137424E y 11202601 en todas las combinaciones, redacción de partidas, precio y descripción de todas las referencias, XLSX como zip válido (CRC, directorio central, hojas, y `unzip -t`), lead solo con campos permitidos y dentro de sus límites, interfaz completa con un DOM de mentira (4 pasos, descarga, lead, error del lead, empezar de nuevo), ficheros de fotos y fichas existentes, el renderer de productos (fotos y fichas por nombre, fundido de Mobile Video y escape del nombre y la URL que vienen de Firestore) y ninguna ruta `assets/<subcarpeta>/` cambiada respecto a `ff2c6fa` (ni nada de lo prohibido).
 
 ## Lo que NO se ha podido comprobar
 - **Visualmente en un navegador**: el host no tiene navegador y no se ha podido usar Playwright. El aspecto del configurador, las fotos cuadradas, el fundido de Mobile Video, la barra de filtros, el logo de 26/22 px y que el menú de 6 entradas quepa a 1280 px (ajuste de las columnas laterales en `theme.css`) están razonados desde el CSS, no vistos. Hay que abrirlas en local o en una vista previa antes de publicar.
