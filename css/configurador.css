@@ -79,7 +79,6 @@
 .cz-dg li { display: grid; grid-template-columns: 96px 1fr 50px; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; align-items: baseline; }
 .cz-dg .r { font-size: 0.74rem; color: var(--text-hint); font-variant-numeric: tabular-nums; }
 .cz-dg .qq { font-weight: 700; color: var(--primary-light); text-align: right; font-variant-numeric: tabular-nums; }
-.cz-tg { display: none; }
 .cz-desc { margin-top: 0.8rem; font-size: 0.82rem; line-height: 1.65; color: var(--text-muted); }
 .cz-notes { padding: 0.9rem 1.1rem; border-radius: 14px; background: rgba(255, 255, 255, 0.03); font-size: 0.85rem; color: var(--text-muted); }
 .cz-notes ul { margin: 0.5rem 0 0; padding-left: 1.1rem; line-height: 1.6; }
@@ -126,15 +125,3 @@
     .cz-dg li { grid-template-columns: 80px 1fr 36px; }
 }
 @media (prefers-reduced-motion: reduce) { .cz-type, .cz-btn, .cz-sw .tr, .cz-sw .tr::after { transition: none; } }
-
-/* Encargo 0133: ajustes de móvil. Altura táctil mínima de 44 px (también en escritorio). */
-.cz-lvsw button { min-height: 44px; }
-.lnk[data-cz] { min-height: 44px; padding: 0 0.5rem; display: inline-flex; align-items: center; }
-@media (max-width: 600px) {
-    .cz-dg li { grid-template-columns: 1fr auto; grid-template-areas: "r r" "d qq"; gap: 0.15rem 0.8rem; }
-    .cz-dg .r { grid-area: r; font-size: 0.7rem; opacity: 0.8; }
-    .cz-dg .d { grid-area: d; }
-    .cz-dg .qq { grid-area: qq; align-self: end; }
-    .cz-tg { display: flex; align-items: center; min-height: 44px; margin-top: 0.4rem; padding: 0 0.2rem; background: none; border: 0; color: var(--primary-light); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
-    .cz-zone:not(.open) .cz-desc { display: none; }
-}
