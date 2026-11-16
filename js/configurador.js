@@ -247,11 +247,20 @@
         return v;
     }
 
+    /* Una zona de la lista del paso 4 (encargo 0133). En ≤ 600 px la descripción de partida
+       se pliega con un botón aria-expanded; el Excel lleva siempre la descripción completa. */
+    function zonaHtml(z, ci, pi, idx) {
+        var did = 'czd' + idx;
+        return '<article class="cz-zone"><div class="cz-pt"><span class="cz-u">' + z.u + '<small>ud.</small></span><div><span class="cz-code">' + ('0' + ci).slice(-2) + '.' + ('0' + pi).slice(-2) + '</span><b>' + z.part + '</b></div></div><ul class="cz-dg">' +
+            z.L.map(function (x) { return '<li><span class="r">' + (x[0].indexOf('FORTIS') === 0 ? 'según puerta' : x[0]) + '</span><span class="d">' + D[x[0]].replace(/ · /g, ', ') + '</span><span class="qq">' + x[1] + '</span></li>'; }).join('') +
+            '</ul><button class="cz-tg" type="button" aria-expanded="false" aria-controls="' + did + '">Ver descripción de partida</button><p class="cz-desc" id="' + did + '">' + z.desc + '</p></article>';
+    }
+
     var api = {
         CZ: CZ, D: D, PR: PR, SPEC: SPEC, VN: VN, VK: VK, ICON: ICON, ORDER: ORDER, RED: RED, MY2N10: MY2N10,
         LN: LN, defaults: defaults, compute: compute, coste: coste, eur: eur, fmt: fmt, resumenLead: resumenLead,
         leadFields: leadFields, xlsxBytes: xlsxBytes, zipBytes: zipBytes, crc32: crc32, MIME_XLSX: MIME_XLSX, LEAD_MAX: LEAD_MAX,
-        _state: cz
+        _state: cz, zonaHtml: zonaHtml
     };
 
     /* ───────────── INTERFAZ ───────────── */
@@ -310,14 +319,13 @@
             $('czsum').innerHTML = '<span><b>' + VN[cz.t] + '</b></span>' + CZ[cz.t].nums.map(function (f) { return '<span>' + cz.v[f[0]] + ' · ' + f[1].toLowerCase() + '</span>'; }).join('') +
                 '<span>Nivel <b>' + LN()[cz.lv] + '</b></span><span class="cz-lvsw">' + LN().map(function (n, i) { return '<button type="button" data-lv="' + i + '" aria-pressed="' + (i === cz.lv) + '">' + n + '</button>'; }).join('') +
                 '</span><button class="lnk" type="button" data-cz="2">Cambiar datos</button>';
-            var cap = null, ci = 0, pi = 0;
+            var cap = null, ci = 0, pi = 0, idx = 0;
+            r.Z.forEach(function (z) { z.L.forEach(function (x) { tot += x[1]; refs[x[0]] = 1; }); });
             $('czzones').innerHTML = r.Z.map(function (z) {
                 var h = '';
                 if (z.n !== cap) { cap = z.n; ci++; pi = 0; h = '<h4 class="cz-cap">' + ('0' + ci).slice(-2) + ' · ' + z.n + '</h4>'; }
                 pi++;
-                return h + '<article class="cz-zone"><div class="cz-pt"><span class="cz-u">' + z.u + '<small>ud.</small></span><div><span class="cz-code">' + ('0' + ci).slice(-2) + '.' + ('0' + pi).slice(-2) + '</span><b>' + z.part + '</b></div></div><ul class="cz-dg">' +
-                    z.L.map(function (x) { tot += x[1]; refs[x[0]] = 1; return '<li><span class="r">' + (x[0].indexOf('FORTIS') === 0 ? 'según puerta' : x[0]) + '</span><span class="d">' + D[x[0]].replace(/ · /g, ', ') + '</span><span class="qq">' + x[1] + '</span></li>'; }).join('') +
-                    '</ul><p class="cz-desc">' + z.desc + '</p></article>';
+                return h + zonaHtml(z, ci, pi, idx++);
             }).join('') + '<div class="cz-notes"><b>A tener en cuenta</b><ul>' + r.A.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
             $('cztot').innerHTML = '<b>' + Object.keys(refs).length + '</b> referencias · <b>' + tot + '</b> unidades';
             last = r; lastCost = o.c; czCoste(o.c);
@@ -344,6 +352,11 @@
 
         root.addEventListener('click', function (e) {
             var b;
+            if ((b = e.target.closest('.cz-tg'))) {
+                var ab = b.getAttribute('aria-expanded') === 'true';
+                b.setAttribute('aria-expanded', String(!ab)); b.closest('.cz-zone').classList.toggle('open', !ab);
+                b.textContent = ab ? 'Ver descripción de partida' : 'Ocultar descripción de partida'; return;
+            }
             if ((b = e.target.closest('.cz-type'))) { czPick(b.dataset.t, true); return; }
             if ((b = e.target.closest('[data-cz]'))) { var s = +b.dataset.cz; if (s > 1 && !cz.t) s = 1; czStep(s); return; }
             if ((b = e.target.closest('[data-lv]'))) { cz.lv = +b.dataset.lv; czLevels(); czNums(); if (!$('cz4').hidden) czPaint(); return; }
