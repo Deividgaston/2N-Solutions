@@ -26,8 +26,6 @@ const MEDIA = [
     { re: /mobile video/, img: 'pn_my2n', swap: true }
 ];
 
-const escAttr = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
 function mediaFor(name) {
     const n = String(name || '').toLowerCase().replace(/[®™]/g, '');
     const m = MEDIA.find(x => x.re.test(n)) || null;
@@ -102,20 +100,17 @@ class ProductosRenderer {
     // Foto de producto en contenedor cuadrado (contain + 10 % de aire; IP Solo 24 %).
     // Con foto normalizada: fondo claro. Con la imageUrl de Firestore: fondo oscuro de siempre.
     // Mobile Video alterna con fundido el reloj y su imageUrl (CSS; con movimiento reducido se queda en el reloj).
-    // Nombre y URL vienen de Firestore y acaban en atributos dentro de innerHTML: se escapan.
     photoHtml(p, media, cls, lazy) {
         const loading = lazy ? ' loading="lazy"' : '';
-        const name = escAttr(p.name);
-        const url = escAttr(p.imageUrl);
         if (media && media.src) {
             const second = media.swap && p.imageUrl
-                ? `<img src="${url}" alt="${name} en el móvil" class="product-img pimg-b"${loading}>`
+                ? `<img src="${p.imageUrl}" alt="${p.name} en el móvil" class="product-img pimg-b"${loading}>`
                 : '';
-            const alt = media.swap ? `${name} en el reloj` : name;
+            const alt = media.swap ? `${p.name} en el reloj` : p.name;
             return `<div class="${cls} pstage light${second ? ' swap' : ''}"><img src="${media.src}" alt="${alt}" class="product-img"${loading}>${second}</div>`;
         }
         if (p.imageUrl) {
-            return `<div class="${cls} pstage${media && media.small ? ' small' : ''}"><img src="${url}" alt="${name}" class="product-img"${loading}></div>`;
+            return `<div class="${cls} pstage${media && media.small ? ' small' : ''}"><img src="${p.imageUrl}" alt="${p.name}" class="product-img"${loading}></div>`;
         }
         return `<div class="${cls} pstage"><i class="fa-solid fa-box-open"></i></div>`;
     }
