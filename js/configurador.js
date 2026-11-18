@@ -366,7 +366,7 @@
         var root = document.getElementById('configurador');
         if (!root) return;
         function $(id) { return document.getElementById(id); }
-        var last = null, lastCost = null, lastQ = '', qs = qNuevo(), enfocarQ = false;
+        var last = null, lastCost = null, lastQ = '', qs = qNuevo(), enfocarQ = false, enviando = false;
 
         function czStep(s, ns) {
             [1, 2, 3, 4].forEach(function (i) { $('cz' + i).hidden = i !== s; });
@@ -429,8 +429,9 @@
             if (enfocarQ) { enfocarQ = false; var fq = $('czq') || $('czzones'); fq.focus({ preventScroll: true }); }
         }
         /* Quitar o recuperar y repintar; el foco pasa a la línea «Has quitado» para no perderlo (el botón pulsado desaparece). */
-        function czQuitar(k) { qQuitar(qs, k, firma(cz.t, cz.v, cz.lv)); enfocarQ = true; czPaint(); }
-        function czRecuperar(k) { if (k === '*') qTodo(qs); else qRecuperar(qs, k); enfocarQ = true; czPaint(); }
+        /* Con un envío en curso no se toca la lista: el Excel y el lead que salen deben ser los que se ven. */
+        function czQuitar(k) { if (enviando) return; qQuitar(qs, k, firma(cz.t, cz.v, cz.lv)); enfocarQ = true; czPaint(); }
+        function czRecuperar(k) { if (enviando) return; if (k === '*') qTodo(qs); else qRecuperar(qs, k); enfocarQ = true; czPaint(); }
 
         function descargar() {
             if (!last || !last.Z.length) return; // sin partidas no hay Excel
@@ -497,6 +498,7 @@
             btn.disabled = true;
             $('ferr').textContent = '';
             descargar(); // la descarga no depende de que el lead llegue
+            enviando = true;
             enviarLead({ name: name, email: email, company: company })
                 .then(function () { f.style.display = 'none'; $('ok').classList.add('on'); })
                 .catch(function (e2) {
@@ -504,7 +506,7 @@
                     f.style.display = 'none'; $('ok').classList.add('on');
                     $('ferr').textContent = 'El Excel se ha descargado, pero no hemos podido avisar al equipo. Escríbenos a gaston@2n.com.';
                 })
-                .then(function () { btn.disabled = !last || !last.Z.length; });
+                .then(function () { enviando = false; btn.disabled = !last || !last.Z.length; });
         });
     }
 

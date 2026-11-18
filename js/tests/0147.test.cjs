@@ -352,6 +352,24 @@ test('interfaz: quitar y recuperar repintan lista, coste, aviso y botón de env�
         assert.equal(get('ferr').textContent, '');
         assert.equal(f.classList.contains('vacio'), false);
 
+        // con un envío en curso, quitar o recuperar no hace nada: lo que sale es lo que se ve (hallazgo de la revisión)
+        let soltar; global.fetch = (url, opts) => new Promise(res => { peticiones.push(JSON.parse(opts.body).fields); soltar = () => res({ ok: true, status: 200 }); });
+        const antes = get('czzones').innerHTML, np = peticiones.length;
+        enviar();
+        assert.equal(envio.disabled, true);
+        click(root, '[data-rm]', { rm: 'c|Gestión' });
+        click(root, '[data-rec]', { rec: '*' });
+        assert.equal(get('czzones').innerHTML, antes);
+        assert.equal(envio.disabled, true, 'el repintado no reactiva el botón con el envío pendiente');
+        assert.equal(peticiones.length, np + 1);
+        soltar(); await new Promise(r => setTimeout(r, 20));
+        assert.equal(envio.disabled, false);
+        assert.ok(get('ok').classList.contains('on'));
+        click(root, '[data-rm]', { rm: 'c|Gestión' }); // terminado el envío, vuelve a funcionar
+        assert.notEqual(get('czzones').innerHTML, antes);
+        click(root, '[data-rec]', { rec: 'c|Gestión' });
+        global.fetch = async (url, opts) => { peticiones.push(JSON.parse(opts.body).fields); return { ok: true, status: 200 }; };
+
         // cambiar de nivel desde el resumen descarta lo quitado y lo avisa
         click(root, '[data-lv]', { lv: '2' });
         assert.ok(get('czzones').innerHTML.includes('Has cambiado la configuración'));
