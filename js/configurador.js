@@ -149,10 +149,10 @@
     }
     function coste(r, t, v) {
         var res = t === 'bts' || t === 'btr';
-        var A = calc(r, false), B = res ? calc(r, true) : null;
+        /* Sin la partida de monitores (0147) no hay variante «solo app»: sería idéntica a la otra. Sin quitar nada, A.viv > 0 siempre. */
+        var A = calc(r, false), B = res && A.viv > 0 ? calc(r, true) : null;
         function tot(c) { return c.eq + c.red + c.lic; }
-        var div = res ? A.viv : (t === 'hot' ? v.hab : 0);
-        var falta = A.falta.concat(B ? B.falta : []).filter(function (x, i, a) { return a.indexOf(x) === i; });
+        var div = res ? A.viv : (t === 'hot' ? v.hab : 0);        var falta = A.falta.concat(B ? B.falta : []).filter(function (x, i, a) { return a.indexOf(x) === i; });
         return { A: A, B: B, totA: tot(A), totB: B ? tot(B) : null, div: div, ud: res ? 'vivienda' : 'habitación', falta: falta,
             fortis: r.Z.some(function (z) { return z.L.some(function (x) { return x[0] === 'FORTIS-CIL'; }); }) };
     }
@@ -208,7 +208,7 @@
 
     /* ───────────── LEAD (web_leads) ───────────── */
     var LEAD_MAX = 2000;
-    function resumenLead(t, v, lv, r, c) {
+    function resumenLead(t, v, lv, r, c, q) {
         var datos = CZ[t].nums.map(function (f) { return v[f[0]] + ' ' + f[1].toLowerCase(); }).join(', ');
         var tg = CZ[t].togs.filter(function (g) { return v[g[0]]; }).map(function (g) { return g[1].toLowerCase(); });
         var refs = {}, uds = 0;
@@ -216,17 +216,18 @@
         var s = 'Configurador · ' + VN[t] + ' · nivel ' + LN(t)[lv] + '. Cantidades: ' + datos + '.' +
             (tg.length ? ' Incluye: ' + tg.join(', ') + '.' : '') +
             ' Total: ' + Object.keys(refs).length + ' referencias, ' + uds + ' unidades.' +
-            ' Coste orientativo a PVP: ' + fmt(c.totA) + (c.totB != null ? ' con monitor, ' + fmt(c.totB) + ' solo app' : '') + '.';
+            ' Coste orientativo a PVP: ' + fmt(c.totA) + (c.totB != null ? ' con monitor, ' + fmt(c.totB) + ' solo app' : '') + '.' +
+            (q ? ' Quitado por el cliente: ' + q + '.' : '');
         return s.length > LEAD_MAX ? s.slice(0, LEAD_MAX - 1) + '…' : s;
     }
     /* Mismos campos y valores que ya acepta web_leads con el formulario de la portada (js/home.js). Ninguno más. */
     var PTYPE = { bts: 'bts', btr: 'btr', ofi: 'office', hot: 'hotel', ret: 'retail', seg: 'security' }; // códigos del select de la portada
-    function leadFields(contact, t, v, lv, r, c) {
+    function leadFields(contact, t, v, lv, r, c, q) {
         var f = {
             name: { stringValue: contact.name },
             email: { stringValue: contact.email },
             projectType: { stringValue: PTYPE[t] },
-            message: { stringValue: resumenLead(t, v, lv, r, c) },
+            message: { stringValue: resumenLead(t, v, lv, r, c, q) },
             source: { stringValue: 'configurador' },
             createdAt: { timestampValue: new Date().toISOString() }
         };
@@ -234,11 +235,64 @@
         return f;
     }
 
+    /* ───────────── QUITAR Y RECUPERAR (encargo 0147) ─────────────
+       El visitante puede quitar un capítulo entero o una partida suelta. Es un filtro sobre lo que
+       devuelve build() (que no se toca): coste, Excel y lead se calculan siempre sobre lo filtrado.
+       Clave estable: «c|capítulo» o «p|capítulo|partida». Quitar un capítulo no borra las partidas
+       sueltas ya quitadas dentro de él: al recuperarlo siguen quitadas, como las dejó el visitante. */
+    var PART_MONITOR = 'Monitor de videoportero en vivienda';
+    function kCap(n) { return 'c|' + n; }
+    function kPart(z) { return 'p|' + z.n + '|' + z.part; }
+    function estaQuitada(z, q) { return q.indexOf(kCap(z.n)) >= 0 || q.indexOf(kPart(z)) >= 0; }
+
+    /* Las notas «A tener en cuenta» que dependen de una partida dejan de salir cuando esa partida se quita. */
+    function filtrar(r, q) {
+        if (!q || !q.length) return r;
+        var Z = r.Z.filter(function (z) { return !estaQuitada(z, q); }), A = [];
+        if (Z.length) {
+            var refs = [];
+            Z.forEach(function (z) { z.L.forEach(function (x) { refs.push(x[0]); }); });
+            var tiene = function (ref) { return refs.indexOf(ref) >= 0; };
+            var monitor = Z.some(function (z) { return z.part === PART_MONITOR; });
+            r.A.forEach(function (a) {
+                if (/^El cuerpo del cilindro Fortis/.test(a) && !tiene('FORTIS-CIL')) return;
+                if (/^Las manillas Fortis Handle/.test(a) && !tiene('FORTIS-HAN')) return;
+                if (/alimentan por PoE/.test(a) && !refs.some(function (x) { return !NOPORT.test(x); })) return;
+                /* «con monitor en la vivienda, la llamada…» deja de ser cierto sin la partida de monitores. */
+                if (/^La gestión va con My2N/.test(a) && !monitor) a = a.replace(/: con monitor en la vivienda.*$/, '.');
+                A.push(a);
+            });
+        }
+        return { Z: Z, A: A };
+    }
+    /* Lo quitado, en el orden del resultado completo: capítulos y, de los capítulos que siguen, sus partidas sueltas. */
+    function elementosQuitados(full, q) {
+        var out = [], vistos = {};
+        (q && q.length ? full.Z : []).forEach(function (z) {
+            var kc = kCap(z.n), kp = kPart(z);
+            if (q.indexOf(kc) >= 0) { if (!vistos[kc]) { vistos[kc] = 1; out.push({ k: kc, tipo: 'capítulo', nombre: z.n, cap: z.n }); } return; }
+            if (q.indexOf(kp) >= 0 && !vistos[kp]) { vistos[kp] = 1; out.push({ k: kp, tipo: 'partida', nombre: z.part, cap: z.n }); }
+        });
+        return out;
+    }
+    /* Texto para la línea del lead: «capítulo Gestión; partida Relé de seguridad (Seguridad)». */
+    function textoQuitados(full, q) {
+        return elementosQuitados(full, q).map(function (e) { return e.tipo + ' ' + e.nombre + (e.tipo === 'partida' ? ' (' + e.cap + ')' : ''); }).join('; ');
+    }
+    /* Estado de lo quitado: las claves y la firma de la configuración con la que se quitó. */
+    function firma(t, v, lv) { return JSON.stringify([t, v, lv]); }
+    function qNuevo() { return { k: [], f: '' }; }
+    function qQuitar(qs, k, f) { if (!qs.k.length) qs.f = f; if (qs.k.indexOf(k) < 0) qs.k.push(k); }
+    function qRecuperar(qs, k) { qs.k = qs.k.filter(function (x) { return x !== k; }); }
+    function qTodo(qs) { qs.k = []; qs.f = ''; }
+    /* Si la configuración ya no es la de cuando se quitó, las partidas pueden ser otras: se descarta todo. Devuelve true si descartó. */
+    function qSync(qs, f) { if (qs.k.length && qs.f !== f) { qTodo(qs); return true; } return false; }
+
     /* Atajo para las pruebas y para el uso desde la página: construye con un estado dado. */
-    function compute(t, v, lv) {
+    function compute(t, v, lv, q) {
         cz.t = t; cz.v = v; cz.lv = lv;
-        var r = build();
-        return { r: r, c: coste(r, t, v) };
+        var full = build(), r = filtrar(full, q);
+        return { r: r, c: coste(r, t, v), full: full };
     }
     function defaults(t) {
         var c = CZ[t], v = {};
@@ -249,18 +303,59 @@
 
     /* Una zona de la lista del paso 4 (encargo 0133). En ≤ 600 px la descripción de partida
        se pliega con un botón aria-expanded; el Excel lleva siempre la descripción completa. */
-    function zonaHtml(z, ci, pi, idx) {
+    function hesc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    /* Botón de quitar (0147): icono discreto, texto accesible y zona táctil de 44 px (css). */
+    var ICONO_QUITAR = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M3.5 3.5l9 9m0-9l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    function botonQuitar(k, etiqueta) {
+        return '<button class="cz-rm" type="button" data-rm="' + hesc(k) + '" aria-label="' + hesc(etiqueta) + '" title="' + hesc(etiqueta) + '">' + ICONO_QUITAR + '</button>';
+    }
+    function capHtml(ci, n) {
+        return '<div class="cz-caph"><h4 class="cz-cap">' + ('0' + ci).slice(-2) + ' · ' + n + '</h4>' + botonQuitar(kCap(n), 'Quitar capítulo ' + n) + '</div>';
+    }
+    /* Quitar (0147): con rm = true la partida lleva su botón de quitar. */
+    function zonaHtml(z, ci, pi, idx, rm) {
         var did = 'czd' + idx;
-        return '<article class="cz-zone"><div class="cz-pt"><span class="cz-u">' + z.u + '<small>ud.</small></span><div><span class="cz-code">' + ('0' + ci).slice(-2) + '.' + ('0' + pi).slice(-2) + '</span><b>' + z.part + '</b></div></div><ul class="cz-dg">' +
+        return '<article class="cz-zone"><div class="cz-pt' + (rm ? ' cz-pt-rm' : '') + '"><span class="cz-u">' + z.u + '<small>ud.</small></span><div><span class="cz-code">' + ('0' + ci).slice(-2) + '.' + ('0' + pi).slice(-2) + '</span><b>' + z.part + '</b></div>' + (rm ? botonQuitar(kPart(z), 'Quitar partida ' + z.part) : '') + '</div><ul class="cz-dg">' +
             z.L.map(function (x) { return '<li><span class="r">' + (x[0].indexOf('FORTIS') === 0 ? 'según puerta' : x[0]) + '</span><span class="d">' + D[x[0]].replace(/ · /g, ', ') + '</span><span class="qq">' + x[1] + '</span></li>'; }).join('') +
             '</ul><button class="cz-tg" type="button" aria-expanded="false" aria-controls="' + did + '">Ver descripción de partida</button><p class="cz-desc" id="' + did + '">' + z.desc + '</p></article>';
+    }
+
+    /* «Has quitado: …» con un Recuperar por elemento y otro para todo (0147). */
+    function quitadosHtml(full, q, descartado) {
+        var els = elementosQuitados(full, q), h = '';
+        if (descartado) h += '<p class="cz-aviso" role="status">Has cambiado la configuración, así que lo que habías quitado vuelve a estar incluido.</p>';
+        if (!els.length) return h;
+        return h + '<div class="cz-quit" id="czq" tabindex="-1" role="status"><span class="cz-qk">Has quitado:</span>' + els.map(function (e) {
+            return '<span class="cz-qi"><span>' + e.tipo.charAt(0).toUpperCase() + e.tipo.slice(1) + ' ' + e.nombre + '</span><button class="cz-rec" type="button" data-rec="' + hesc(e.k) + '" aria-label="Recuperar ' + hesc(e.tipo + ' ' + e.nombre) + '">Recuperar</button></span>';
+        }).join('') + (els.length > 1 ? '<button class="cz-rec cz-rall" type="button" data-rec="*">Recuperar todo</button>' : '') + '</div>';
+    }
+    /* Todo el contenido de #czzones: capítulos y partidas con la numeración rehecha sobre lo que queda, las notas y lo quitado. */
+    function listaHtml(r, full, q, descartado) {
+        var cap = null, ci = 0, pi = 0, idx = 0;
+        var zonas = r.Z.map(function (z) {
+            var h = '';
+            if (z.n !== cap) { cap = z.n; ci++; pi = 0; h = capHtml(ci, z.n); }
+            pi++;
+            return h + zonaHtml(z, ci, pi, idx++, true);
+        }).join('');
+        var pie = r.Z.length ? '<div class="cz-notes"><b>A tener en cuenta</b><ul>' + r.A.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>'
+            : '<div class="cz-empty" role="status"><b>Has quitado todas las partidas.</b> No queda nada que medir ni presupuestar: recupera lo que quieras con los botones de abajo.</div>';
+        return zonas + pie + quitadosHtml(full, q, descartado);
+    }
+    /* Sin partidas no hay Excel ni envío: el botón se desactiva y se dice por qué. */
+    function estadoEnvio(r) {
+        var vacio = !r || !r.Z.length;
+        return { desactivado: vacio, motivo: vacio ? 'Has quitado todas las partidas: no hay nada que descargar ni enviar. Recupera alguna.' : '' };
     }
 
     var api = {
         CZ: CZ, D: D, PR: PR, SPEC: SPEC, VN: VN, VK: VK, ICON: ICON, ORDER: ORDER, RED: RED, MY2N10: MY2N10,
         LN: LN, defaults: defaults, compute: compute, coste: coste, eur: eur, fmt: fmt, resumenLead: resumenLead,
         leadFields: leadFields, xlsxBytes: xlsxBytes, zipBytes: zipBytes, crc32: crc32, MIME_XLSX: MIME_XLSX, LEAD_MAX: LEAD_MAX,
-        _state: cz, zonaHtml: zonaHtml
+        _state: cz, zonaHtml: zonaHtml, capHtml: capHtml,
+        listaHtml: listaHtml, quitadosHtml: quitadosHtml, estadoEnvio: estadoEnvio,
+        filtrar: filtrar, kCap: kCap, kPart: kPart, elementosQuitados: elementosQuitados, textoQuitados: textoQuitados,
+        firma: firma, qNuevo: qNuevo, qQuitar: qQuitar, qRecuperar: qRecuperar, qTodo: qTodo, qSync: qSync
     };
 
     /* ───────────── INTERFAZ ───────────── */
@@ -271,7 +366,7 @@
         var root = document.getElementById('configurador');
         if (!root) return;
         function $(id) { return document.getElementById(id); }
-        var last = null, lastCost = null;
+        var last = null, lastCost = null, lastQ = '', qs = qNuevo(), enfocarQ = false;
 
         function czStep(s, ns) {
             [1, 2, 3, 4].forEach(function (i) { $('cz' + i).hidden = i !== s; });
@@ -296,7 +391,7 @@
             }).join('');
         }
         function czPick(k, go) {
-            cz.t = k; cz.v = defaults(k); cz.lv = 1;
+            cz.t = k; cz.v = defaults(k); cz.lv = 1; qTodo(qs); // otra configuración: lo quitado deja de valer
             document.querySelectorAll('.cz-type').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.t === k)); });
             czNums(); czLevels(); if (go) czStep(2);
         }
@@ -315,24 +410,30 @@
                 (cs.falta.length ? '<p class="nota">Sin precio en tarifa, no incluidos: ' + cs.falta.join(', ') + '.</p>' : '') + '</section>';
         }
         function czPaint() {
-            var o = compute(cz.t, cz.v, cz.lv), r = o.r, tot = 0, refs = {};
+            var descartado = qSync(qs, firma(cz.t, cz.v, cz.lv));
+            var o = compute(cz.t, cz.v, cz.lv, qs.k), r = o.r, tot = 0, refs = {}, vacio = !r.Z.length;
             $('czsum').innerHTML = '<span><b>' + VN[cz.t] + '</b></span>' + CZ[cz.t].nums.map(function (f) { return '<span>' + cz.v[f[0]] + ' · ' + f[1].toLowerCase() + '</span>'; }).join('') +
                 '<span>Nivel <b>' + LN()[cz.lv] + '</b></span><span class="cz-lvsw">' + LN().map(function (n, i) { return '<button type="button" data-lv="' + i + '" aria-pressed="' + (i === cz.lv) + '">' + n + '</button>'; }).join('') +
                 '</span><button class="lnk" type="button" data-cz="2">Cambiar datos</button>';
-            var cap = null, ci = 0, pi = 0, idx = 0;
             r.Z.forEach(function (z) { z.L.forEach(function (x) { tot += x[1]; refs[x[0]] = 1; }); });
-            $('czzones').innerHTML = r.Z.map(function (z) {
-                var h = '';
-                if (z.n !== cap) { cap = z.n; ci++; pi = 0; h = '<h4 class="cz-cap">' + ('0' + ci).slice(-2) + ' · ' + z.n + '</h4>'; }
-                pi++;
-                return h + zonaHtml(z, ci, pi, idx++);
-            }).join('') + '<div class="cz-notes"><b>A tener en cuenta</b><ul>' + r.A.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
+            $('czzones').innerHTML = listaHtml(r, o.full, qs.k, descartado);
             $('cztot').innerHTML = '<b>' + Object.keys(refs).length + '</b> referencias · <b>' + tot + '</b> unidades';
-            last = r; lastCost = o.c; czCoste(o.c);
-            $('f').style.display = ''; $('ok').classList.remove('on'); $('ferr').textContent = '';
+            last = r; lastCost = o.c; lastQ = textoQuitados(o.full, qs.k);
+            if (vacio) $('czcoste').innerHTML = ''; else czCoste(o.c);
+            /* Sin partidas no hay Excel ni envío: el botón queda desactivado y se dice por qué. */
+            var sb = $('f').querySelector('button[type="submit"]'), es = estadoEnvio(r);
+            sb.disabled = es.desactivado;
+            $('f').classList[es.desactivado ? 'add' : 'remove']('vacio'); // para el cursor «no permitido» (css)
+            $('f').style.display = ''; $('ok').classList.remove('on');
+            $('ferr').textContent = es.motivo;
+            if (enfocarQ) { enfocarQ = false; var fq = $('czq') || $('czzones'); fq.focus({ preventScroll: true }); }
         }
+        /* Quitar o recuperar y repintar; el foco pasa a la línea «Has quitado» para no perderlo (el botón pulsado desaparece). */
+        function czQuitar(k) { qQuitar(qs, k, firma(cz.t, cz.v, cz.lv)); enfocarQ = true; czPaint(); }
+        function czRecuperar(k) { if (k === '*') qTodo(qs); else qRecuperar(qs, k); enfocarQ = true; czPaint(); }
 
         function descargar() {
+            if (!last || !last.Z.length) return; // sin partidas no hay Excel
             var d = new Date(), t = cz.t, lv = cz.lv;
             var bytes = api.xlsxBytes(last, t, cz.v, lv, d.toLocaleDateString('es-ES'));
             var a = document.createElement('a');
@@ -344,7 +445,7 @@
         function enviarLead(contact) {
             return fetch(FS_BASE + '/web_leads?key=' + API_KEY, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fields: leadFields(contact, cz.t, cz.v, cz.lv, last, lastCost) })
+                body: JSON.stringify({ fields: leadFields(contact, cz.t, cz.v, cz.lv, last, lastCost, lastQ) })
             }).then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); });
         }
         function err(id, el, msg) { $(id).textContent = msg; el.setAttribute('aria-invalid', msg ? 'true' : 'false'); return !msg; }
@@ -352,6 +453,8 @@
 
         root.addEventListener('click', function (e) {
             var b;
+            if ((b = e.target.closest('[data-rm]'))) { czQuitar(b.dataset.rm); return; }
+            if ((b = e.target.closest('[data-rec]'))) { czRecuperar(b.dataset.rec); return; }
             if ((b = e.target.closest('.cz-tg'))) {
                 var ab = b.getAttribute('aria-expanded') === 'true';
                 b.setAttribute('aria-expanded', String(!ab)); b.closest('.cz-zone').classList.toggle('open', !ab);
@@ -367,7 +470,7 @@
             }
             if (e.target.id === 'again') { descargar(); return; }
             if (e.target.closest('#cznew')) {
-                cz.t = null; cz.v = {}; cz.lv = 1; last = null; lastCost = null;
+                cz.t = null; cz.v = {}; cz.lv = 1; last = null; lastCost = null; lastQ = ''; qTodo(qs);
                 document.querySelectorAll('.cz-type').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
                 var f = $('f'); f.reset(); f.style.display = ''; $('ok').classList.remove('on');
                 ['e-name', 'e-email', 'ferr'].forEach(function (i) { $(i).textContent = ''; });
@@ -383,13 +486,14 @@
             return '<button class="cz-type" type="button" data-t="' + k + '" aria-pressed="false"><i class="fa-solid ' + ICON[k] + '" aria-hidden="true"></i><span><b>' + VN[k] + '</b><small>' + VK[k] + '</small></span></button>';
         }).join('');
         czStep(1, true);
+        $('czzones').setAttribute('tabindex', '-1'); // recibe el foco si no queda nada «quitado» que mostrar
 
         $('f').addEventListener('submit', function (ev) {
             ev.preventDefault();
             var f = this, btn = f.querySelector('button[type="submit"]');
             var name = f.elements.name.value.trim(), email = f.elements.email.value.trim(), company = f.elements.company.value.trim();
             var a = err('e-name', f.elements.name, name ? '' : 'Escribe tu nombre.'), b = err('e-email', f.elements.email, emailMsg(email));
-            if (!(a && b) || !last) return;
+            if (!(a && b) || !last || !last.Z.length) return;
             btn.disabled = true;
             $('ferr').textContent = '';
             descargar(); // la descarga no depende de que el lead llegue
@@ -400,7 +504,7 @@
                     f.style.display = 'none'; $('ok').classList.add('on');
                     $('ferr').textContent = 'El Excel se ha descargado, pero no hemos podido avisar al equipo. Escríbenos a gaston@2n.com.';
                 })
-                .then(function () { btn.disabled = false; });
+                .then(function () { btn.disabled = !last || !last.Z.length; });
         });
     }
 

@@ -130,6 +130,26 @@
 /* Encargo 0133: ajustes de móvil. Altura táctil mínima de 44 px (también en escritorio). */
 .cz-lvsw button { min-height: 44px; }
 .lnk[data-cz] { min-height: 44px; padding: 0 0.5rem; display: inline-flex; align-items: center; }
+/* Encargo 0147: quitar y recuperar capítulos y partidas. Zona táctil de 44 px, icono discreto. */
+.cz-caph { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0.9rem 0 0.3rem; }
+.cz-caph:first-child { margin-top: 0; }
+.cz-caph .cz-cap, .cz-caph .cz-cap:first-child { margin: 0; }
+.cz-rm { flex: none; display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid transparent; border-radius: 10px; background: none; color: var(--text-hint); cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+.cz-rm:hover { color: var(--text-white); border-color: var(--border); }
+.cz-rm:focus-visible, .cz-rec:focus-visible { outline: 2px solid var(--primary-light); outline-offset: 2px; }
+.cz-pt-rm { grid-template-columns: 64px 1fr 44px; }
+.cz-pt-rm .cz-rm { margin: -0.5rem -0.6rem 0 0; }
+.cz-quit, .cz-empty, .cz-aviso { margin-top: 0.9rem; padding: 0.7rem 1rem; border: 1px solid var(--border); border-radius: 14px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+.cz-quit { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; }
+.cz-quit:focus { outline: none; }
+.cz-qk { font-weight: 700; color: var(--text-white); }
+.cz-qi { display: inline-flex; align-items: center; gap: 0.2rem; padding-left: 0.8rem; border: 1px solid var(--border); border-radius: 999px; }
+.cz-rec { min-height: 44px; padding: 0 0.7rem; background: none; border: 0; color: var(--primary-light); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+.cz-rall { margin-left: auto; }
+.cz-empty { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); color: #fcd34d; }
+.cz-aviso { border-color: rgba(96, 165, 250, 0.4); background: rgba(96, 165, 250, 0.06); }
+.cz-form.vacio .cz-btn:disabled { cursor: not-allowed; }
+
 @media (max-width: 600px) {
     .cz-dg li { grid-template-columns: 1fr auto; grid-template-areas: "r r" "d qq"; gap: 0.15rem 0.8rem; }
     .cz-dg .r { grid-area: r; font-size: 0.7rem; opacity: 0.8; }
